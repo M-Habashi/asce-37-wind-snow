@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loads: ASCE 7 → ASCE 37 · Temporary Works Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="assets/prep.css">
+<script src="assets/prep.js"></script>
+<style>
+.combos{display:flex;flex-direction:column;gap:8px}
+.combo{display:grid;grid-template-columns:minmax(118px,1fr) minmax(90px,1.3fr) 70px;gap:10px;align-items:center;font-size:.9rem}
+.combo .f{font-family:var(--mono);font-size:.8rem;line-height:1.3}
+.combo .track{position:relative;height:16px;background:color-mix(in srgb,var(--rule) 30%,transparent)}
+.combo .zero{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.combo .b{position:absolute;top:0;bottom:0;background:var(--s1);transition:left .5s cubic-bezier(.2,.8,.2,1),width .5s cubic-bezier(.2,.8,.2,1)}
+.combo.max .b{background:var(--pencil)} .combo.min .b{background:var(--storm)}
+.combo .v{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.combo{grid-template-columns:minmax(0,1fr) 70px}.combo .track{grid-column:1/-1;grid-row:2}}
+.cdefs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.cdef{border:1.5px solid var(--rule);padding:12px;display:flex;flex-direction:column;gap:4px;background:var(--paper)}
+.cdef .sym{font-family:var(--display);font-weight:900;font-size:1.9rem;line-height:1;color:var(--pencil)}
+.cdef .sym sub{font-size:.55em}
+</style>
+</head>
+<body>
+<script>P.nav('loads.html')</script>
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>1</b> of 8</div><div>Loads · ASCE 7 → ASCE/SEI 37-14</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">What changes while it's being built</span><span class="hand">same physics, new load names →</span></div>
+    <h1>Loads During<br>Construction</h1>
+    <div class="stage">
+      <canvas id="hero" aria-label="A bay under construction cycling through load stages: structure, formwork, rebar stockpile, crew, wet concrete, wind and horizontal construction load" role="img"></canvas>
+      <div class="readout"><span>stage: <b id="hStage">D</b></span><span id="hNote">structure in place</span></div>
+    </div>
+    <div class="chips" id="phaseChips" role="group" aria-label="Pin a construction stage">
+      <button class="chip" data-p="-1" aria-pressed="true">Auto<small>cycle</small></button>
+      <button class="chip" data-p="0" aria-pressed="false">D<small>structure</small></button>
+      <button class="chip" data-p="1" aria-pressed="false">C<sub>FML</sub><small>formwork</small></button>
+      <button class="chip" data-p="2" aria-pressed="false">C<sub>VML</sub><small>stockpile</small></button>
+      <button class="chip" data-p="3" aria-pressed="false">C<sub>P</sub><small>crew</small></button>
+      <button class="chip" data-p="4" aria-pressed="false">C<sub>VML</sub><small>wet concrete</small></button>
+      <button class="chip" data-p="5" aria-pressed="false">W<small>reduced</small></button>
+      <button class="chip" data-p="6" aria-pressed="false">C<sub>H</sub><small>braking</small></button>
+    </div>
+    <p class="lede">ASCE 37 doesn't replace ASCE 7. It takes the same analysis procedures, renames gravity loads by how certain they are, adds horizontal construction loads, and lowers the environmental loads to match a short exposure period. The pencil notes below mark what's new compared with your ASCE 7 course.</p>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b> of 8</div><div>ASCE 7 refresher · Sec. 2.3 / 2.4</div><div>LRFD · ASD</div></div>
+  <div class="sheet-body">
+    <h2>Combinations you already know</h2>
+    <div class="callout remember"><span class="tag">From your ASCE 7 course</span>
+      <p>The basic combinations are unchanged from ASCE 7-10 to 7-16 (W is already strength-level, so the factor is 1.0, or 0.6 in ASD). For temporary work, two of them do most of the work: the <strong>gravity</strong> case (1.2D + 1.6L…) sizes members, and the <strong>counteracting-dead-load</strong> case (0.9D + 1.0W, ASD 0.6D + 0.6W) checks overturning, uplift and sliding of towers, forms and mats.</p></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="chips" id="methodChips" role="group" aria-label="Design method">
+          <button class="chip" data-m="lrfd" aria-pressed="true">LRFD<small>Sec. 2.3</small></button>
+          <button class="chip" data-m="asd" aria-pressed="false">ASD<small>Sec. 2.4</small></button>
+        </div>
+        <div class="ctrl"><label class="label" for="cD">Dead load effect D: <span class="val" id="cDo"></span></label><input id="cD" type="range" min="0" max="100" step="1" value="40"></div>
+        <div class="ctrl"><label class="label" for="cL">Live / construction live L: <span class="val" id="cLo"></span></label><input id="cL" type="range" min="0" max="100" step="1" value="30"></div>
+        <div class="ctrl"><label class="label" for="cS">Roof live or snow (Lr / S): <span class="val" id="cSo"></span></label><input id="cS" type="range" min="0" max="60" step="1" value="10"></div>
+        <div class="ctrl"><label class="label" for="cW">Wind effect W (negative = uplift): <span class="val" id="cWo"></span></label><input id="cW" type="range" min="-120" max="120" step="1" value="-70"></div>
+        <span class="hand">slide W negative: the 0.9D case flips sign. That's your hold-down.</span>
+      </div>
+      <div class="col">
+        <div class="combos" id="combos" aria-live="polite"></div>
+        <div class="legend"><span><i style="background:var(--pencil)"></i>max effect</span><span><i style="background:var(--storm)"></i>min effect (uplift / overturning)</span><span><i style="background:var(--s1)"></i>other combinations</span></div>
+        <div class="callout trap" id="comboVerdict"></div>
+      </div>
+    </div>
+    <div class="callout diff"><span class="tag">ASCE 7-22 note</span><p>ASCE 7-22 changed the ground snow maps to strength level and dropped the LRFD snow factor to 1.0. It also moved K<sub>d</sub> out of the velocity-pressure equation and into the pressure equations. ASCE 37-14 still points to <strong>ASCE 7-10</strong>, so the construction checks use 1.6S and q<sub>z</sub> = 0.00256 K<sub>z</sub>K<sub>zt</sub>K<sub>d</sub>V². If they ask which edition you'd use, say so.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b> of 8</div><div>ASCE 37 vocabulary · Ch. 4</div><div>the C-loads</div></div>
+  <div class="sheet-body">
+    <h2>Gravity split by certainty</h2>
+    <p>ASCE 7 lumps everything permanent into D. ASCE 37 splits construction loads by <em>how well you know them</em>, because a load you can weigh deserves a smaller factor than a stockpile that grows when nobody's looking.</p>
+    <div class="cdefs">
+      <div class="cdef"><span class="sym">C<sub>D</sub></span><strong>Construction dead load</strong><span class="small">Self-weight of temporary structures once they're assembled, such as erected scaffold or shoring.</span></div>
+      <div class="cdef"><span class="sym">C<sub>FML</sub></span><strong>Fixed material load</strong><span class="small">Materials fixed in magnitude once placed, such as installed formwork.</span></div>
+      <div class="cdef"><span class="sym">C<sub>VML</sub></span><strong>Variable material load</strong><span class="small">Magnitude changes during work: stockpiles, and wet concrete until it cures.</span></div>
+      <div class="cdef"><span class="sym">C<sub>P</sub></span><strong>Personnel &amp; equipment</strong><span class="small">Crew, hand tools, buggies. Uniform or concentrated, whichever is worse.</span></div>
+      <div class="cdef"><span class="sym">C<sub>H</sub></span><strong>Horizontal construction</strong><span class="small">Braking, personnel push, equipment. Minimum 2% of total vertical.</span></div>
+      <div class="cdef"><span class="sym">C<sub>R</sub></span><strong>Equipment reactions</strong><span class="small">Outrigger pads, crane tracks, hoist reactions, concrete pump boom.</span></div>
+      <div class="cdef"><span class="sym">C<sub>C</sub></span><strong>Lateral concrete pressure</strong><span class="small">Fresh concrete on vertical forms. ASCE 37 defers to ACI 347 (see the falsework sheet).</span></div>
+      <div class="cdef"><span class="sym">C<sub>F</sub></span><strong>Erection &amp; fitting forces</strong><span class="small">Jacking, drifting or pulling members into alignment.</span></div>
+    </div>
+    <div class="callout diff"><span class="tag">How the factors behave · Table 2-1</span>
+      <p>C<sub>D</sub> and C<sub>FML</sub> behave like dead load. C<sub>VML</sub> gets a <strong>higher</strong> factor than C<sub>FML</sub> because it's uncertain. ASCE 37-02 wrote it as 1.2C<sub>FML</sub> + 1.4C<sub>VML</sub>. C<sub>P</sub> and C<sub>H</sub> behave like live load. Only <strong>personnel and equipment loads</strong> may be reduced for large areas. Material loads never are.</p></div>
+    <div class="callout verify"><span class="tag">Verify before quoting</span><p>Check the exact 37-14 factors and companion (arbitrary-point-in-time) values in Table 2-1 and Sec. 2.2–2.3 of a licensed copy. Explaining the logic matters more in an interview than reciting a decimal.</p></div>
+
+    <h3>Sort the site</h3>
+    <p class="small muted">Tap an item, then tap the load category it belongs to.</p>
+    <div class="tray" id="tray"></div>
+    <div class="sortbox" id="bins"></div>
+    <p id="sortMsg" class="small" aria-live="polite"></p>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b> of 8</div><div>Personnel &amp; equipment · Sec. 4.3</div><div>C<sub>P</sub></div></div>
+  <div class="sheet-body">
+    <h2>Replace "occupancy live load"</h2>
+    <p>There's no occupancy during construction, so the ASCE 7 Table 4-1 live loads don't fit. ASCE 37 classifies the <em>operation</em> on the deck instead, and pairs each uniform load with concentrated loads you check separately.</p>
+    <div class="chips" id="dutyChips" role="group" aria-label="Operation class">
+      <button class="chip" data-psf="20" data-k="light" aria-pressed="false">Light · 20 psf<small>sparse crew, hand tools</small></button>
+      <button class="chip" data-psf="25" data-k="medium" aria-pressed="true">Medium · 25 psf<small>crew concentrations, hose placement</small></button>
+      <button class="chip" data-psf="50" data-k="heavy" aria-pressed="false">Heavy · 50 psf<small>motorized buggies</small></button>
+    </div>
+    <div class="stage short"><canvas id="duty" role="img" aria-label="Deck with crew density and buggy traffic matching the selected operation class"></canvas>
+      <div class="readout"><span>C<sub>P</sub> = <b id="dPsf">25</b> psf</span><span>on a 20 × 30 ft bay: <b id="dKip">15.0</b> kips</span></div></div>
+    <div class="threecol">
+      <div class="idea"><h3>250 lb</h3><p>Concentrated load per person. Check it on plywood, joists and walkway planks.</p></div>
+      <div class="idea"><h3>500 lb / wheel</h3><p>Manually powered vehicles such as carts and hand buggies.</p></div>
+      <div class="idea"><h3>2,000 lb / wheel</h3><p>Powered equipment. A motorized buggy on a plywood deck is a punching and local-bending check.</p></div>
+    </div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>"Uniform <em>or</em> concentrated, whichever produces the more severe effect." The concentrated loads govern short-span sheathing and joists; the uniform loads govern stringers, caps and towers. Then compare with the owner spec. Caltrans falsework uses 20 psf live plus 75 plf at the deck edge, with a 100 psf minimum total. ACI 347 formwork uses 50 psf live (75 with motorized carts) and a 100 psf minimum total (125 with carts).</p></div>
+    <div class="callout verify"><span class="tag">Verify</span><p>The light, medium and heavy psf values are as I recall them from Table 4-1 of 37-14. The concentrated values match published study notes. Confirm both against the standard.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b> of 8</div><div>Horizontal construction load · Sec. 4.4</div><div>C<sub>H</sub></div></div>
+  <div class="sheet-body">
+    <h2>The 2% family</h2>
+    <p>Real platforms are never perfectly plumb, and people and machines push things. ASCE 37 lists four sources of horizontal load. You design for the governing one and never go below 2% of the total vertical load. <strong>C<sub>H</sub> isn't combined with wind or earthquake.</strong> Run those as separate cases.</p>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="hV">Total vertical load on the system: <span class="val" id="hVo"></span></label><input id="hV" type="range" min="20" max="1500" step="10" value="400"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="hN">Workers: <span class="val" id="hNo"></span></label><input id="hN" type="range" min="0" max="40" step="1" value="12"></div>
+          <div class="ctrl"><label class="label" for="hVeh">Buggies operating: <span class="val" id="hVehO"></span></label><input id="hVeh" type="range" min="0" max="4" step="1" value="1"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="hVw">Loaded buggy weight: <span class="val" id="hVwO"></span></label><input id="hVw" type="range" min="1" max="12" step="0.5" value="4"></div>
+        <div class="ctrl"><label class="label" for="hEq">Equipment-rated horizontal (e.g. pump hose whip): <span class="val" id="hEqO"></span></label><input id="hEq" type="range" min="0" max="10" step="0.5" value="0"></div>
+      </div>
+      <div class="col">
+        <div class="meters" id="hMeters"></div>
+        <div class="stat"><span class="label">Design C<sub>H</sub></span><span class="big" id="hOut">8.0</span><span class="mono" id="hGov">kips · 2% minimum governs</span></div>
+      </div>
+    </div>
+    <h3>Same idea, other documents</h3>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Document</th><th>Minimum lateral load</th><th>Where / notes</th></tr></thead>
+      <tbody>
+        <tr><td class="k">ASCE 37-14</td><td>Greatest of the C<sub>H</sub> sources, at least 2% of total vertical</td><td>Not combined with W or E</td></tr>
+        <tr><td class="k">Caltrans / AASHTO temp-works guide</td><td>Actual horizontal loads, at least <strong>2% of total dead load</strong></td><td>Applied at the top of posts, in any direction, in both the loaded and unloaded states. Wind is a separate check; Caltrans says wind tends to govern above ~30–40 ft.</td></tr>
+        <tr><td class="k">ACI 347R (slab forms)</td><td>Greater of 100 plf of slab edge or 2% of total dead load</td><td>Distributed along the slab edge</td></tr>
+        <tr><td class="k">AISC 360 App. 6</td><td>Nodal column brace: 1% of P<sub>r</sub> (relative: 0.5%)</td><td>Plus a stiffness requirement. See the AISC sheet.</td></tr>
+        <tr><td class="k">AISC 360 Ch. C</td><td>Notional load 0.002Y<sub>i</sub></td><td>Direct analysis method: models out-of-plumb</td></tr>
+      </tbody></table></div>
+    <span class="hand">they're all the same story: imperfection + accidental push. say "out-of-plumb" in the interview.</span>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b> of 8</div><div>Side by side</div><div>7 vs 37</div></div>
+  <div class="sheet-body">
+    <h2>What's different in ASCE 37</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Topic</th><th>ASCE 7 (finished structure)</th><th>ASCE 37-14 (during construction)</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Risk category</td><td>I–IV by occupancy</td><td><strong>RC II</strong> for environmental loads unless the AHJ requires more</td></tr>
+        <tr><td class="k">Wind speed</td><td>Mapped V for the risk category</td><td>V × <strong>0.75 / 0.80 / 0.85 / 0.90</strong> for &lt;6 wk / ≤1 yr / 1–2 yr / 2–5 yr. Hurricane-coast 115 mph option. No splitting an operation into phases.</td></tr>
+        <tr><td class="k">Wind procedure</td><td>K<sub>z</sub>, K<sub>zt</sub>, K<sub>d</sub>, G, C<sub>f</sub>, 16 psf minimum (7-10)</td><td>Same procedure with the reduced V. The 16 psf minimum isn't required. Check partially enclosed and partially clad stages.</td></tr>
+        <tr><td class="k">Snow</td><td>p<sub>f</sub> = 0.7C<sub>e</sub>C<sub>t</sub>I<sub>s</sub>p<sub>g</sub></td><td>0.8p<sub>g</sub> for periods ≤ 5 yr, I<sub>s</sub> = 1.0, still check drift and unbalanced. Pair it with a removal plan.</td></tr>
+        <tr><td class="k">Live load</td><td>Occupancy L (Table 4-1)</td><td>C<sub>P</sub> by operation class plus concentrated loads</td></tr>
+        <tr><td class="k">Gravity "dead"</td><td>D</td><td>D + C<sub>D</sub> + C<sub>FML</sub> + C<sub>VML</sub>, factored by certainty</td></tr>
+        <tr><td class="k">Lateral</td><td>Wind and seismic</td><td>Add C<sub>H</sub> (≥ 2% vertical), not combined with W or E</td></tr>
+        <tr><td class="k">Seismic</td><td>By SDC and risk category</td><td>RC II, I<sub>e</sub> = 1.0. Owners often waive it for short-term falsework (Caltrans doesn't consider earthquake on falsework). Ask the owner.</td></tr>
+        <tr><td class="k">Concrete pressure</td><td>n/a</td><td>C<sub>C</sub> per ACI 347</td></tr>
+        <tr><td class="k">Stability</td><td>Completed load path</td><td>Partial structures: temporary bracing, erection stages, C<sub>F</sub> fitting forces</td></tr>
+        <tr><td class="k">Overturning</td><td>0.9D</td><td>Count only the dead load <strong>definitely in place at that stage</strong>. The unloaded condition often governs.</td></tr>
+      </tbody></table></div>
+  </div>
+</section>
+
+<!-- SHEET 7 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>7</b> of 8</div><div>Worked check · wall form in wind</div><div>q<sub>z</sub> → brace</div></div>
+  <div class="sheet-body">
+    <h2>Will the gang form stand?</h2>
+    <p>A classic first-week task: a free-standing wall form (or precast panel, or sign falsework) before the pour. Find the ASCE 37 wind, compare overturning with the stabilizing weight using the counteracting-dead-load combination, and size the push-pull braces.</p>
+    <div class="stage"><canvas id="form" role="img" aria-label="Wall form in wind with push-pull brace; it rocks or tips when unbraced overturning exceeds resistance"></canvas>
+      <div class="readout"><span>q<sub>z</sub> = <b id="fQ">—</b> psf</span><span>M<sub>OT</sub>/M<sub>R</sub> = <b id="fR">—</b></span></div>
+      <div class="readout right bottom"><span id="fPill" class="pill">—</span></div></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fV">Mapped V (7-10, RC II): <span class="val" id="fVo"></span></label><input id="fV" type="range" min="90" max="180" step="5" value="115"></div>
+          <div class="ctrl"><label class="label" for="fF">Period factor</label>
+            <select id="fF"><option value="0.75">0.75 · &lt; 6 weeks</option><option value="0.80" selected>0.80 · 6 wk – 1 yr</option><option value="0.85">0.85 · 1 – 2 yr</option><option value="0.90">0.90 · 2 – 5 yr</option><option value="1.00">1.00 · permanent</option></select></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fExp">Exposure</label>
+            <select id="fExp"><option value="B">B · urban/suburban</option><option value="C" selected>C · open</option><option value="D">D · open water</option></select></div>
+          <div class="ctrl"><label class="label" for="fM">Method</label>
+            <select id="fM"><option value="lrfd" selected>LRFD · 0.9D + 1.0W</option><option value="asd">ASD · 0.6D + 0.6W</option></select></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fH">Form height h: <span class="val" id="fHo"></span></label><input id="fH" type="range" min="4" max="30" step="1" value="16"></div>
+          <div class="ctrl"><label class="label" for="fW">Form weight: <span class="val" id="fWo"></span></label><input id="fW" type="range" min="4" max="20" step="1" value="10"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fB">Base width (tipping lever): <span class="val" id="fBo"></span></label><input id="fB" type="range" min="0.5" max="5" step="0.25" value="2"></div>
+          <div class="ctrl"><label class="label" for="fCf">C<sub>f</sub> (Fig. 29.3-1): <span class="val" id="fCfo"></span></label><input id="fCf" type="range" min="1" max="2" step="0.05" value="1.3"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fHb">Brace attached at: <span class="val" id="fHbo"></span></label><input id="fHb" type="range" min="0.4" max="0.95" step="0.05" value="0.7"></div>
+          <div class="ctrl"><label class="label" for="fAng">Brace angle: <span class="val" id="fAngo"></span></label><input id="fAng" type="range" min="30" max="65" step="1" value="50"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="fS">Brace spacing along wall: <span class="val" id="fSo"></span></label><input id="fS" type="range" min="4" max="14" step="1" value="8"></div>
+        <label class="check"><input type="checkbox" id="fBrace" checked> Push-pull braces installed</label>
+      </div>
+      <div class="col">
+        <div class="eq" id="fEq1"></div>
+        <div class="eq" id="fEq2"></div>
+        <div class="eq" id="fEq3"></div>
+        <div class="stat-row">
+          <div class="stat"><span class="label">Brace axial</span><span class="big" id="fAx">—</span><span class="mono">kips / brace, ±</span></div>
+          <div class="stat"><span class="label">Anchor uplift</span><span class="big" id="fUp">—</span><span class="mono">kips / brace</span></div>
+        </div>
+        <p class="small muted">Wind can come from either side, so the braces work in tension and compression. Size them as columns (push-pull pipe braces), and remember the deadman or anchor sees the vertical component. Kz is evaluated at the form top, which is conservative. G = 0.85, K<sub>d</sub> = 0.85, K<sub>zt</sub> = 1.0.</p>
+      </div>
+    </div>
+    <span class="hand">and always check the "unloaded & no concrete yet" stage. that's when forms blow over.</span>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>8</b> of 8</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="sheet-body">
+    <h2>Questions they may ask</h2>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Study aid. Values marked "verify" come from memory or secondary sources. Confirm everything against licensed copies of ASCE/SEI 37-14, ASCE 7-10/16 and the project specification before using it in design.</p>
+  <p>Sources: <a href="https://ascelibrary.org/doi/book/10.1061/9780784413098" target="_blank" rel="noopener">ASCE/SEI 37-14</a> · <a href="https://peer.asee.org/temporary-loads-during-construction-undergraduate-research-and-course-development.pdf" target="_blank" rel="noopener">ASEE: Temporary Loads During Construction (C<sub>H</sub> rules, combinations)</a> · <a href="https://dot.ca.gov/programs/engineering-services/manuals/falsework-manual" target="_blank" rel="noopener">Caltrans Falsework Manual Ch. 3</a> · <a href="https://www.gaf.com/en-us/blog/building-science/prevailing-winds-and-prevailing-codes-a-summary-of-roof-related-asce-7-22-changes-835016aa-149c-4b06-9914-7e30e2aa575d" target="_blank" rel="noopener">ASCE 7-22 K<sub>d</sub> change</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease} = P;
+
+/* ---------- SHEET 1: construction stages ---------- */
+const STAGES = [
+  ['D','structure in place'],
+  ['C_FML','formwork installed (fixed material)'],
+  ['C_VML','rebar stockpile landed (variable material)'],
+  ['C_P','crew + buggy (personnel & equipment)'],
+  ['C_VML','wet concrete (variable until cured)'],
+  ['W','reduced construction wind (no C_H with it)'],
+  ['C_H','buggy braking (no W with it)']
+];
+const PH = 2.8; let pinned = -1;
+P.chips('phaseChips', d => { pinned = +d.p; if (P.reduce) P.redraw(); });
+function workerFig(ctx, x, y, s, ph){
+  ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.8; ctx.lineCap='round';
+  const sw = Math.sin(ph)*3*s;
+  ctx.beginPath(); ctx.arc(x, y-17*s, 3.4*s, 0, Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x, y-13*s); ctx.lineTo(x, y-6*s);
+  ctx.moveTo(x, y-6*s); ctx.lineTo(x+sw, y); ctx.moveTo(x, y-6*s); ctx.lineTo(x-sw, y);
+  ctx.moveTo(x, y-11*s); ctx.lineTo(x+5*s, y-8*s); ctx.stroke();
+  ctx.fillStyle = C.storm; ctx.fillRect(x-4*s, y-22*s, 8*s, 2.5*s);
+  ctx.restore();
+}
+function buggy(ctx, x, y){
+  ctx.save(); ctx.fillStyle = C.steel; ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(x-16, y-16); ctx.lineTo(x+14, y-16); ctx.lineTo(x+10, y-5); ctx.lineTo(x-12, y-5); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(x-8, y-3, 3, 0, 7); ctx.arc(x+7, y-3, 3, 0, 7); ctx.fill();
+  ctx.restore();
+}
+P.anim($('hero'), (ctx, w, h, t) => {
+  let ph, p;
+  if (pinned >= 0){ ph = pinned; p = P.reduce ? 1 : ((t % PH)/PH); }
+  else if (P.reduce){ ph = 4; p = 1; }
+  else { ph = Math.floor(t/PH) % STAGES.length; p = (t % PH)/PH; }
+  $('hStage').textContent = STAGES[ph][0].replace('_',''); $('hNote').textContent = STAGES[ph][1];
+  const g = h - 14, L = w*0.14, R = w*0.86, top = h*0.46, beamH = 10;
+  const windOn = ph === 5, chOn = ph === 6;
+  const sway = windOn && !P.reduce ? Math.sin(t*3)*2.5 + 3 : windOn ? 3 : 0;
+  ground(ctx, 0, w, g);
+  // columns + beam (D)
+  ctx.save(); ctx.strokeStyle = ph===0 ? C.pencil : C.ink; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(L, g); ctx.lineTo(L+sway, top+beamH); ctx.moveTo(R, g); ctx.lineTo(R+sway, top+beamH); ctx.moveTo((L+R)/2, g); ctx.lineTo((L+R)/2+sway, top+beamH); ctx.stroke();
+  ctx.fillStyle = ph===0 ? C.pencil : C.ink; ctx.fillRect(L-6+sway, top, R-L+12, beamH);
+  ctx.restore();
+  // shores under the deck (C_D, assembled)
+  ctx.save(); ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 1.2;
+  for (let x = L+26; x < R-10; x += 34){ if (Math.abs(x-(L+R)/2) < 12) continue; ctx.beginPath(); ctx.moveTo(x, g); ctx.lineTo(x+sway*0.8, top+beamH); ctx.stroke(); }
+  ctx.restore();
+  // formwork (C_FML)
+  if (ph >= 1){
+    const k = ph === 1 ? ease(clamp(p*1.8,0,1)) : 1;
+    ctx.fillStyle = ph===1 ? C.pencil : C.timber;
+    ctx.fillRect(L-14+sway, top-7, (R-L+28)*k, 7);
+    ctx.fillRect(L-14+sway, top-26, 5, 19*k); ctx.fillRect(R+9+sway, top-26, 5, 19*k*(k>0.95?1:0));
+  }
+  // rebar stockpile (C_VML) — phases 2,3; consumed during pour
+  if (ph === 2 || ph === 3 || (ph === 4 && p < 0.4)){
+    const drop = ph === 2 ? ease(clamp(p*1.6,0,1)) : 1;
+    const fade = ph === 4 ? 1 - p/0.4 : 1;
+    const bx = (L+R)/2 + 30 + sway, by = top - 7;
+    ctx.save(); ctx.globalAlpha = fade;
+    for (let i=0;i<4;i++){
+      const yy = lerp(-30 - i*8, by - 5 - i*5, drop);
+      ctx.fillStyle = ph===2 ? C.pencil : C.steel; ctx.fillRect(bx - 40, yy, 80, 4);
+    }
+    if (ph === 2 && drop < 1){ ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(bx-30, 0); ctx.lineTo(bx-30, lerp(-30, by-20, drop)); ctx.moveTo(bx+30,0); ctx.lineTo(bx+30, lerp(-30, by-20, drop)); ctx.stroke(); }
+    ctx.restore();
+  }
+  // wet concrete (C_VML)
+  let conc = 0;
+  if (ph >= 4) conc = ph === 4 ? ease(clamp(p*1.4,0,1)) : 1;
+  if (conc > 0){
+    ctx.fillStyle = ph===4 ? C.pencil : C.concrete; ctx.globalAlpha = ph===4 ? 0.75 : 1;
+    ctx.fillRect(L-9+sway, top-7-16*conc, (R-L+18), 16*conc); ctx.globalAlpha = 1;
+    if (ph === 4){ for (let x = L+20; x < R; x += 46) arrow(ctx, x+sway, top-60, x+sway, top-28, {color:C.pencil, width:1.5, head:6}); }
+  }
+  const deckY = top - 7 - 16*conc;
+  // crew + buggy (C_P)
+  if (ph >= 3){
+    const hi = ph === 3;
+    for (let i=0;i<4;i++){
+      const x = L + 20 + ((i*83 + (P.reduce?0:t*18)) % (R-L-40)) + sway;
+      workerFig(ctx, x, deckY, 1, t*6 + i);
+    }
+    const bxp = ph === 6 ? lerp(L+60, (L+R)/2+40, ease(clamp(p*1.3,0,1))) : (L+R)/2 - 50 + Math.sin(t*0.8)*30;
+    buggy(ctx, bxp + sway, deckY);
+    if (hi) P.text(ctx, '250 lb / person · 2,000 lb / powered wheel', L, deckY-34, {size:11, color:C.pencil, halo:C.paper});
+    if (ph === 6){ arrow(ctx, bxp+sway+16, deckY-10, bxp+sway+70, deckY-10, {color:C.pencil, width:3, head:10}); P.text(ctx, 'C_H = 20% buggy wt.', bxp+sway+74, deckY-6, {size:11, color:C.pencil, halo:C.paper}); }
+  }
+  // wind
+  if (windOn){
+    for (let i=0;i<7;i++){
+      const y = h*0.12 + i*(g-h*0.18)/7, off = P.reduce ? 0 : ((t*120 + i*47) % 160);
+      arrow(ctx, 6 + off*0.3, y, 6 + off*0.3 + 48, y, {color:C.wind, width:2, head:7});
+    }
+    P.text(ctx, 'V × 0.80 → q × 0.64', w-12, 24, {size:12, align:'right', color:C.wind, halo:C.paper});
+  }
+});
+
+/* ---------- SHEET 2: combinations ---------- */
+let method = 'lrfd';
+const COMBOS = {
+  lrfd: [
+    ['1.4D', (D,L,S,W)=>1.4*D],
+    ['1.2D + 1.6L + 0.5S', (D,L,S,W)=>1.2*D+1.6*L+0.5*S],
+    ['1.2D + 1.6S + L', (D,L,S,W)=>1.2*D+1.6*S+L],
+    ['1.2D + 1.6S + 0.5W', (D,L,S,W)=>1.2*D+1.6*S+0.5*W],
+    ['1.2D + 1.0W + L + 0.5S', (D,L,S,W)=>1.2*D+W+L+0.5*S],
+    ['0.9D + 1.0W', (D,L,S,W)=>0.9*D+W]
+  ],
+  asd: [
+    ['D', (D,L,S,W)=>D],
+    ['D + L', (D,L,S,W)=>D+L],
+    ['D + S', (D,L,S,W)=>D+S],
+    ['D + 0.75L + 0.75S', (D,L,S,W)=>D+0.75*L+0.75*S],
+    ['D + 0.6W', (D,L,S,W)=>D+0.6*W],
+    ['D + 0.75L + 0.75(0.6W) + 0.75S', (D,L,S,W)=>D+0.75*L+0.45*W+0.75*S],
+    ['0.6D + 0.6W', (D,L,S,W)=>0.6*D+0.6*W]
+  ]
+};
+function combos(){
+  const D=+$('cD').value, L=+$('cL').value, S=+$('cS').value, W=+$('cW').value;
+  $('cDo').textContent = D+' k'; $('cLo').textContent = L+' k'; $('cSo').textContent = S+' k'; $('cWo').textContent = (W>0?'+':'')+W+' k';
+  const rows = COMBOS[method].map(([f,fn]) => [f, fn(D,L,S,W)]);
+  const vals = rows.map(r=>r[1]), mx = Math.max(...vals), mn = Math.min(...vals);
+  const lo = Math.min(0, mn), hi = Math.max(0, mx, 1), span = hi - lo;
+  const z = (0 - lo)/span*100;
+  $('combos').innerHTML = rows.map(([f,v]) => {
+    const a = (Math.min(0,v) - lo)/span*100, wd = Math.abs(v)/span*100;
+    const cls = v === mx ? 'max' : (v === mn && mn < mx ? 'min' : '');
+    return `<div class="combo ${cls}"><span class="f">${f}</span><span class="track"><span class="b" style="left:${a.toFixed(2)}%;width:${wd.toFixed(2)}%"></span><span class="zero" style="left:${z.toFixed(2)}%"></span></span><span class="v">${fmt(v,1)}${cls==='max'?' ▲':cls==='min'?' ▼':''}</span></div>`;
+  }).join('');
+  const minRow = rows.find(r=>r[1]===mn);
+  $('comboVerdict').innerHTML = mn < 0
+    ? `<span class="tag">Net uplift</span><p><strong>${minRow[0]}</strong> leaves ${fmt(-mn,1)} k of net uplift. That needs a hold-down, anchor, ballast or deadman. Max gravity comes from <strong>${rows.find(r=>r[1]===mx)[0]}</strong>.</p>`
+    : `<span class="tag">No net uplift</span><p>Max gravity: <strong>${rows.find(r=>r[1]===mx)[0]}</strong> = ${fmt(mx,1)} k. The minimum (${minRow[0]}) stays positive, so dead load alone holds it down.</p>`;
+}
+P.chips('methodChips', d => { method = d.m; combos(); });
+P.bind(['cD','cL','cS','cW'], combos);
+
+/* ---------- SHEET 3: sorting quiz ---------- */
+const BINS = [['CD','C<sub>D</sub>','construction dead'],['CFML','C<sub>FML</sub>','fixed material'],['CVML','C<sub>VML</sub>','variable material'],['CP','C<sub>P</sub>','personnel & equip.'],['CH','C<sub>H</sub>','horizontal constr.'],['CR','C<sub>R</sub>','equipment reaction'],['CC','C<sub>C</sub>','concrete pressure'],['CF','C<sub>F</sub>','erection & fitting']];
+const ITEMS = [
+  ['Erected scaffold tower self-weight','CD','Assembled temporary structure → construction dead load (stockpiled, it would be C_VML).'],
+  ['Installed deck formwork','CFML','Formwork in place is fixed in magnitude → C_FML.'],
+  ['Bundles of rebar landed on the deck','CVML','Stockpiles grow and shrink → C_VML.'],
+  ['Wet concrete being placed','CVML','Variable until it cures and becomes part of D.'],
+  ['Crew with hand tools','CP','Personnel & equipment → C_P (uniform or 250 lb concentrated).'],
+  ['Loaded motorized buggy (vertical)','CP','Equipment vertical load → C_P (2,000 lb per wheel minimum).'],
+  ['Buggy braking on the deck','CH','Horizontal construction load → 20% of loaded vehicle weight.'],
+  ['Crane outrigger pad on a slab','CR','Equipment reaction → C_R, from the manufacturer\'s outrigger load data.'],
+  ['Fresh concrete pushing on a wall form','CC','Lateral concrete pressure → C_C per ACI 347.'],
+  ['Come-along pulling a beam into alignment','CF','Erection & fitting force → C_F.']
+];
+let sel = null, placed = 0;
+const tray = $('tray'), binsEl = $('bins');
+binsEl.innerHTML = BINS.map(([k,s,n]) => `<div class="bin" data-k="${k}"><button type="button" class="binbtn" aria-label="Place in ${n}"><h4>${s}</h4><span class="label">${n}</span></button></div>`).join('');
+tray.innerHTML = ITEMS.map(([s],i) => `<button type="button" class="token" data-i="${i}" aria-pressed="false">${s}</button>`).join('');
+tray.addEventListener('click', e => {
+  const b = e.target.closest('.token'); if (!b || b.classList.contains('right')) return;
+  tray.querySelectorAll('.token').forEach(x => x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true'); sel = b;
+  binsEl.querySelectorAll('.bin').forEach(x => x.classList.add('hot'));
+});
+binsEl.addEventListener('click', e => {
+  const bin = e.target.closest('.bin'); if (!bin || !sel) return;
+  const it = ITEMS[+sel.dataset.i];
+  binsEl.querySelectorAll('.bin').forEach(x => x.classList.remove('hot'));
+  if (it[1] === bin.dataset.k){
+    sel.classList.add('right'); sel.setAttribute('aria-pressed','false'); bin.appendChild(sel); placed++;
+    $('sortMsg').textContent = '✓ ' + it[2] + (placed === ITEMS.length ? '  All sorted.' : '');
+  } else {
+    sel.classList.remove('wrong'); void sel.offsetWidth; sel.classList.add('wrong'); sel.setAttribute('aria-pressed','false');
+    $('sortMsg').textContent = '✕ Not ' + bin.querySelector('h4').textContent + '. Think about how certain its magnitude is, and which direction it acts.';
+  }
+  sel = null;
+});
+
+/* ---------- SHEET 4: duty classes ---------- */
+let duty = {psf:25, k:'medium'};
+P.chips('dutyChips', d => { duty = {psf:+d.psf, k:d.k}; $('dPsf').textContent = duty.psf; $('dKip').textContent = fmt(duty.psf*600/1000,1); if (P.reduce) P.redraw(); });
+P.anim($('duty'), (ctx, w, h, t) => {
+  const g = h - 12, deckY = h*0.62, L = w*0.06, R = w*0.94;
+  ground(ctx, 0, w, g);
+  ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 1.3;
+  for (let x = L+12; x < R; x += 40){ ctx.beginPath(); ctx.moveTo(x, deckY+8); ctx.lineTo(x, g); ctx.stroke(); }
+  ctx.fillStyle = C.timber; ctx.fillRect(L, deckY, R-L, 8);
+  const n = duty.k === 'light' ? 3 : duty.k === 'medium' ? 8 : 6;
+  for (let i=0;i<n;i++){
+    const speed = duty.k === 'medium' ? 10 : 16;
+    const x = L + 14 + ((i*(R-L)/n + (P.reduce?0:t*speed*(i%2?1:-1)) % (R-L-28)) + (R-L-28)) % (R-L-28);
+    workerFig(ctx, x, deckY, 1, t*6+i);
+  }
+  if (duty.k === 'medium'){ // hose
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(R, deckY-40);
+    for (let x = R; x > L+40; x -= 20) ctx.lineTo(x, deckY - 6 - Math.sin(x*0.05 + t*2)*3); ctx.stroke();
+  }
+  if (duty.k === 'heavy'){
+    const bx = L + 40 + (Math.sin(t*0.7)*0.5+0.5)*(R-L-80);
+    buggy(ctx, bx, deckY); buggy(ctx, R - (bx - L), deckY);
+  }
+  // uniform load arrows proportional
+  const len = 8 + duty.psf*0.9;
+  for (let x = L+10; x < R; x += 26) arrow(ctx, x, deckY-58-len*0.2, x, deckY-58+len*0.5, {color:C.pencil, width:1.4, head:5});
+});
+
+/* ---------- SHEET 5: horizontal construction loads ---------- */
+function hload(){
+  const V=+$('hV').value, N=+$('hN').value, nv=+$('hVeh').value, vw=+$('hVw').value, eq=+$('hEq').value;
+  $('hVo').textContent = V+' kips'; $('hNo').textContent = N; $('hVehO').textContent = nv; $('hVwO').textContent = vw+' kips'; $('hEqO').textContent = eq+' kips';
+  const veh = nv === 0 ? 0 : nv === 1 ? 0.2*vw : Math.max(0.2*vw, 0.1*nv*vw);
+  const per = 0.05*N, min2 = 0.02*V;
+  const src = [['Vehicles',veh, nv<=1?'20% of loaded vehicle':'10% of combined (≥2)'],['Personnel',per,'50 lb × workers'],['Equipment rated',eq,'from manufacturer'],['2% of total vertical',min2,'minimum']];
+  const gov = src.reduce((a,b)=> b[1] > a[1] ? b : a);
+  const ref = Math.max(gov[1], 1e-6);
+  P.meters('hMeters', src.map(s => ({name:`${s[0]} <span class="label">${s[2]}</span>`, ratio: s[1]/ref, gov: s===gov})));
+  // meters show share of governing; replace numbers with kips
+  [...$('hMeters').querySelectorAll('.num')].forEach((el,i) => el.textContent = fmt(src[i][1],2)+' k');
+  $('hOut').textContent = fmt(gov[1],1);
+  $('hGov').textContent = 'kips · ' + gov[0].toLowerCase() + ' governs';
+}
+P.bind(['hV','hN','hVeh','hVw','hEq'], hload);
+
+/* ---------- SHEET 7: wall form in wind ---------- */
+const EXP = {B:{a:7.0, zg:1200}, C:{a:9.5, zg:900}, D:{a:11.5, zg:700}};
+let F = {ratio:0, braced:true, ax:0, tip:false};
+function form(){
+  const V=+$('fV').value, f=+$('fF').value, ex=EXP[$('fExp').value], m=$('fM').value;
+  const h=+$('fH').value, wpsf=+$('fW').value, b=+$('fB').value, Cf=+$('fCf').value, hbR=+$('fHb').value, ang=+$('fAng').value, s=+$('fS').value;
+  const braced = $('fBrace').checked;
+  $('fVo').textContent = V+' mph'; $('fHo').textContent = h+' ft'; $('fWo').textContent = wpsf+' psf'; $('fBo').textContent = b+' ft';
+  $('fCfo').textContent = Cf.toFixed(2); $('fHbo').textContent = Math.round(hbR*100)+'% h'; $('fAngo').textContent = ang+'°'; $('fSo').textContent = s+' ft';
+  const z = Math.max(h, 15), Kz = 2.01*Math.pow(z/ex.zg, 2/ex.a);
+  const Vd = V*f, q = 0.00256*Kz*1.0*0.85*Vd*Vd;
+  const Fw = q*0.85*Cf*h;                    // plf of wall
+  const Mo = Fw*h/2, Wt = wpsf*h, Mr = Wt*b/2; // lb-ft per ft
+  const [gD, gW] = m === 'lrfd' ? [0.9, 1.0] : [0.6, 0.6];
+  const hb = hbR*h;
+  const Hreq = Math.max(0, (gW*Mo - gD*Mr)/hb);   // plf at brace level
+  const Haci = 100*h/hb;                           // ACI 347R min 100 plf at top, moved to brace level
+  const H = Math.max(Hreq, Haci);
+  const th = ang*Math.PI/180, ax = H*s/Math.cos(th)/1000, up = ax*Math.sin(th);
+  const ratio = (gW*Mo)/(gD*Mr);
+  $('fQ').textContent = fmt(q,1); $('fR').textContent = fmt(ratio,2);
+  $('fEq1').innerHTML = `K<sub>z</sub>(${z} ft, Exp ${$('fExp').value}) = ${Kz.toFixed(2)} · V = ${f.toFixed(2)} × ${V} = ${Vd.toFixed(0)} mph<br>q<sub>z</sub> = 0.00256 × ${Kz.toFixed(2)} × 1.0 × 0.85 × ${Vd.toFixed(0)}² = <b>${q.toFixed(1)} psf</b>`;
+  $('fEq2').innerHTML = `F = q G C<sub>f</sub> h = ${q.toFixed(1)} × 0.85 × ${Cf.toFixed(2)} × ${h} = <b>${Fw.toFixed(0)} plf</b><br>M<sub>OT</sub> = F·h/2 = ${(Mo/1000).toFixed(2)} k-ft/ft · M<sub>R</sub> = ${Wt.toFixed(0)} × ${b}/2 = ${(Mr/1000).toFixed(2)} k-ft/ft`;
+  $('fEq3').innerHTML = `${gW.toFixed(1)}M<sub>OT</sub> − ${gD.toFixed(1)}M<sub>R</sub> → H<sub>wind</sub> = <b>${Hreq.toFixed(0)} plf</b> at ${hb.toFixed(1)} ft<br><span class="c">ACI 347R min 100 plf at top → ${Haci.toFixed(0)} plf at brace</span> → use <b>${H.toFixed(0)} plf</b>`;
+  $('fAx').textContent = braced ? fmt(ax,2) : '—'; $('fUp').textContent = braced ? fmt(up,2) : '—';
+  const pill = $('fPill');
+  if (braced){ pill.className = 'pill ok'; pill.textContent = 'braced · design brace for ' + fmt(ax,1) + ' k'; }
+  else if (ratio > 1){ pill.className = 'pill ng'; pill.textContent = 'tips over · brace it'; }
+  else if (ratio > 0.8){ pill.className = 'pill warn'; pill.textContent = 'marginal · ' + fmt(ratio,2); }
+  else { pill.className = 'pill ok'; pill.textContent = 'stable unbraced · ' + fmt(ratio,2); }
+  F = {ratio, braced, ax, hbR, ang, h, q};
+  if (P.reduce) P.redraw();
+}
+P.bind(['fV','fF','fExp','fM','fH','fW','fB','fCf','fHb','fAng','fS','fBrace'], form);
+let tipT = 0;
+P.anim($('form'), (ctx, w, h, t, dt) => {
+  const g = h - 16, baseX = w*0.5, fh = (0.3 + 0.55*clamp(F.h/30,0,1))*h, fw = 14;
+  ground(ctx, 0, w, g);
+  // wind
+  const gust = 1 + (P.reduce ? 0 : 0.25*Math.sin(t*1.7) + 0.1*Math.sin(t*4.1));
+  const n = 6;
+  for (let i=0;i<n;i++){
+    const y = g - fh*(i+0.5)/n, len = 18 + clamp(F.q,0,60)*0.9*gust*Math.pow((i+1)/n,0.15);
+    const off = P.reduce ? 0 : ((t*90 + i*37) % 60);
+    arrow(ctx, baseX - 40 - len - 30 + off*0.4, y, baseX - 30 + off*0.4 - 10, y, {color:C.wind, width:2, head:7});
+  }
+  // tilt
+  let ang = 0;
+  if (!F.braced && F.ratio > 1){
+    if (!P.reduce){ tipT += dt; if (tipT > 4) tipT = 0; }
+    else tipT = 1.4;
+    ang = Math.min(Math.PI/2, Math.pow(Math.max(0, tipT-0.6), 2)*0.9);
+  } else {
+    tipT = 0;
+    ang = (F.braced ? 0.003 : 0.02*clamp(F.ratio,0,1))*gust*(P.reduce?1:Math.sin(t*2)*0.5+0.5);
+  }
+  ctx.save(); ctx.translate(baseX + fw/2, g); ctx.rotate(ang);
+  ctx.fillStyle = C.timber; ctx.fillRect(-fw, -fh, fw, fh);
+  ctx.fillStyle = C.steel; for (let y = 18; y < fh; y += 34) ctx.fillRect(-fw-4, -y, fw+8, 5);
+  ctx.restore();
+  if (!F.braced && F.ratio > 1 && ang > 0.2) P.text(ctx, 'NO BRACE: TIPS', baseX + 40, 28, {size:14, color:C.bad, weight:'bold', halo:C.paper});
+  // braces (on leeward and windward? push-pull on one side)
+  if (F.braced){
+    const yb = g - fh*F.hbR, th = F.ang*Math.PI/180, run = (g-yb)/Math.tan(th);
+    const xb = baseX + fw/2 + 2, xg = xb + run;
+    const comp = !P.reduce ? Math.sin(t*1.7) > 0 : true;
+    ctx.save(); ctx.strokeStyle = comp ? C.pencil : C.wind; ctx.lineWidth = 4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(xb, yb); ctx.lineTo(xg, g-2); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = C.concrete; ctx.fillRect(xg-14, g-8, 28, 10);
+    P.text(ctx, comp ? 'brace in compression (wind →)' : 'brace in tension (wind ←)', Math.min(xg+18, w-8), g-14, {size:11, color:comp?C.pencil:C.wind, align: xg+18 > w-200 ? 'right':'left', halo:C.paper});
+    P.text(ctx, fmt(F.ax,1)+' k', (xb+xg)/2 + 8, (yb+g)/2, {size:12, weight:'bold', color:C.ink, halo:C.paper});
+  }
+});
+
+/* ---------- SHEET 8: cards ---------- */
+P.cards('cards', [
+  ['What is the difference between C<sub>FML</sub> and C<sub>VML</sub>, and why does it matter?','Fixed material loads (installed formwork) are known once placed. Variable material loads (stockpiles, wet concrete) change as work proceeds, so they carry a higher load factor. Neither can be reduced the way personnel loads can.'],
+  ['Do you combine C<sub>H</sub> with wind?','No. ASCE 37 keeps horizontal construction loads separate from wind and earthquake. Run both cases. On low falsework the 2% case usually governs; on tall falsework, wind does.'],
+  ['What minimum lateral load goes on a shoring system?','ASCE 37: at least 2% of total vertical. Caltrans and the AASHTO temp-works guide: 2% of total dead load at the top of posts, in any direction, loaded and unloaded. ACI 347 slab forms: the greater of 100 plf of edge or 2% of DL. Add wind as its own case.'],
+  ['For overturning of a temporary tower, which dead load do you count?','Only the dead load certain to be present at that stage: 0.9D (LRFD) or 0.6D (ASD). No stockpiles, crew or unplaced concrete. The bare, unloaded falsework in wind often governs uplift.'],
+  ['The finished structure is Risk Category IV. Which category for the falsework?','RC II for environmental loads during construction, unless the AHJ requires more. Raise it if a failure would hit an essential facility next door.'],
+  ['A loaded 4-kip buggy brakes on a deck with 12 workers and 400 kips of vertical load. C<sub>H</sub>?','Vehicle: 0.2 × 4 = 0.8 k. Personnel: 12 × 50 lb = 0.6 k. Minimum: 2% × 400 = 8 k. The 2% minimum governs at 8 kips.'],
+  ['Can you reduce construction loads for a large tributary area?','Only personnel and equipment loads (C<sub>P</sub>). Material loads, fixed or variable, aren\'t reduced.'],
+  ['Which ASCE 7 edition sits behind ASCE 37-14, and why does it matter?','ASCE 7-10. Wind is strength-level (1.0W), q<sub>z</sub> still contains K<sub>d</sub>, and snow uses 1.6S in LRFD, unlike ASCE 7-22. If the project uses a newer 37 edition or an owner spec, that governs.']
+]);
+})();
+</script>
+</body>
+</html>

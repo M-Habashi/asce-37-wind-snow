@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Temporary Works Interview Prep · Study Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="assets/prep.css">
+<script src="assets/prep.js"></script>
+<style>
+.tilelink{display:flex;flex-direction:column;gap:8px;color:inherit;text-decoration:none}
+.tile .done{position:absolute;top:12px;right:12px;cursor:pointer;display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);letter-spacing:.08em;text-transform:uppercase}
+.tile .done input{accent-color:var(--pencil);width:18px;height:18px}
+.tile ul{font-size:.9rem;padding-left:1.1em}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.day{border:1.5px solid var(--rule);background:var(--paper);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.day label{display:flex;gap:8px;align-items:flex-start;font-size:.92rem}
+.day input{accent-color:var(--pencil);width:17px;height:17px;margin-top:3px;flex:0 0 auto}
+.reads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:820px){.reads{grid-template-columns:minmax(0,1fr)}}
+.reads ul{padding-left:1.1em;font-size:.93rem}
+.prog{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:.85rem}
+.prog .bar{flex:1;height:10px;background:color-mix(in srgb,var(--rule) 30%,transparent);position:relative}
+.prog .fill{position:absolute;inset:0 auto 0 0;background:var(--pencil);border-radius:0 4px 4px 0;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.drill{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.drill .card{max-width:640px;width:100%;align-self:center}
+.drill .face{min-height:220px}
+.timer{font-family:var(--display);font-weight:900;font-size:2.4rem;line-height:1;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<script>P.nav('index.html')</script>
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>0</b> · hub</div><div>Temporary structures engineer · interview prep</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">ASCE 7 · ASCE 37 · AISC · AASHTO · lifting · falsework · ground</span><span class="hand">everything that stands up before the bridge does →</span></div>
+    <h1>Temporary<br>Works Prep</h1>
+    <div class="stage tall">
+      <canvas id="hero" role="img" aria-label="Animated jobsite: a crawler crane on a trestle sets a girder onto falsework next to a braced excavation and cofferdam while wind gusts; each area lights up with the study module that covers it"></canvas>
+      <div class="readout"><span>now showing: <b id="hMod">—</b></span></div>
+      <div class="readout right bottom"><a class="pill" id="hGo" href="#" style="color:var(--pencil)">open module</a></div>
+    </div>
+    <p class="lede">Six interactive modules built around what Kiewit's temporary-structures postings list: heavy lift plans, custom rigging and lifting devices, crane pads and working surfaces, falsework and staging, erection sequencing, and evaluating existing structures for construction loads. Each module starts from what you already know from ASCE 7 and AISC and then marks what changes for temporary works.</p>
+    <div class="prog"><span>Progress</span><span class="bar"><span class="fill" id="progFill" style="width:0%"></span></span><span id="progTxt">0 / 0</span></div>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>1</b></div><div>Modules</div><div>tick when done</div></div>
+  <div class="sheet-body">
+    <h2>Study modules</h2>
+    <div class="tiles" id="tiles"></div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b></div><div>The job, mapped to topics</div><div>from the postings</div></div>
+  <div class="sheet-body">
+    <h2>What they'll expect you to do</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Posting language</th><th>What it means technically</th><th>Study</th></tr></thead>
+      <tbody>
+        <tr><td>Heavy lift plans: site logistics, equipment selection, feasibility</td><td>Load and CG, crane configuration, % of chart, radius and clearance, tandem share, wind limit, ground bearing</td><td><a href="lifting.html">Lifting</a> · <a href="ground.html">Ground</a></td></tr>
+        <tr><td>Design of custom rigging and lifting devices</td><td>BTH-1 (N<sub>d</sub>, service class), padeyes, spreader and lifting beams, welds, B30.20 proof test</td><td><a href="lifting.html">Lifting</a> · <a href="steel.html">AISC</a></td></tr>
+        <tr><td>Crane pad / working surface design</td><td>Track and outrigger pressures, mats (NDS), 2:1 spread, bearing capacity, surcharge on nearby shoring</td><td><a href="lifting.html">Lifting</a> · <a href="ground.html">Ground</a></td></tr>
+        <tr><td>Staging and design of falsework</td><td>Caltrans / AASHTO temp-works loads, 2% horizontal, wind (ASCE 37), towers, timber, foundations</td><td><a href="falsework.html">Falsework</a> · <a href="loads.html">Loads</a> · <a href="../index.html">Wind &amp; snow</a></td></tr>
+        <tr><td>Erection sequencing and staged-construction analysis</td><td>Partial-structure stability, girder LTB and system buckling, bracing stiffness, holding cranes, fit-up</td><td><a href="bridges.html">Bridges</a> · <a href="steel.html">AISC</a></td></tr>
+        <tr><td>Rebar cage hoisting and support</td><td>Pick points, cage stiffening, guying cages against wind, the 2% horizontal load</td><td><a href="lifting.html">Lifting</a> · <a href="loads.html">Loads</a></td></tr>
+        <tr><td>Evaluate existing structures for construction loads / demolition</td><td>Load rating mindset, AASHTO factors for construction (Art. 3.4.2), crane on a deck, staged removal stability</td><td><a href="bridges.html">Bridges</a></td></tr>
+        <tr><td>Hoisting and jacking systems</td><td>Jacking frames, bearing replacement, lateral restraint during jacking, friction and uplift</td><td><a href="steel.html">AISC</a> · <a href="bridges.html">Bridges</a></td></tr>
+      </tbody></table></div>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b></div><div>Plan</div><div>7 days</div></div>
+  <div class="sheet-body">
+    <h2>A week of prep</h2>
+    <div class="plan" id="plan"></div>
+    <span class="hand">every day: explain one calc out loud in 60 seconds, no notes. the timer is at the bottom.</span>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b></div><div>Procedures</div><div>how temporary works gets done</div></div>
+  <div class="sheet-body">
+    <h2>The temporary works lifecycle</h2>
+    <p>Technical questions show whether you can calculate. Process questions show whether you can be trusted with the field. Tap through the steps.</p>
+    <div class="steps" id="steps"></div>
+    <div class="stepdetail" id="stepDetail"></div>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b></div><div>Reading list</div><div>priority order</div></div>
+  <div class="sheet-body">
+    <h2>What to read</h2>
+    <div class="reads">
+      <div><h3>Must</h3><ul>
+        <li><a href="https://ascelibrary.org/doi/book/10.1061/9780784413098" target="_blank" rel="noopener">ASCE/SEI 37-14</a>, Ch. 2, 4 and 6 (library or purchase)</li>
+        <li><a href="https://dot.ca.gov/programs/engineering-services/manuals/falsework-manual" target="_blank" rel="noopener">Caltrans Falsework Manual</a>, Ch. 3–5 (free)</li>
+        <li><a href="https://www.fhwa.dot.gov/bridge/pubs/nhi15044.pdf" target="_blank" rel="noopener">FHWA NHI-15-044, Stability in Bridge Construction</a> (free)</li>
+        <li>ASME BTH-1, Ch. 3 (pin-connected plates, design categories) + B30.20</li>
+        <li><a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartCC" target="_blank" rel="noopener">OSHA 1926 Subpart CC</a> (cranes) and <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartP" target="_blank" rel="noopener">Subpart P</a> (excavations)</li>
+        <li><a href="https://www.aisc.org/publications/steel-standards/" target="_blank" rel="noopener">AISC 360</a>: Ch. C, E, F, H, J and App. 6 (free)</li>
+      </ul></div>
+      <div><h3>Should</h3><ul>
+        <li>AASHTO Guide Design Specifications for Bridge Temporary Works + Construction Handbook</li>
+        <li>AASHTO LRFD BDS: Sec. 3 (loads, Art. 3.4.2, 3.6, 3.7) and Sec. 6 constructibility</li>
+        <li>ACI 347R-14, <em>Guide to Formwork for Concrete</em>, and ACI 347.2R (reshoring)</li>
+        <li><a href="https://dot.ca.gov/-/media/dot-media/programs/engineering/documents/structureconstruction/ts/sc-ts-a11y.pdf" target="_blank" rel="noopener">Caltrans Trenching &amp; Shoring Manual</a> (free)</li>
+        <li>AASHTO/NSBA S10.1, Steel Bridge Erection Guide Specification</li>
+        <li>PCI recommended practice: lateral stability of precast girders</li>
+        <li><a href="https://wsdot.wa.gov/publications/manuals/fulltext/M23-50/Chapter3.pdf" target="_blank" rel="noopener">WSDOT BDM Ch. 3</a> (an owner's take on construction loads)</li>
+      </ul></div>
+      <div><h3>Deepen</h3><ul>
+        <li>Ratay, <em>Handbook of Temporary Structures in Construction</em></li>
+        <li>Hurd / ACI SP-4, <em>Formwork for Concrete</em></li>
+        <li>AISC Design Guide 10 (erection bracing) and DG 1 (base plates)</li>
+        <li>CIRIA C703, <em>Crane Stability on Site</em> (ground bearing, mats)</li>
+        <li>NDS + Supplement (timber), APA Plyform guide</li>
+        <li>Sheet-pile design manuals, NAVFAC DM-7.02, FHWA GEC-4 (anchors)</li>
+        <li>Gerwick, <em>Construction of Marine and Offshore Structures</em> (cofferdams, barges)</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 7 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b></div><div>Drill</div><div>random card · 60 s timer</div></div>
+  <div class="sheet-body">
+    <h2>Mixed drill</h2>
+    <div class="chips" id="drillChips" role="group" aria-label="Topic filter">
+      <button class="chip" data-t="all" aria-pressed="true">All</button>
+      <button class="chip" data-t="loads" aria-pressed="false">Loads</button>
+      <button class="chip" data-t="steel" aria-pressed="false">AISC</button>
+      <button class="chip" data-t="lift" aria-pressed="false">Lifting</button>
+      <button class="chip" data-t="bridge" aria-pressed="false">Bridges</button>
+      <button class="chip" data-t="fw" aria-pressed="false">Falsework</button>
+      <button class="chip" data-t="ground" aria-pressed="false">Ground</button>
+      <button class="chip" data-t="soft" aria-pressed="false">Behavioral</button>
+    </div>
+    <div class="drill">
+      <button class="card" type="button" id="dCard"><div class="card-in"><div class="face"><span class="label" id="dTag">—</span><span class="q" id="dQ">—</span><span class="tap">Tap to flip</span></div><div class="face back"><span class="label">Answer</span><span class="a" id="dA">—</span><span class="tap">Tap to flip back</span></div></div></button>
+      <div class="btnrow" style="justify-content:center">
+        <button class="btn ghost" id="dAgain" type="button">↺ Again later</button>
+        <button class="btn" id="dGot" type="button">✓ Got it</button>
+        <button class="btn ghost" id="dTimer" type="button">Start 60 s</button>
+        <span class="timer" id="dClock" aria-live="polite">60</span>
+      </div>
+      <p class="small muted" style="text-align:center" id="dStats">—</p>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>7</b></div><div>The other half of the interview</div><div>stories &amp; questions</div></div>
+  <div class="sheet-body">
+    <h2>Stories to have ready</h2>
+    <div class="ideas">
+      <div class="idea"><h3>Safety call</h3><p>A time you stopped or changed work because something wasn't right. Kiewit's mindset is "Nobody Gets Hurt", and its named programs include Craft Voice in Safety, Life-Saving Actions and the Operations Start Card (a hazard analysis before every operation). Be specific about what you saw, who you told and what changed.</p></div>
+      <div class="idea"><h3>Caught an error</h3><p>A calc, drawing or assumption you checked and found wrong. Cover how you found it, how you told people, and the fix. Temporary works runs on independent checks.</p></div>
+      <div class="idea"><h3>Field ↔ office</h3><p>Translating a design for a superintendent, or changing a design because the field had a better way. Cover means, methods and constructability.</p></div>
+      <div class="idea"><h3>Under schedule</h3><p>A deliverable with a hard deadline (a pour, a lift window, a road closure). How did you prioritize while staying conservative?</p></div>
+      <div class="idea"><h3>Learning fast</h3><p>A code or tool you had to learn quickly. ASCE 37 and BTH-1 from this week count.</p></div>
+      <div class="idea"><h3>Ask them</h3><p>Which codes and owner specs govern most of their work? How is the independent check organized? What software do they use (FEA, lift planning, pile analysis)? How much field time does a new engineer get?</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built as a personal study aid. Code values were checked where a free source exists (Caltrans, WSDOT, OSHA, FHWA) and are flagged "verify" elsewhere. Always design from the current licensed standard and the project specification.</p>
+  <p><a href="../index.html">← ASCE 37 wind &amp; snow (sheet set 1)</a></p>
+  <p>Safety culture: <a href="https://www.kiewit.com/our-commitment/safety" target="_blank" rel="noopener">Kiewit · Our Commitment to Safety</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease} = P;
+
+/* ---------- modules ---------- */
+const MODS = [
+  ['loads.html','Loads 7 → 37','ASCE 7 combos, ASCE 37 C-loads, personnel classes, the 2% family, wall form in wind',['C_FML vs C_VML','C_H not with W','RC II, V × 0.75–0.90']],
+  ['steel.html','AISC for temp works','Column curve, K, LTB and C<sub>b</sub>, App. 6 bracing stiffness, B<sub>1</sub>, bolts and welds, Subpart R',['flagpole K = 2.1','brace: strength + stiffness','1:500 plumb']],
+  ['lifting.html','Lifting & rigging','Sling CG equilibrium, spreader vs beam, BTH-1 padeye, % of chart, track pressure, 0.207L, power lines',['T = W/(n sin θ)','N_d 2 / 3','critical lift > 75%']],
+  ['bridges.html','AASHTO & temp bridges','Limit states, Art. 3.4.2, HL-93, crane on a trestle, stream flow, twin-girder system buckling',['γ ≥ 1.5 on construction loads','HL-93 1,525 k-ft @100 ft','M_gs ∝ s']],
+  ['falsework.html','Falsework & formwork','ACI 347 pressure, Caltrans loads, load path, NDS joist, reshoring, OSHA 1926.703',['150 + 9000R/T','160 pcf · 20 psf · 100 psf','L/240']],
+  ['ground.html','Ground & water','OSHA trench rules, Rankine + Boussinesq, Peck envelopes, tremie seal, 2:1 spread, barge GM',['5 ft / 20 ft','seal ≈ 0.75h','load at boom tip']],
+  ['../index.html','Wind & snow (ASCE 37)','Your first sheet set: construction-period wind factors, hurricane option, snow',['0.75² = 0.56','115 mph rules','0.8 p_g']]
+];
+const done = JSON.parse(localStorage.getItem('tw-done') || '{}');
+$('tiles').innerHTML = MODS.map(([h, t, d, k], i) => `<div class="tile"><a class="tilelink" href="${h}"><span class="num">${String(i+1).padStart(2,'0')}</span><h3>${t}</h3><p class="small">${d}</p><ul>${k.map(x => `<li class="mono">${x.replace(/_([A-Za-z]+)/g,'<sub>$1</sub>')}</li>`).join('')}</ul></a><label class="done"><input type="checkbox" data-h="${h}" ${done[h]?'checked':''}> done</label></div>`).join('');
+$('tiles').querySelectorAll('input').forEach(cb => cb.addEventListener('change', () => { done[cb.dataset.h] = cb.checked; localStorage.setItem('tw-done', JSON.stringify(done)); prog(); }));
+
+/* ---------- plan ---------- */
+const PLAN = [
+  ['Day 1 · Loads', ['Loads 7 → 37 sheets 1–6','Wind & snow sheet set','Write the ASCE 7 combos from memory','Explain C_FML vs C_VML aloud']],
+  ['Day 2 · Steel', ['AISC sheets 2–5','Rework a pipe-shore capacity by hand','Brace a column: strength + stiffness','Read App. 6 commentary']],
+  ['Day 3 · Lifting', ['Sling CG + spreader sheets','Design a padeye by hand (BTH-1)','% of chart and track pressure','Skim OSHA 1926.1408 / .1431']],
+  ['Day 4 · Falsework', ['ACI 347 pressure by hand (2 cases)','Caltrans Ch. 3 loads','Load path checks list','Timber joist with C_D, C_M']],
+  ['Day 5 · Bridges', ['Art. 3.4.2 construction factors','HL-93 at 60 and 100 ft','Trestle under a crane','FHWA NHI-15-044 ch. on system buckling']],
+  ['Day 6 · Ground', ['OSHA trench rules','Boussinesq surcharge from an outrigger','Tremie seal + piping','Barge list with load at boom tip']],
+  ['Day 7 · Mock', ['Drill all cards twice','3 calcs explained in 60 s each','2 STAR stories rehearsed','Questions for them written down']]
+];
+const pdone = JSON.parse(localStorage.getItem('tw-plan') || '{}');
+$('plan').innerHTML = PLAN.map(([d, items], i) => `<div class="day"><h4>${d}</h4>${items.map((it, j) => `<label><input type="checkbox" data-k="${i}-${j}" ${pdone[i+'-'+j]?'checked':''}> ${it.replace(/_([A-Za-z]+)/g,'<sub>$1</sub>')}</label>`).join('')}</div>`).join('');
+$('plan').querySelectorAll('input').forEach(cb => cb.addEventListener('change', () => { pdone[cb.dataset.k] = cb.checked; localStorage.setItem('tw-plan', JSON.stringify(pdone)); prog(); }));
+function prog(){
+  const all = [...document.querySelectorAll('#tiles input, #plan input')], n = all.filter(x => x.checked).length;
+  $('progFill').style.width = (n/all.length*100).toFixed(1) + '%'; $('progTxt').textContent = `${n} / ${all.length}`;
+}
+prog();
+
+/* ---------- steps ---------- */
+const STEPS = [
+  ['Scope', 'Define the temporary condition: what is being supported or lifted, for how long, by whom, with which equipment, and during which stages. Means and methods are the contractor\'s, so get the superintendent\'s plan first.'],
+  ['Criteria', 'Collect the owner spec (falsework sections, submittal rules), ASCE 37 / AASHTO temp-works guide / ACI 347 / BTH-1, the company standard, the geotech data and the manufacturer data. Write the design criteria page before you calculate anything.'],
+  ['Design', 'Loads by stage (including unloaded and partially built), load path, stability, connections, foundations. Keep it simple and conservative: temporary works fail at details and assumptions.'],
+  ['Drawings', 'Drawings the field can build from: member sizes, spacing, bracing, connection details, sequences, maximum pour rates, wind stop-work limits, inspection hold points. Stamped where required.'],
+  ['Check', 'An independent check scaled to risk (the UK BS 5975 categories 0–3 describe the idea): a self-check for simple items, up to a separate organization for complex or novel ones. Record the check.'],
+  ['Submit', 'Owner and EOR review where required (e.g. falsework submittals). Attachments to the permanent structure need EOR acceptance. Allow review time in the schedule.'],
+  ['Verify', 'Before loading: field inspection against the drawings (as-built), materials and certs, foundation conditions, jack extensions, bracing, rigging tags. Pre-pour or pre-lift sign-off.'],
+  ['Monitor', 'During use: survey and telltales on falsework, form-pressure and pour-rate control, wind monitoring against stop-work speeds, crane load indicators, settlement.'],
+  ['Remove', 'Striking and removal are designed stages too: release sequence, concrete strength criteria, reshoring, demolition stability. Close out with lessons learned.']
+];
+let stepI = 0;
+$('steps').innerHTML = STEPS.map(([t], i) => `<button type="button" class="step" data-i="${i}"><span class="n">${i+1}</span><span class="t">${t}</span></button>`).join('');
+function step(i){ stepI = i; $('steps').querySelectorAll('.step').forEach((b, j) => b.classList.toggle('on', j === i)); $('stepDetail').innerHTML = `<p><strong>${i+1}. ${STEPS[i][0]}.</strong> ${STEPS[i][1]}</p>`; }
+$('steps').addEventListener('click', e => { const b = e.target.closest('.step'); if (b){ step(+b.dataset.i); stepAuto = false; } });
+let stepAuto = !P.reduce; step(0);
+setInterval(() => { if (stepAuto) step((stepI + 1) % STEPS.length); }, 5000);
+
+/* ---------- drill ---------- */
+const DRILL = [
+  ['loads','What does ASCE 37 do to the design wind speed for a 5-week falsework condition, and why?','Multiplies V by 0.75, so pressure drops to 0.56 of permanent. The aim is the same exceedance probability over the short exposure as a permanent structure over its design life.'],
+  ['loads','Why is C<sub>VML</sub> factored higher than C<sub>FML</sub>?','Stockpiles and wet concrete vary and get overloaded. Installed formwork is fixed and known. Higher uncertainty means a higher load factor.'],
+  ['loads','Minimum horizontal load on falsework?','The larger of actual horizontal loads or 2% of total dead load (Caltrans / AASHTO guide), at the top of posts, any direction, loaded and unloaded. Wind is a separate check.'],
+  ['steel','K for an unbraced post fixed at the base?','Flagpole: theoretical 2.0, recommended design value 2.1.'],
+  ['steel','What two things does a stability brace need?','Strength (e.g. 1% P<sub>r</sub> nodal for columns) and stiffness (≈ 2× ideal: (1/φ)(8P<sub>r</sub>/L<sub>br</sub>) nodal).'],
+  ['steel','E70 fillet weld strength per inch per sixteenth?','1.392 k/in LRFD (0.928 ASD).'],
+  ['lift','Sling tension at 45° in a 2-leg bridle carrying 40 k?','40/(2 × sin 45°) = 28.3 k per leg (factor 1.414).'],
+  ['lift','BTH-1 design categories?','A: N<sub>d</sub> = 2.00 (predictable loads, defined conditions). B: N<sub>d</sub> = 3.00 (unknown or severe conditions; the usual default). Service classes 0–4 by cycles.'],
+  ['lift','Three failure modes of a padeye per BTH-1?','Tension through the pinhole (C<sub>r</sub>, b<sub>eff</sub>), double-plane shear beyond the hole, and bearing. Plus the welds and the base metal.'],
+  ['lift','Why does the load tilt when the CG isn\'t centered?','The rigid sling–load triangle hangs from the hook. Equilibrium needs the CG directly under the hook, so it rotates until it is.'],
+  ['lift','Personnel platform capacity limit?','50% of the crane\'s rated capacity (OSHA 1926.1431).'],
+  ['lift','Power-line clearance for a 115 kV line?','15 ft minimum (Table A: 50–200 kV). Or use the 20 ft rule for lines up to 350 kV.'],
+  ['bridge','AASHTO construction load factor?','At least 1.5 for construction loads in Strength I. DC and DW at least 1.25 in Strength I, III and V during construction. Service I for construction deflection.'],
+  ['bridge','HL-93 components?','Design truck (8-32-32 k, 14 ft + 14–30 ft) or tandem (2 × 25 k at 4 ft), plus 0.64 klf lane. IM 33% on truck or tandem only.'],
+  ['bridge','Twin-girder system buckling depends on what?','Girder spacing s, span L, and I<sub>x</sub>, I<sub>y</sub> of one girder: M<sub>gs</sub> = C<sub>b</sub>π²sE√(I<sub>y</sub>I<sub>x</sub>)/L². Not on cross-frame spacing.'],
+  ['bridge','Stream pressure on a round pile?','p = C<sub>D</sub>V²/1000 ksf with C<sub>D</sub> = 0.7 (1.4 for square or debris).'],
+  ['fw','ACI 347 column pressure formula?','CP<sub>max</sub> = C<sub>w</sub>C<sub>c</sub>[150 + 9,000R/T], at least 600C<sub>w</sub>, at most wh.'],
+  ['fw','When do you design for full liquid head?','SCC, slump > 7 in, vibration deeper than 4 ft, wall placement faster than 15 ft/hr, or pumping from the bottom.'],
+  ['fw','Caltrans falsework vertical loads?','160 pcf (concrete, rebar and forms), 20 psf live, 75 plf at the deck edge, 100 psf minimum total.'],
+  ['fw','NDS C<sub>D</sub> for construction loads?','1.25 (7-day duration). Not applied to E or F<sub>c⊥</sub>.'],
+  ['ground','When does OSHA require a PE-designed protective system?','For excavations deeper than 20 ft (and for any system outside the tabulated options).'],
+  ['ground','Max allowable slope in Type C soil?','1½H : 1V (34°).'],
+  ['ground','Where does a suspended load act for barge stability?','At the boom tip (point of suspension). That raises KG and cuts GM.'],
+  ['ground','2:1 pressure at depth z under a B × L pad?','q<sub>z</sub> = P/((B + z)(L + z)).'],
+  ['soft','"Tell me about a time you made a mistake in a design."','STAR: the situation, how you or a checker found it, what you did immediately (told people, stopped work if needed), the fix, and the process change. Own it, keep it short, and end on the system improvement.'],
+  ['soft','"Why temporary structures?"','Engineering that gets built next week: stability, judgment, field contact, and variety (lifts, falsework, marine, erection). Connect it to your ASCE 7, AISC and construction-manual coursework and this preparation.'],
+  ['soft','"How do you handle a superintendent who wants to skip a brace?"','Understand why (access? schedule?), explain the load path and the risk in field terms, offer an alternative that works for both, and never sign off something you don\'t believe in. Escalate if needed.']
+];
+let filt = 'all', deck = [], cur = null;
+const stats = JSON.parse(localStorage.getItem('tw-drill') || '{"got":0,"again":0}');
+function build(){ deck = DRILL.filter(d => filt === 'all' || d[0] === filt); }
+function next(){
+  if (!deck.length) build();
+  const i = Math.floor(Math.random()*deck.length); cur = deck.splice(i, 1)[0];
+  $('dCard').classList.remove('flip');
+  const names = {loads:'Loads', steel:'AISC', lift:'Lifting', bridge:'Bridges', fw:'Falsework', ground:'Ground', soft:'Behavioral'};
+  setTimeout(() => { $('dTag').textContent = names[cur[0]]; $('dQ').innerHTML = cur[1]; $('dA').innerHTML = cur[2]; }, 200);
+  $('dStats').textContent = `${stats.got} got · ${stats.again} again · ${deck.length} left in this round`;
+}
+P.chips('drillChips', d => { filt = d.t; build(); next(); });
+$('dCard').addEventListener('click', () => $('dCard').classList.toggle('flip'));
+$('dGot').addEventListener('click', () => { stats.got++; localStorage.setItem('tw-drill', JSON.stringify(stats)); next(); });
+$('dAgain').addEventListener('click', () => { stats.again++; localStorage.setItem('tw-drill', JSON.stringify(stats)); if (cur) deck.push(cur); next(); });
+let tmr = null, left = 60;
+$('dTimer').addEventListener('click', () => {
+  if (tmr){ clearInterval(tmr); tmr = null; $('dTimer').textContent = 'Start 60 s'; return; }
+  left = 60; $('dClock').textContent = left; $('dTimer').textContent = 'Stop';
+  tmr = setInterval(() => { left--; $('dClock').textContent = left; if (left <= 0){ clearInterval(tmr); tmr = null; $('dTimer').textContent = 'Start 60 s'; $('dClock').textContent = '✓'; } }, 1000);
+});
+
+/* ---------- hero jobsite ---------- */
+const ZONES = [
+  ['Lifting', 'lifting.html'], ['Bridges', 'bridges.html'], ['Falsework', 'falsework.html'], ['Ground', 'ground.html'], ['Loads 7 → 37', 'loads.html'], ['AISC', 'steel.html']
+];
+let zone = 0, pinned = false;
+P.anim($('hero'), (ctx, w, h, t) => {
+  if (!pinned) zone = P.reduce ? 0 : Math.floor(t/3.2) % ZONES.length;
+  $('hMod').textContent = ZONES[zone][0]; $('hGo').href = ZONES[zone][1]; $('hGo').textContent = 'open ' + ZONES[zone][0] + ' →';
+  const hiC = i => i === zone ? C.pencil : null;
+  const g = h*0.62, s = Math.min(w/300, h/190);
+  // water band (left half) and land (right)
+  const shore = w*0.52;
+  ctx.fillStyle = C.water; ctx.globalAlpha = 0.18; ctx.fillRect(0, g, shore, h - g); ctx.globalAlpha = 1;
+  ctx.strokeStyle = C.water; ctx.lineWidth = 1.2; ctx.beginPath(); for (let x=0;x<=shore;x+=6) ctx.lineTo(x, g + 6 + Math.sin(x*0.05 + t*1.4)*2); ctx.stroke();
+  ctx.fillStyle = C.soil; ctx.globalAlpha = 0.22; ctx.fillRect(shore, g, w - shore, h - g); ctx.fillRect(0, h - 14, shore, 14); ctx.globalAlpha = 1;
+  // trestle (bridges zone)
+  const deckY = g - 18*s;
+  ctx.fillStyle = hiC(1) || C.steel; ctx.fillRect(10, deckY, shore - 20, 5);
+  for (let x = 30; x < shore - 10; x += 60*s){ ctx.fillRect(x, deckY + 5, 4, h - 14 - deckY - 5); }
+  // cofferdam (ground zone) in water
+  const cfx = shore*0.55, cfw = 50*s;
+  ctx.fillStyle = hiC(3) || C.ink; ctx.fillRect(cfx, g - 6, 4, h - g - 8); ctx.fillRect(cfx + cfw, g - 6, 4, h - g - 8);
+  ctx.fillStyle = C.concrete; ctx.fillRect(cfx + 4, h - 34, cfw - 4, 20);
+  // pier with falsework (falsework zone) on land
+  const px = shore + 70*s;
+  ctx.fillStyle = C.concrete; ctx.fillRect(px - 8*s, g - 70*s, 16*s, 70*s);
+  const fwx = px + 30*s, fwTop = g - 66*s;
+  ctx.strokeStyle = hiC(2) || C['ink-soft']; ctx.lineWidth = 1.5;
+  for (let i=0;i<3;i++){ const x = fwx + i*22*s; ctx.beginPath(); ctx.moveTo(x, g); ctx.lineTo(x, fwTop); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(fwx, g); ctx.lineTo(fwx + 44*s, fwTop); ctx.moveTo(fwx + 44*s, g); ctx.lineTo(fwx, fwTop); ctx.stroke();
+  ctx.fillStyle = hiC(2) || C.timber; ctx.fillRect(fwx - 6*s, fwTop - 4, 56*s, 4);
+  // excavation with shoring (ground zone)
+  const ex = w - 70*s;
+  ctx.fillStyle = C.paper; ctx.fillRect(ex, g, 46*s, 30*s);
+  ctx.fillStyle = hiC(3) || C.steel; ctx.fillRect(ex - 2, g - 4, 4, 34*s); ctx.fillRect(ex + 46*s - 2, g - 4, 4, 34*s);
+  ctx.fillRect(ex, g + 10*s, 46*s, 3);
+  // girder already set from pier to falsework
+  ctx.fillStyle = hiC(5) || C.steel; ctx.fillRect(px - 8*s, g - 76*s, 90*s, 5*s);
+  // crane on trestle (lifting zone), luffing slowly
+  const cx = shore*0.32, ang = 1.05 + (P.reduce ? 0 : 0.08*Math.sin(t*0.5));
+  ctx.fillStyle = C.ink; ctx.fillRect(cx - 12*s, deckY - 4*s, 24*s, 4*s);
+  ctx.fillStyle = hiC(0) || C.storm; ctx.fillRect(cx - 9*s, deckY - 11*s, 16*s, 7*s);
+  const bl = 120*s, tx = cx + 3*s + Math.cos(ang)*bl, ty = deckY - 9*s - Math.sin(ang)*bl;
+  ctx.strokeStyle = hiC(0) || C.storm; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(cx + 3*s, deckY - 9*s); ctx.lineTo(tx, ty); ctx.stroke();
+  // hoist line to girder being set
+  const gy = Math.min(g - 90*s, ty + 40*s + (P.reduce ? 0 : Math.sin(t*0.8)*6*s));
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(tx, gy - 8*s); ctx.stroke();
+  ctx.strokeStyle = C.wind; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(tx, gy - 8*s); ctx.lineTo(tx - 16*s, gy); ctx.moveTo(tx, gy - 8*s); ctx.lineTo(tx + 16*s, gy); ctx.stroke();
+  ctx.fillStyle = hiC(0) || C.steel; ctx.fillRect(tx - 30*s, gy, 60*s, 4*s);
+  // wind gusts (loads zone)
+  const wc = hiC(4) || C.wind;
+  for (let i=0;i<5;i++){ const y = 30 + i*16*s, off = P.reduce ? 0 : ((t*70 + i*40) % (w*0.4)); arrow(ctx, w*0.45 + off, y, w*0.45 + off + 28, y, {color:wc, width:1.6, head:6}); }
+  // stability bow on a falsework post (AISC zone)
+  if (zone === 5){ ctx.strokeStyle = C.pencil; ctx.lineWidth = 2; ctx.beginPath(); for (let i=0;i<=20;i++){ const yy = lerp(g, fwTop, i/20); ctx.lineTo(fwx + 22*s + Math.sin(Math.PI*i/20)*6*s*(0.6 + 0.4*Math.sin(t*3)), yy); } ctx.stroke(); }
+});
+$('hero').addEventListener('click', () => { location.href = ZONES[zone][1]; });
+$('hero').style.cursor = 'pointer';
+})();
+</script>
+</body>
+</html>

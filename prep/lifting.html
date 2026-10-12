@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lifting &amp; Rigging · Temporary Works Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="assets/prep.css">
+<script src="assets/prep.js"></script>
+<style>
+.factors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.factors{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.factor{border:1.5px solid var(--rule);padding:10px;background:var(--paper);display:flex;flex-direction:column;gap:2px}
+.factor .big{font-size:2.2rem}
+.checklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 18px}
+.checklist label{display:flex;gap:8px;align-items:flex-start;font-size:.95rem}
+.checklist input{accent-color:var(--pencil);width:18px;height:18px;margin-top:3px;flex:0 0 auto}
+</style>
+</head>
+<body>
+<script>P.nav('lifting.html')</script>
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>1</b> of 9</div><div>Lifting &amp; rigging · ASME B30 · BTH-1 · OSHA CC</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">Heavy lift plans, lifting devices, crane pads</span><span class="hand">the part of the job they'll test hardest →</span></div>
+    <h1>Lifting<br>Engineering</h1>
+    <div class="stage tall">
+      <canvas id="hero" role="img" aria-label="Crawler crane picking a girder with a spreader bar; the boom luffs and the load rises while sling tension and percent of chart update"></canvas>
+      <div class="readout"><span>radius <b id="hRad">—</b> ft</span><span>chart <b id="hCap">—</b> t</span><span>gross <b id="hGross">—</b> t</span><span>= <b id="hPct">—</b>%</span></div>
+    </div>
+    <p class="lede">Kiewit's temporary-structures postings list heavy-lift plans, custom rigging and lifting devices, and crane pad and working-surface design side by side. The engineering behind those plans comes down to a few numbers: the load and where its CG is, sling geometry, device capacity, the crane's percent of chart, and the pressure under the tracks.</p>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b> of 9</div><div>Sling geometry · CG · ASME B30.9</div><div>T = W / (n sin θ)</div></div>
+  <div class="sheet-body">
+    <h2>The load hangs CG-under-hook</h2>
+    <p>Two slings meet at one hook. Slings, load and hook form a rigid triangle hanging from a pin, so the load rotates until its <strong>CG sits directly under the hook</strong>. If the CG isn't centered between the picks, the load tilts, and the sling closer to the CG goes steeper and carries more. Move the CG, then lengthen one sling to level it.</p>
+    <div class="factors">
+      <div class="factor"><span class="label">90°</span><span class="big">1.000</span><span class="small">vertical legs</span></div>
+      <div class="factor"><span class="label">60°</span><span class="big">1.155</span><span class="small">preferred</span></div>
+      <div class="factor"><span class="label">45°</span><span class="big">1.414</span><span class="small">common minimum</span></div>
+      <div class="factor"><span class="label">30°</span><span class="big">2.000</span><span class="small">B30.9 floor: qualified person only below</span></div>
+    </div>
+    <div class="stage tall"><canvas id="sling" role="img" aria-label="Beam hanging from two slings; it swings and settles with its center of gravity under the hook; tensions are labeled on each sling"></canvas>
+      <div class="readout"><span>tilt <b id="sTilt">—</b>°</span><span>T<sub>A</sub> <b id="sTA">—</b> k</span><span>T<sub>B</sub> <b id="sTB">—</b> k</span></div>
+      <div class="readout right bottom"><span class="pill" id="sPill">—</span></div></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="sW">Load weight W: <span class="val" id="sWo"></span></label><input id="sW" type="range" min="2" max="100" step="1" value="40"></div>
+        <div class="ctrl"><label class="label" for="sCG">CG offset from center of picks (toward B +): <span class="val" id="sCGo"></span></label><input id="sCG" type="range" min="-8" max="8" step="0.25" value="3"></div>
+        <div class="ctrl"><label class="label" for="sE">CG below the pick line: <span class="val" id="sEo"></span></label><input id="sE" type="range" min="0" max="4" step="0.25" value="1.25"></div>
+      </div>
+      <div class="col">
+        <div class="ctrl"><label class="label" for="sLA">Sling A length: <span class="val" id="sLAo"></span></label><input id="sLA" type="range" min="14" max="40" step="0.25" value="22"></div>
+        <div class="ctrl"><label class="label" for="sLB">Sling B length: <span class="val" id="sLBo"></span></label><input id="sLB" type="range" min="14" max="40" step="0.25" value="22"></div>
+        <div class="btnrow"><button class="btn ghost" id="sLevel" type="button">Find sling B that levels it</button><button class="btn ghost" id="sReset" type="button">Equal slings</button></div>
+      </div>
+    </div>
+    <div class="eq" id="sEq"></div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>"Each leg carries W/2" is only true with a centered CG and equal slings. The vertical share follows the lever rule (V<sub>A</sub> = W·b/(a+b)), and then you divide by sin θ for that leg. For <strong>4-leg</strong> bridles, assume only <strong>2 legs</strong> carry the load unless you equalize them (spreader, equalizer plate, chain-fall). A rigid load on four slings is statically indeterminate.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b> of 9</div><div>Below-the-hook devices · B30.20 / BTH-1</div><div>spreader vs beam</div></div>
+  <div class="sheet-body">
+    <h2>Spreader bar or lifting beam?</h2>
+    <div class="chips" id="devChips" role="group" aria-label="Device type">
+      <button class="chip" data-d="spreader" aria-pressed="true">Spreader bar<small>compression member</small></button>
+      <button class="chip" data-d="beam" aria-pressed="false">Lifting beam<small>bending member</small></button>
+    </div>
+    <div class="stage"><canvas id="dev" role="img" aria-label="Animated force flow in a spreader bar (compression) or a lifting beam (bending with moment diagram)"></canvas>
+      <div class="readout"><span id="devRead">—</span></div></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="dW">Load (incl. rigging below device): <span class="val" id="dWo"></span></label><input id="dW" type="range" min="5" max="150" step="1" value="60"></div>
+        <div class="ctrl"><label class="label" for="dS">Pick spacing s: <span class="val" id="dSo"></span></label><input id="dS" type="range" min="6" max="40" step="0.5" value="20"></div>
+        <div class="ctrl" id="dAngWrap"><label class="label" for="dAng">Top sling angle (from horizontal): <span class="val" id="dAngo"></span></label><input id="dAng" type="range" min="30" max="75" step="1" value="60"></div>
+        <div class="ctrl" id="dPipeWrap"><label class="label" for="dPipe">Spreader pipe (A53 Gr B, 35 ksi)</label><select id="dPipe"><option value="0">Pipe 4 STD</option><option value="1" selected>Pipe 6 STD</option><option value="2">Pipe 8 STD</option><option value="3">Pipe 8 XS</option><option value="4">Pipe 10 STD</option></select></div>
+        <div class="ctrl"><label class="label" for="dNd">BTH-1 design category</label><select id="dNd"><option value="2">A · N<sub>d</sub> = 2.00 (predictable loads)</option><option value="3" selected>B · N<sub>d</sub> = 3.00 (default for most site work)</option></select></div>
+      </div>
+      <div class="col">
+        <div class="eq" id="dEq"></div>
+        <div class="meters" id="dMeters"></div>
+        <div class="tblwrap"><table class="tbl"><thead><tr><th></th><th>Spreader bar</th><th>Lifting beam</th></tr></thead><tbody>
+          <tr><td class="k">Main force</td><td>Axial compression (W/2)·cot θ</td><td>Bending, W·s/4 for a center pick</td></tr>
+          <tr><td class="k">Weight</td><td>Light</td><td>Heavier</td></tr>
+          <tr><td class="k">Headroom</td><td>Needs more (top slings)</td><td>Low headroom</td></tr>
+          <tr><td class="k">Watch</td><td>Buckling, end-fitting eccentricity</td><td>LTB (top flange unbraced), lug welds</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+    <div class="callout remember"><span class="tag">Code map</span><p><strong>ASME B30.20</strong> is the safety standard: marking, inspection, and a proof load test of 125% of rated load before first use. <strong>ASME BTH-1</strong> is the design standard: Design Category A (N<sub>d</sub> = 2.00) or B (N<sub>d</sub> = 3.00), and Service Class 0–4 by load cycles (Class 0 is up to 20,000 cycles, which covers most project-specific devices). The ASD-style checks look like AISC's but divide by N<sub>d</sub>. The spreader check above approximates the allowable load as F<sub>cr</sub>A<sub>g</sub>/N<sub>d</sub>, the AISC column curve divided by the BTH-1 design factor. BTH-1 has its own compression provisions, so look them up.</p></div>
+    <div class="callout trap"><span class="tag">Stability trap</span><p>With converging slings to one hook, the load is stable as long as its CG is below the hook. With <strong>vertical slings under a spreader</strong>, the system is a parallelogram mechanism. The CG then has to sit <strong>below the pick points</strong>, or a tall load can roll over in the rigging.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b> of 9</div><div>Lifting lug / padeye · BTH-1 §3-3.3</div><div>pin-connected plate</div></div>
+  <div class="sheet-body">
+    <h2>Design a padeye</h2>
+    <p>The most likely whiteboard question. BTH-1's pin-connected plate checks: <strong>tension through the hole</strong> (with the pin-to-hole size effect C<sub>r</sub> and effective width), <strong>double-plane shear</strong> out past the hole, and <strong>bearing</strong>. Then the welds and the base metal it's welded to.</p>
+    <div class="twocol">
+      <div class="col">
+        <div class="stage" style="min-height:0"><canvas id="lug" role="img" aria-label="Padeye with the hole, pin, net tension section and double shear planes highlighted for the governing failure mode"></canvas></div>
+        <div class="meters" id="lugMeters"></div>
+        <span class="pill" id="lugPill">—</span>
+      </div>
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="lP">Sling load P: <span class="val" id="lPo"></span></label><input id="lP" type="range" min="2" max="80" step="0.5" value="20"></div>
+          <div class="ctrl"><label class="label" for="lAng">Sling angle from vertical (in-plane): <span class="val" id="lAngo"></span></label><input id="lAng" type="range" min="0" max="45" step="1" value="30"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="lT">Plate t: <span class="val" id="lTo"></span></label><input id="lT" type="range" min="0.5" max="2.5" step="0.125" value="1"></div>
+          <div class="ctrl"><label class="label" for="lR">Head radius R: <span class="val" id="lRo"></span></label><input id="lR" type="range" min="1.5" max="6" step="0.125" value="3"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="lDp">Shackle pin D<sub>p</sub>: <span class="val" id="lDpo"></span></label><input id="lDp" type="range" min="0.75" max="3" step="0.125" value="1.625"></div>
+          <div class="ctrl"><label class="label" for="lDh">Hole D<sub>h</sub>: <span class="val" id="lDho"></span></label><input id="lDh" type="range" min="0.875" max="3.5" step="0.0625" value="1.75"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="lMat">Material</label><select id="lMat"><option value="36,58">A36 · 36/58 ksi</option><option value="50,65" selected>A572-50 · 50/65 ksi</option></select></div>
+          <div class="ctrl"><label class="label" for="lNd">Category</label><select id="lNd"><option value="2">A · N<sub>d</sub> 2.00</option><option value="3" selected>B · N<sub>d</sub> 3.00</option></select></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="lWs">Fillet weld (both sides): <span class="val" id="lWso"></span></label><input id="lWs" type="range" min="4" max="12" step="1" value="6"></div>
+          <div class="ctrl"><label class="label" for="lWL">Lug base length: <span class="val" id="lWLo"></span></label><input id="lWL" type="range" min="4" max="20" step="0.5" value="9"></div>
+        </div>
+        <div class="eq" id="lEq"></div>
+      </div>
+    </div>
+    <div class="callout trap"><span class="tag">Details they'll probe</span><p>Keep the hole close to the pin size: a big D<sub>h</sub>/D<sub>p</sub> lowers C<sub>r</sub> and concentrates bearing. Fill the shackle jaw with <strong>cheek plates</strong> or spacers so the shackle can't slide or bend its pin. Align the lug with the sling (no out-of-plane load), or design for a side-load allowance per your company standard. Check the <strong>base metal</strong> of the girder or flange you weld to, and look for lamellar tearing on thick plates. Have an NDE plan for the welds.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b> of 9</div><div>Crane capacity · OSHA 1926 Subpart CC</div><div>% of chart</div></div>
+  <div class="sheet-body">
+    <h2>Percent of chart</h2>
+    <p>The chart capacity is for the exact configuration: boom length, counterweight, tracks extended, over-rear or 360°, and level, firm ground. Everything below the boom tip counts against it: hook block, rigging, spreader, jib if erected. Radius is measured from the center of rotation to the hook. A boom deflects outward under load, so the loaded radius grows.</p>
+    <div class="stage"><canvas id="crane" role="img" aria-label="Crane boom luffing to the selected radius with a capacity curve; the status changes as percent of chart passes critical thresholds"></canvas>
+      <div class="readout"><span>chart <b id="cCap">—</b> t</span><span>gross <b id="cGross">—</b> t</span><span><b id="cPct">—</b>% of chart</span></div>
+      <div class="readout right bottom"><span class="pill" id="cPill">—</span></div></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="cR">Operating radius: <span class="val" id="cRo"></span></label><input id="cR" type="range" min="20" max="140" step="1" value="60"></div>
+        <div class="ctrl"><label class="label" for="cL">Load (girder, panel…): <span class="val" id="cLo"></span></label><input id="cL" type="range" min="1" max="120" step="0.5" value="38"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="cRig">Rigging + spreader: <span class="val" id="cRigo"></span></label><input id="cRig" type="range" min="0" max="10" step="0.25" value="2.5"></div>
+          <div class="ctrl"><label class="label" for="cBlk">Hook block: <span class="val" id="cBlko"></span></label><input id="cBlk" type="range" min="0.5" max="6" step="0.25" value="2"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="cTandem"> Tandem pick (this crane takes its share)</label>
+      </div>
+      <div class="col">
+        <div class="eq" id="cEq"></div>
+        <div class="callout verify"><span class="tag">Illustrative chart</span><p>The capacity curve here is a made-up 250-ton crawler for practice. Always read the manufacturer's chart for the actual configuration, and confirm the chart's own deductions and notes.</p></div>
+      </div>
+    </div>
+    <div class="ideas four">
+      <div class="idea"><h3>Critical lift</h3><p>Typical company triggers: above ~75% of chart (some use 85%), tandem picks, personnel, lifts over people, energized lines or live process, and cranes on barges or structures. The exact thresholds vary by company.</p></div>
+      <div class="idea"><h3>Tandem</h3><p>Each crane sees its share, which changes as the load tilts or a crane booms. Many programs cap each crane at ~75–80% of chart and require an engineered plan.</p></div>
+      <div class="idea"><h3>Personnel</h3><p>OSHA 1926.1431: the platform plus load can't exceed <strong>50%</strong> of rated capacity. Proof test and trial lift first.</p></div>
+      <div class="idea"><h3>Wind</h3><p>Use the manufacturer's in-service wind limit. Reduce it for loads with a large sail area such as panels and forms. ASCE 37's monitored-period provisions tie into the stop-work speed.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b> of 9</div><div>Ground bearing · crawler tracks · mats</div><div>q<sub>max</sub> vs q<sub>allow</sub></div></div>
+  <div class="sheet-body">
+    <h2>What the ground sees</h2>
+    <p>Treat the crawler as a rigid body on two tracks. The resultant (crane + counterweight + load) lands at an eccentricity set by the boom's direction. Along each track the pressure is a <strong>trapezoid</strong> while e ≤ L/6 and becomes a <strong>triangle</strong> beyond that. Between the tracks, the load splits by lever arm. Over the corner is usually worst.</p>
+    <div class="stage tall"><canvas id="gbp" role="img" aria-label="Plan view of a crawler crane swinging its boom with track pressure diagrams below; the pressure concentrates as the boom passes over a corner"></canvas>
+      <div class="readout"><span>swing <b id="gTh">—</b>°</span><span>q<sub>max</sub> <b id="gQ">—</b> ksf</span><span>under mats <b id="gQm">—</b> ksf</span></div>
+      <div class="readout right bottom"><span class="pill" id="gPill">—</span></div></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gWc">Crane + counterweight: <span class="val" id="gWco"></span></label><input id="gWc" type="range" min="100" max="900" step="10" value="420"></div>
+          <div class="ctrl"><label class="label" for="gEc">Its CG behind center: <span class="val" id="gEco"></span></label><input id="gEc" type="range" min="0" max="8" step="0.25" value="3"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gWl">Gross load: <span class="val" id="gWlo"></span></label><input id="gWl" type="range" min="0" max="200" step="1" value="80"></div>
+          <div class="ctrl"><label class="label" for="gR">Radius: <span class="val" id="gRo"></span></label><input id="gR" type="range" min="15" max="120" step="1" value="50"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="gTheta">Boom swing (0° = over the front, along the tracks): <span class="val" id="gThetao"></span></label><input id="gTheta" type="range" min="0" max="180" step="1" value="35"></div>
+        <label class="check"><input type="checkbox" id="gAuto" checked> Auto-swing</label>
+      </div>
+      <div class="col">
+        <div class="ctrl-row three">
+          <div class="ctrl"><label class="label" for="gL">Track length: <span class="val" id="gLo"></span></label><input id="gL" type="range" min="15" max="40" step="0.5" value="27"></div>
+          <div class="ctrl"><label class="label" for="gG">Gauge: <span class="val" id="gGo"></span></label><input id="gG" type="range" min="12" max="30" step="0.5" value="20"></div>
+          <div class="ctrl"><label class="label" for="gB">Shoe width: <span class="val" id="gBo"></span></label><input id="gB" type="range" min="2.5" max="6" step="0.25" value="4"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gMat">Mat effective width: <span class="val" id="gMato"></span></label><input id="gMat" type="range" min="2.5" max="20" step="0.5" value="12"></div>
+          <div class="ctrl"><label class="label" for="gQa">Allowable bearing: <span class="val" id="gQao"></span></label><input id="gQa" type="range" min="1" max="10" step="0.25" value="4"></div>
+        </div>
+        <div class="eq" id="gEq"></div>
+      </div>
+    </div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>Mats only help as far as they're stiff enough to spread the load. Check timber or steel mat bending and shear (NDS: C<sub>D</sub>, wet service), then the soil. That means a <strong>2:1 spread</strong> down to any weak layer and bearing capacity with a factor of safety, or a plate load test. Ask about utilities, voids, backfilled trenches and excavations nearby: a track next to a trench is a lateral surcharge on its shoring (ground page).</p></div>
+  </div>
+</section>
+
+<!-- SHEET 7 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>7</b> of 9</div><div>Picking girders &amp; precast · PCI</div><div>0.207 L</div></div>
+  <div class="sheet-body">
+    <h2>Where to put the picks</h2>
+    <p>For a prismatic member picked at two points with vertical slings, the moment over the picks is negative (the cantilevers) and the moment at midspan is positive. Slide the picks in until the two are equal: at <strong>a = 0.207L</strong> each is 0.0214wL², about <strong>1/6 of the 0.125wL²</strong> you'd get picking at the ends.</p>
+    <div class="stage"><canvas id="pick" role="img" aria-label="Beam hanging from two picks with its bending moment diagram updating as the pick points move"></canvas>
+      <div class="readout"><span>a/L = <b id="pA">—</b></span><span>M<sup>+</sup> <b id="pPos">—</b> wL²</span><span>M<sup>−</sup> <b id="pNeg">—</b> wL²</span></div></div>
+    <div class="ctrl"><label class="label" for="pAr">Pick location from each end, a/L: <span class="val" id="pAro"></span></label><input id="pAr" type="range" min="0" max="0.45" step="0.001" value="0.1"></div>
+    <div class="btnrow"><button class="btn ghost" id="pOpt" type="button">Snap to 0.207L</button></div>
+    <div class="ideas">
+      <div class="idea"><h3>Precast (PCI)</h3><p>For lateral stability while hanging, PCI's recommended practice targets a factor of safety of about 1.0 against cracking and 1.5 against failure (rollover during hauling). Lifting inserts are designed with a factor of safety (commonly 4) on the manufacturer's capacity. Add form-suction and impact multipliers when stripping.</p></div>
+      <div class="idea"><h3>Steel girders</h3><p>A hanging girder can buckle laterally between its lifting clamps. Use spreaders or two cranes for long, slender pieces. UT Austin's "UT Lift" approach and FHWA NHI-15-044 cover it.</p></div>
+      <div class="idea"><h3>Inclined slings</h3><p>Inclined slings without a spreader put axial compression into the member, P = T cos θ. That's harmless for a stocky piece and a buckling problem for a slender truss chord or a long precast pile.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>8</b> of 9</div><div>Hardware · power lines · lift plan</div><div>rules of thumb</div></div>
+  <div class="sheet-body">
+    <h2>Rigging rules &amp; the lift plan</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Item</th><th>Rule</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Wire rope sling</td><td>Design factor 5 (rated = breaking strength / 5)</td><td>ASME B30.9</td></tr>
+        <tr><td class="k">Alloy chain sling</td><td>Design factor 4</td><td>ASME B30.9</td></tr>
+        <tr><td class="k">Synthetic web / round sling</td><td>Design factor 5. Protect from edges with softeners. Watch heat and chemicals.</td><td>ASME B30.9</td></tr>
+        <tr><td class="k">Shackles</td><td>Minimum design factor 5 (many alloy shackles are 6). Side load: 45° → 70% WLL, 90° → 50%</td><td>B30.26 / manufacturer</td></tr>
+        <tr><td class="k">Bending (D/d)</td><td>A sling bent over a pin of its own diameter (D/d = 1) loses about 50% efficiency</td><td>Wire rope data</td></tr>
+        <tr><td class="k">Hitches</td><td>Basket with vertical legs ≈ 2× vertical. Choker ≈ 75–80% of vertical for choke angles ≥ 120°, less when tighter.</td><td>B30.9 tables</td></tr>
+        <tr><td class="k">Lifting devices</td><td>Proof test 125% of rated load. Nameplate with rated load and device weight.</td><td>ASME B30.20</td></tr>
+        <tr><td class="k">Personnel platform</td><td>≤ 50% of rated capacity</td><td>OSHA 1926.1431</td></tr>
+      </tbody></table></div>
+    <h3>Power-line clearance (OSHA 1926.1408 Table A)</h3>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="pv">Line voltage: <span class="val" id="pvo"></span></label><input id="pv" type="range" min="0" max="7" step="1" value="2"></div>
+        <div class="stat"><span class="label">Minimum approach distance</span><span class="big" id="pvD">—</span><span class="mono" id="pvN">—</span></div>
+      </div>
+      <div class="col"><div class="stage short" style="min-height:0"><canvas id="pline" role="img" aria-label="Boom tip and power line with the minimum clearance zone drawn around the conductor"></canvas></div></div>
+    </div>
+    <h3>Lift-plan checklist</h3>
+    <div class="checklist" id="checklist"></div>
+  </div>
+</section>
+
+<!-- SHEET 9 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>9</b> of 9</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="sheet-body">
+    <h2>Questions they may ask</h2>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Study aid. Pin-plate equations follow ASME BTH-1 (2017/2020) as I remember them, and the crane chart is invented for practice. Verify against the current BTH-1, B30 volumes, OSHA 1926 Subpart CC, the manufacturer's data and your company's lifting standard.</p>
+  <p>Sources: <a href="https://kiewitcareers.kiewit.com/job/federal-way-senior-structural-engineer-temporary-structures-kiewit-infrastructure-engineering-wa-98001/1394926900" target="_blank" rel="noopener">Kiewit temporary structures postings</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.1408" target="_blank" rel="noopener">OSHA 1926.1408</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.1431" target="_blank" rel="noopener">OSHA 1926.1431</a> · <a href="https://www.fhwa.dot.gov/bridge/pubs/nhi15044.pdf" target="_blank" rel="noopener">FHWA NHI-15-044</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease, axes} = P;
+const E = 29000;
+
+/* ---------- illustrative crane chart (tons vs ft) ---------- */
+const CHART = [[20,180],[30,120],[40,88],[50,68],[60,54],[70,44],[80,36],[90,30],[100,25],[120,18],[140,13]];
+function cap(r){
+  if (r <= CHART[0][0]) return CHART[0][1];
+  for (let i=1;i<CHART.length;i++){ if (r <= CHART[i][0]){ const [r0,c0] = CHART[i-1], [r1,c1] = CHART[i]; return c0 + (c1-c0)*(r-r0)/(r1-r0); } }
+  return CHART[CHART.length-1][1];
+}
+const BOOM = 160; // ft
+
+/* ---------- drawing: crawler crane in elevation ---------- */
+function crawler(ctx, x, g, s, boomAng, lenFt, color){
+  // s = px per ft; x = center of rotation at ground
+  ctx.save();
+  ctx.fillStyle = C.ink;
+  ctx.fillRect(x - 14*s, g - 4*s, 28*s, 4*s);                 // tracks
+  for (let i=-12;i<=12;i+=3){ ctx.fillStyle = C['ink-soft']; ctx.beginPath(); ctx.arc(x+i*s, g-2*s, 1.1*s, 0, 7); ctx.fill(); }
+  ctx.fillStyle = color || C.storm;
+  ctx.fillRect(x - 11*s, g - 11*s, 18*s, 7*s);                // upper
+  ctx.fillStyle = C.ink; ctx.fillRect(x - 16*s, g - 10*s, 6*s, 6*s); // counterweight
+  ctx.fillStyle = C.sheet; ctx.fillRect(x + 2*s, g - 10*s, 4*s, 4*s); // cab window
+  const fx = x + 4*s, fy = g - 9*s;
+  const tx = fx + Math.cos(boomAng)*lenFt*s, ty = fy - Math.sin(boomAng)*lenFt*s;
+  // lattice boom
+  ctx.strokeStyle = color || C.storm; ctx.lineWidth = Math.max(2, 1.2*s);
+  const nx = -Math.sin(boomAng)*1.4*s, ny = -Math.cos(boomAng)*1.4*s;
+  ctx.beginPath(); ctx.moveTo(fx+nx, fy+ny); ctx.lineTo(tx+nx, ty+ny); ctx.moveTo(fx-nx, fy-ny); ctx.lineTo(tx-nx, ty-ny); ctx.stroke();
+  ctx.lineWidth = 1;
+  const n = 14; ctx.beginPath();
+  for (let i=0;i<n;i++){ const a = i/n, b = (i+1)/n; ctx.moveTo(lerp(fx,tx,a)+nx, lerp(fy,ty,a)+ny); ctx.lineTo(lerp(fx,tx,b)-nx, lerp(fy,ty,b)-ny); }
+  ctx.stroke();
+  // pendant
+  ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x - 9*s, g - 18*s); ctx.lineTo(tx, ty); ctx.moveTo(x - 9*s, g - 18*s); ctx.lineTo(x-9*s, g-11*s); ctx.stroke();
+  ctx.restore();
+  return {tx, ty, fx};
+}
+
+/* ---------- SHEET 1: hero ---------- */
+P.anim($('hero'), (ctx, w, h, t) => {
+  const g = h - 14, s = Math.min(w/200, h/176);
+  const cx = w*0.16;
+  ground(ctx, 0, w, g);
+  // target pier on right
+  const pierX = cx + 92*s;
+  ctx.fillStyle = C.concrete; ctx.fillRect(pierX - 6*s, g - 34*s, 12*s, 34*s); ctx.fillRect(pierX - 16*s, g - 38*s, 32*s, 4*s);
+  const cyc = P.reduce ? 0.6 : (t % 14)/14;
+  // phases: 0–0.3 hoist, 0.3–0.7 boom down (radius out), 0.7–0.85 lower, 0.85–1 reset
+  const rMin = 40, rMax = 92;
+  let r, hookUp;
+  if (cyc < 0.3){ r = rMin; hookUp = ease(cyc/0.3); }
+  else if (cyc < 0.7){ r = lerp(rMin, rMax, ease((cyc-0.3)/0.4)); hookUp = 1; }
+  else if (cyc < 0.85){ r = rMax; hookUp = 1 - 0.55*ease((cyc-0.7)/0.15); }
+  else { r = lerp(rMax, rMin, ease((cyc-0.85)/0.15)); hookUp = 0; }
+  const ang = Math.acos(clamp((r - 4)/BOOM, 0, 1));
+  const tip = crawler(ctx, cx, g, s, ang, BOOM, C.storm);
+  const radiusPx = (tip.tx - cx);
+  const floorY = g - 6*s, liftedY = g - 52*s;
+  const loadY = lerp(floorY, liftedY, hookUp);
+  const swing = P.reduce ? 0 : Math.sin(t*2.1)*2*s*(cyc>0.3&&cyc<0.7?1:0.3);
+  const lx = tip.tx + swing;
+  // hoist line + block
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(tip.tx, tip.ty); ctx.lineTo(lx, loadY - 22*s); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.fillRect(lx - 2*s, loadY - 24*s, 4*s, 4*s);
+  // slings to spreader
+  const sp = 14*s;
+  ctx.strokeStyle = C.wind; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(lx, loadY - 20*s); ctx.lineTo(lx - sp, loadY - 11*s); ctx.moveTo(lx, loadY - 20*s); ctx.lineTo(lx + sp, loadY - 11*s);
+  ctx.moveTo(lx - sp, loadY - 11*s); ctx.lineTo(lx - sp, loadY - 4*s); ctx.moveTo(lx + sp, loadY - 11*s); ctx.lineTo(lx + sp, loadY - 4*s); ctx.stroke();
+  ctx.fillStyle = C.pencil; ctx.fillRect(lx - sp - 1*s, loadY - 12*s, 2*sp + 2*s, 2*s);
+  // girder
+  ctx.fillStyle = C.steel; ctx.fillRect(lx - 22*s, loadY - 4*s, 44*s, 4*s);
+  ctx.fillStyle = C.ink; ctx.globalAlpha = 0.35; for (let i=-20;i<=20;i+=5) ctx.fillRect(lx + i*s, loadY - 4*s, 0.6*s, 4*s); ctx.globalAlpha = 1;
+  // radius dimension
+  line(ctx, [[cx, g+8],[cx+radiusPx, g+8]], {color:C.pencil, width:1, dash:[3,3]});
+  const gross = 38 + 2.5 + 2;
+  const c = cap(r);
+  $('hRad').textContent = r.toFixed(0); $('hCap').textContent = c.toFixed(0); $('hGross').textContent = gross.toFixed(1); $('hPct').textContent = (gross/c*100).toFixed(0);
+});
+
+/* ---------- SHEET 2: sling equilibrium ---------- */
+const PICK = 12; // picks at ±12 ft from beam center
+let S = {psi:0, vel:0, target:0, geom:null};
+function solveSling(){
+  const W=+$('sW').value, off=+$('sCG').value, e=+$('sE').value, LA=+$('sLA').value, LB=+$('sLB').value;
+  // local frame: picks on x-axis, CG at (off, -e) relative to beam center at origin
+  const P1 = [-PICK, 0], P2 = [PICK, 0], d = 2*PICK;
+  const xh = (LA*LA - LB*LB + d*d)/(2*d);
+  const yh2 = LA*LA - xh*xh;
+  if (yh2 <= 0) return null;
+  const H = [P1[0] + xh, Math.sqrt(yh2)];
+  const CG = [off, -e];
+  const v = [CG[0]-H[0], CG[1]-H[1]];
+  const psi = -Math.PI/2 - Math.atan2(v[1], v[0]);       // rotation about H that puts CG under the hook
+  const rot = p => { const dx = p[0]-H[0], dy = p[1]-H[1], c = Math.cos(psi), s = Math.sin(psi); return [H[0] + dx*c - dy*s, H[1] + dx*s + dy*c]; };
+  const p1 = rot(P1), p2 = rot(P2), cg = rot(CG);
+  const u1 = [(p1[0]-H[0])/LA, (p1[1]-H[1])/LA], u2 = [(p2[0]-H[0])/LB, (p2[1]-H[1])/LB];
+  const det = u1[0]*u2[1] - u2[0]*u1[1];
+  const T1 = W*u2[0]/det, T2 = -W*u1[0]/det;
+  const a1 = Math.atan2(-u1[1], Math.abs(u1[0]))*180/Math.PI, a2 = Math.atan2(-u2[1], Math.abs(u2[0]))*180/Math.PI;
+  return {W, off, e, LA, LB, H, psi, T1, T2, a1, a2, drop: H[1] - (-e) };
+}
+function sling(){
+  $('sWo').textContent = $('sW').value + ' kips'; $('sCGo').textContent = (+$('sCG').value>0?'+':'') + $('sCG').value + ' ft';
+  $('sEo').textContent = $('sE').value + ' ft'; $('sLAo').textContent = $('sLA').value + ' ft'; $('sLBo').textContent = $('sLB').value + ' ft';
+  const r = solveSling();
+  if (!r){ $('sEq').innerHTML = '<b>Slings too short to reach a common hook.</b>'; return; }
+  S.geom = r; S.target = r.psi;
+  if (P.reduce) S.psi = r.psi;
+  const tilt = r.psi*180/Math.PI;
+  $('sTilt').textContent = tilt.toFixed(1); $('sTA').textContent = r.T1.toFixed(1); $('sTB').textContent = r.T2.toFixed(1);
+  const a = PICK + r.off, b = PICK - r.off;
+  const naive = r.W/(2*Math.sin(((r.a1+r.a2)/2)*Math.PI/180));
+  $('sEq').innerHTML = `Vertical share (lever rule): V<sub>A</sub> = W·b/(a+b) = ${r.W}×${b.toFixed(2)}/${(a+b).toFixed(0)} = ${(r.W*b/(a+b)).toFixed(1)} k · V<sub>B</sub> = ${(r.W*a/(a+b)).toFixed(1)} k<br>Leg angles (from horizontal, after tilt): θ<sub>A</sub> = ${r.a1.toFixed(1)}°, θ<sub>B</sub> = ${r.a2.toFixed(1)}°<br><b>T<sub>A</sub> = ${r.T1.toFixed(1)} k · T<sub>B</sub> = ${r.T2.toFixed(1)} k</b> <span class="c">vs. "W/(2 sin θ)" = ${naive.toFixed(1)} k each, ${Math.abs(tilt).toFixed(1)}° tilt</span>`;
+  const minA = Math.min(r.a1, r.a2);
+  const pl = $('sPill');
+  if (minA < 30){ pl.className = 'pill ng'; pl.textContent = `leg at ${minA.toFixed(0)}° < 30°`; }
+  else if (Math.abs(tilt) > 3){ pl.className = 'pill warn'; pl.textContent = `tilted ${Math.abs(tilt).toFixed(1)}°`; }
+  else { pl.className = 'pill ok'; pl.textContent = 'level enough · legs ≥ 30°'; }
+  if (P.reduce) P.redraw();
+}
+P.bind(['sW','sCG','sE','sLA','sLB'], sling);
+$('sReset').addEventListener('click', () => { $('sLB').value = $('sLA').value; sling(); });
+$('sLevel').addEventListener('click', () => {
+  // bisection on LB for zero tilt
+  let lo = 14, hi = 40, best = +$('sLB').value;
+  const f = LB => { $('sLB').value = LB; const r = solveSling(); return r ? r.psi : (LB < 27 ? -1 : 1); };
+  let flo = f(lo), fhi = f(hi);
+  if (flo*fhi > 0){ $('sLB').value = best; sling(); return; }
+  for (let i=0;i<40;i++){ const m = (lo+hi)/2, fm = f(m); if (fm*flo > 0){ lo = m; flo = fm; } else { hi = m; } }
+  $('sLB').value = (Math.round((lo+hi)/2*4)/4).toFixed(2); sling();
+});
+P.anim($('sling'), (ctx, w, h, t, dt) => {
+  const r = S.geom; if (!r) return;
+  if (!P.reduce){ const k = 9, c = 2.2; S.vel += (-k*(S.psi - S.target) - c*S.vel)*dt; S.psi += S.vel*dt; }
+  const sc = Math.min((w-40)/36, (h-40)/(r.H[1] + 6));
+  const hx = w/2, hy = 34;
+  const toScr = p => { const dx = p[0]-r.H[0], dy = p[1]-r.H[1], c = Math.cos(S.psi), s = Math.sin(S.psi); const X = dx*c - dy*s, Y = dx*s + dy*c; return [hx + X*sc, hy - Y*sc]; };
+  // hook
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx, 0); ctx.lineTo(hx, hy-10); ctx.stroke();
+  ctx.beginPath(); ctx.arc(hx, hy-2, 7, -0.3, Math.PI+0.9); ctx.stroke();
+  // plumb line through hook
+  line(ctx, [[hx, hy],[hx, h-6]], {color:C['ink-soft'], width:1, dash:[3,5]});
+  const A = toScr([-PICK,0]), B = toScr([PICK,0]);
+  // beam outline (2.5 ft deep, 30 ft long), picks on top flange
+  const corners = [[-15,0],[15,0],[15,-2.5],[-15,-2.5]].map(toScr);
+  line(ctx, corners, {color:C.steel, fill:C.steel, alpha:0.85, close:true, width:1});
+  // slings
+  const tA = r.T1, tB = r.T2, tm = Math.max(tA, tB);
+  line(ctx, [[hx,hy], A], {color:C.wind, width: 2 + 3*tA/tm});
+  line(ctx, [[hx,hy], B], {color:C.wind, width: 2 + 3*tB/tm});
+  [A,B].forEach(p => { ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(p[0], p[1], 4, 0, 7); ctx.fill(); });
+  // CG symbol
+  const cg = toScr([r.off, -r.e]);
+  ctx.save(); ctx.translate(cg[0], cg[1]);
+  ctx.fillStyle = C.sheet; ctx.beginPath(); ctx.arc(0,0,9,0,7); ctx.fill();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,9,0,Math.PI/2); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,9,Math.PI,Math.PI*1.5); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(0,0,9,0,7); ctx.stroke(); ctx.restore();
+  // labels
+  const mA = [(hx + A[0])/2, (hy + A[1])/2], mB = [(hx + B[0])/2, (hy + B[1])/2];
+  text(ctx, `A ${tA.toFixed(1)} k`, mA[0] - 10, mA[1], {size:12, align:'right', weight:'bold', halo:C.paper});
+  text(ctx, `B ${tB.toFixed(1)} k`, mB[0] + 10, mB[1], {size:12, align:'left', weight:'bold', halo:C.paper});
+  arrow(ctx, cg[0], cg[1]+12, cg[0], cg[1]+40, {color:C.pencil, width:2.5, head:8});
+  text(ctx, `W ${r.W} k`, cg[0]+8, cg[1]+38, {size:11, color:C.pencil, halo:C.paper});
+});
+
+/* ---------- SHEET 3: spreader vs lifting beam ---------- */
+const pipeP = (od, tn) => { const t = 0.93*tn, A = Math.PI*(od - t)*t, r = Math.sqrt((od*od + (od-2*t)*(od-2*t))/16), I = A*r*r, Z = (Math.pow(od,3) - Math.pow(od-2*t,3))/6; return {A, r, I, Z, od}; };
+const PIPES = [pipeP(4.5,0.237), pipeP(6.625,0.280), pipeP(8.625,0.322), pipeP(8.625,0.500), pipeP(10.75,0.365)];
+let dev = 'spreader', D = {};
+function fcr(Fy, klr){ const Fe = Math.PI*Math.PI*E/(klr*klr); return klr <= 4.71*Math.sqrt(E/Fy) ? Math.pow(0.658, Fy/Fe)*Fy : 0.877*Fe; }
+P.chips('devChips', d => { dev = d.d; $('dAngWrap').hidden = dev !== 'spreader'; $('dPipeWrap').hidden = dev !== 'spreader'; device(); });
+function device(){
+  const W=+$('dW').value, s=+$('dS').value, ang=+$('dAng').value, Nd=+$('dNd').value;
+  $('dWo').textContent = W+' kips'; $('dSo').textContent = s+' ft'; $('dAngo').textContent = ang+'°';
+  if (dev === 'spreader'){
+    const th = ang*Math.PI/180, Cc = (W/2)/Math.tan(th), T = (W/2)/Math.sin(th);
+    const p = PIPES[+$('dPipe').value], klr = s*12/p.r, f = fcr(35, klr), Pa = f*p.A/Nd;
+    const Pa_aisc = f*p.A/1.67;
+    $('dEq').innerHTML = `Top sling T = (W/2)/sin θ = ${T.toFixed(1)} k<br>Spreader compression C = (W/2)·cot θ = <b>${Cc.toFixed(1)} k</b><br>KL/r = ${s}×12/${p.r.toFixed(2)} = ${klr.toFixed(0)}${klr>200?' (> 200)':''} · F<sub>cr</sub> = ${f.toFixed(1)} ksi<br>AISC ASD P<sub>n</sub>/Ω = ${Pa_aisc.toFixed(0)} k · study approx. F<sub>cr</sub>A<sub>g</sub>/N<sub>d</sub> = <b>${Pa.toFixed(0)} k</b>`;
+    P.meters('dMeters', [{name:'Spreader buckling', ratio: Cc/Pa, gov:true}, {name:'Top sling angle ≥ 45°?', ratio: Math.sin(45*Math.PI/180)/Math.sin(th)}]);
+    $('devRead').innerHTML = `C = <b>${Cc.toFixed(1)}</b> k compression`;
+    D = {dev, W, s, th, Cc, T};
+  } else {
+    const M = W*s/4, Fb = 1.10*50/Nd, Sreq = M*12/Fb;
+    $('dEq').innerHTML = `Center pick, hangers at ±s/2: M = W·s/4 = <b>${M.toFixed(0)} k-ft</b><br>BTH-1 compact, braced: F<sub>b</sub> = 1.10F<sub>y</sub>/N<sub>d</sub> = ${Fb.toFixed(1)} ksi (50 ksi)<br>S<sub>req</sub> ≈ ${Sreq.toFixed(0)} in³ <span class="c">(then check LTB over full length: usually governs)</span>`;
+    P.meters('dMeters', [{name:'Moment (vs. W24×76 S = 176)', ratio: Sreq/176, gov:true}]);
+    $('devRead').innerHTML = `M = <b>${M.toFixed(0)}</b> k-ft bending`;
+    D = {dev, W, s, M};
+  }
+  if (P.reduce) P.redraw();
+}
+P.bind(['dW','dS','dAng','dPipe','dNd'], device);
+P.anim($('dev'), (ctx, w, h, t) => {
+  const cx = w/2, hookY = 26, span = Math.min(w*0.6, 30 + D.s*16);
+  const flow = P.reduce ? 0.5 : (t*0.6) % 1;
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, hookY, 7, -0.3, Math.PI+0.9); ctx.stroke();
+  const loadY = h - 46;
+  if (D.dev === 'spreader'){
+    const barY = hookY + Math.min(h*0.5, (span/2)*Math.tan(D.th));
+    const L = cx - span/2, R = cx + span/2;
+    line(ctx, [[cx,hookY+6],[L,barY]], {color:C.wind, width:3}); line(ctx, [[cx,hookY+6],[R,barY]], {color:C.wind, width:3});
+    ctx.fillStyle = C.pencil; ctx.fillRect(L-4, barY-5, span+8, 10);
+    line(ctx, [[L,barY+5],[L,loadY]], {color:C.wind, width:3}); line(ctx, [[R,barY+5],[R,loadY]], {color:C.wind, width:3});
+    ctx.fillStyle = C.concrete; ctx.fillRect(L-20, loadY, span+40, 30);
+    // compression flow arrows inward
+    for (let i=0;i<3;i++){ const f = ((flow + i/3) % 1); const xl = lerp(L+8, cx-22, f), xr = lerp(R-8, cx+22, f);
+      arrow(ctx, xl-14, barY-14, xl, barY-14, {color:C.pencil, width:2, head:6}); arrow(ctx, xr+14, barY-14, xr, barY-14, {color:C.pencil, width:2, head:6}); }
+    text(ctx, 'compression', cx, barY+24, {size:11, align:'center', color:C.pencil, halo:C.paper});
+    text(ctx, `${(D.th*180/Math.PI).toFixed(0)}°`, L+30, barY-6, {size:11, color:C.wind, halo:C.paper});
+  } else {
+    const barY = hookY + 44, L = cx - span/2, R = cx + span/2;
+    line(ctx, [[cx,hookY+6],[cx,barY-8]], {color:C.wind, width:3});
+    ctx.fillStyle = C.steel; ctx.fillRect(L-4, barY-8, span+8, 16);
+    line(ctx, [[L,barY+8],[L,loadY]], {color:C.wind, width:3}); line(ctx, [[R,barY+8],[R,loadY]], {color:C.wind, width:3});
+    ctx.fillStyle = C.concrete; ctx.fillRect(L-20, loadY, span+40, 30);
+    // moment diagram (triangle) drawn below beam, pulsing
+    const amp = (P.reduce ? 1 : 0.85 + 0.15*Math.sin(t*2.4)) * Math.min(60, 20 + D.M/20);
+    line(ctx, [[L,barY+14],[cx,barY+14+amp],[R,barY+14]], {color:C.pencil, width:2, fill:C.pencil, alpha:0.18, close:true});
+    text(ctx, 'M = Ws/4', cx, barY+30+amp, {size:11, align:'center', color:C.pencil, halo:C.paper});
+  }
+});
+
+/* ---------- SHEET 4: padeye ---------- */
+let LUG = {};
+function lug(){
+  const Pk=+$('lP').value, ang=+$('lAng').value, t=+$('lT').value, R=+$('lR').value, Dp=+$('lDp').value;
+  let Dh=+$('lDh').value;
+  if (Dh < Dp + 0.0625){ Dh = Dp + 0.0625; $('lDh').value = Dh; }
+  if (Dh > 2*R - 0.5){ Dh = 2*R - 0.5; $('lDh').value = Dh; }
+  const [Fy, Fu] = $('lMat').value.split(',').map(Number), Nd=+$('lNd').value;
+  const ws=+$('lWs').value, wl=+$('lWL').value;
+  $('lPo').textContent = Pk+' k'; $('lAngo').textContent = ang+'°'; $('lTo').textContent = t+' in'; $('lRo').textContent = R+' in';
+  $('lDpo').textContent = Dp+' in'; $('lDho').textContent = Dh.toFixed(3)+' in'; $('lWso').textContent = ws+'/16 in'; $('lWLo').textContent = wl+' in';
+  const be = R - Dh/2, a = R - Dh/2;
+  const beff = Math.min(4*t, be, be*0.6*(Fu/Fy)*Math.sqrt(Dh/be));
+  const Cr = 1 - 0.275*Math.sqrt(Math.max(0, 1 - (Dp*Dp)/(Dh*Dh)));
+  const Pt = Cr*Fu*2*t*beff/(1.20*Nd);
+  const phi = 55*Dp/Dh*Math.PI/180;
+  const Av = 2*(a + Dp/2*(1 - Math.cos(phi)))*t;
+  const Pv = 0.70*Fu*Av/(1.20*Nd);
+  const Pb = 1.25*Fy*Dp*t/Nd;
+  // weld: two fillet lines of length wl; load components at hole height ~ R above base
+  const th = ang*Math.PI/180, V = Pk*Math.cos(th), H = Pk*Math.sin(th), hgt = R + 1.0;
+  const M = H*hgt;                                  // k-in, in-plane
+  const fn = V/(2*wl) + M/(2*wl*wl/6);              // k/in per weld line, linear elastic
+  const fs = H/(2*wl);
+  const fw = Math.sqrt(fn*fn + fs*fs);
+  const Fv = 0.60*70/(1.20*Nd), cap = Fv*0.707*ws/16;  // k/in
+  const rows = [
+    {name:'Tension through hole P<sub>t</sub>', ratio: Pk/Pt, k:'t'},
+    {name:'Double-plane shear P<sub>v</sub>', ratio: Pk/Pv, k:'v'},
+    {name:'Bearing P<sub>b</sub>', ratio: Pk/Pb, k:'b'},
+    {name:'Fillet welds (E70)', ratio: fw/cap, k:'w'}
+  ];
+  const gov = rows.reduce((x,y) => y.ratio > x.ratio ? y : x);
+  gov.gov = true;
+  P.meters('lugMeters', rows);
+  P.pill('lugPill', gov.ratio, ['OK','Tight','NG']);
+  $('lEq').innerHTML = `b<sub>e</sub> = a = R − D<sub>h</sub>/2 = ${be.toFixed(3)} in · b<sub>eff</sub> = min(4t, b<sub>e</sub>, 0.6b<sub>e</sub>(F<sub>u</sub>/F<sub>y</sub>)√(D<sub>h</sub>/b<sub>e</sub>)) = ${beff.toFixed(3)} in<br>C<sub>r</sub> = 1 − 0.275√(1 − D<sub>p</sub>²/D<sub>h</sub>²) = ${Cr.toFixed(3)}<br>P<sub>t</sub> = C<sub>r</sub>F<sub>u</sub>(2tb<sub>eff</sub>)/(1.20N<sub>d</sub>) = <b>${Pt.toFixed(1)} k</b><br>φ = 55D<sub>p</sub>/D<sub>h</sub> = ${(phi*180/Math.PI).toFixed(1)}° · A<sub>v</sub> = 2[a + (D<sub>p</sub>/2)(1 − cos φ)]t = ${Av.toFixed(2)} in²<br>P<sub>v</sub> = 0.70F<sub>u</sub>A<sub>v</sub>/(1.20N<sub>d</sub>) = <b>${Pv.toFixed(1)} k</b> · P<sub>b</sub> = 1.25F<sub>y</sub>D<sub>p</sub>t/N<sub>d</sub> = <b>${Pb.toFixed(1)} k</b><br>Weld: V = ${V.toFixed(1)} k, H = ${H.toFixed(1)} k, M = ${M.toFixed(0)} k-in → ${fw.toFixed(2)} k/in vs ${cap.toFixed(2)} k/in <span class="c">(F<sub>v</sub> = 0.6E<sub>XX</sub>/(1.20N<sub>d</sub>) on the throat)</span>`;
+  LUG = {t, R, Dp, Dh, be, a, phi, gov: gov.k, ang};
+  if (P.reduce) P.redraw();
+}
+P.bind(['lP','lAng','lT','lR','lDp','lDh','lMat','lNd','lWs','lWL'], lug);
+P.anim($('lug'), (ctx, w, h, t) => {
+  const L = LUG; if (!L.R) return;
+  const sc = Math.min((w-60)/(2*L.R + 6), (h-50)/(2*L.R + 3.2));
+  const cx = w/2, base = h - 26, cy = base - (L.R + 1.0)*sc;
+  const pulse = P.reduce ? 1 : 0.55 + 0.45*Math.sin(t*3);
+  // base flange
+  ctx.fillStyle = C.steel; ctx.fillRect(cx - (L.R+2.5)*sc, base, (2*L.R+5)*sc, 10);
+  // lug body: rectangle from base to hole center + semicircle head
+  ctx.beginPath(); ctx.moveTo(cx - L.R*sc, base); ctx.lineTo(cx - L.R*sc, cy); ctx.arc(cx, cy, L.R*sc, Math.PI, 0); ctx.lineTo(cx + L.R*sc, base); ctx.closePath();
+  ctx.fillStyle = C.steel; ctx.globalAlpha = 0.55; ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.stroke();
+  // hole
+  ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(cx, cy, L.Dh/2*sc, 0, 7); ctx.fill(); ctx.stroke();
+  // pin bearing on top of hole (load pulls up along sling direction)
+  const th = L.ang*Math.PI/180, dirx = Math.sin(th), diry = -Math.cos(th);
+  const off = (L.Dh - L.Dp)/2*sc;
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(cx + dirx*off, cy + diry*off, L.Dp/2*sc, 0, 7); ctx.fill();
+  // highlight governing mode
+  ctx.save(); ctx.globalAlpha = pulse; ctx.strokeStyle = C.pencil; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  if (L.gov === 't'){ ctx.beginPath(); ctx.moveTo(cx - L.R*sc, cy); ctx.lineTo(cx - L.Dh/2*sc, cy); ctx.moveTo(cx + L.Dh/2*sc, cy); ctx.lineTo(cx + L.R*sc, cy); ctx.stroke(); }
+  if (L.gov === 'v'){ const ang = L.phi; ctx.beginPath();
+    [-1,1].forEach(sgn => { const x0 = cx + sgn*(L.Dp/2)*Math.sin(ang)*sc, y0 = cy - (L.Dp/2)*Math.cos(ang)*sc; ctx.moveTo(x0, y0); ctx.lineTo(x0, cy - L.R*Math.cos(Math.asin(clamp((L.Dp/2)*Math.sin(ang)/L.R,0,1)))*sc); });
+    ctx.stroke(); }
+  if (L.gov === 'b'){ ctx.beginPath(); ctx.arc(cx + dirx*off, cy + diry*off, L.Dp/2*sc + 3, Math.atan2(diry, dirx) - 1, Math.atan2(diry, dirx) + 1); ctx.stroke(); }
+  if (L.gov === 'w'){ ctx.beginPath(); ctx.moveTo(cx - L.R*sc - 4, base - 2); ctx.lineTo(cx + L.R*sc + 4, base - 2); ctx.stroke(); }
+  ctx.restore();
+  // load arrow along sling
+  const ax = cx + dirx*(L.R*sc + 46), ay = cy + diry*(L.R*sc + 46);
+  arrow(ctx, cx + dirx*(L.Dh/2*sc + 4), cy + diry*(L.Dh/2*sc + 4), ax, ay, {color:C.wind, width:3, head:10});
+  const names = {t:'net tension', v:'double-plane shear', b:'bearing', w:'weld'};
+  text(ctx, 'governs: ' + names[L.gov], 10, 18, {size:12, weight:'bold', color:C.pencil});
+});
+
+/* ---------- SHEET 5: crane % of chart ---------- */
+let CR = {r:60, pct:0};
+function crane(){
+  const r=+$('cR').value, Ld=+$('cL').value, rig=+$('cRig').value, blk=+$('cBlk').value, tandem=$('cTandem').checked;
+  $('cRo').textContent = r+' ft'; $('cLo').textContent = Ld+' t'; $('cRigo').textContent = rig+' t'; $('cBlko').textContent = blk+' t';
+  const share = tandem ? 0.5 : 1;
+  const gross = Ld*share + rig*share + blk, c = cap(r), pct = gross/c*100;
+  $('cCap').textContent = c.toFixed(1); $('cGross').textContent = gross.toFixed(1); $('cPct').textContent = pct.toFixed(0);
+  const limit = tandem ? 75 : 100;
+  $('cEq').innerHTML = `Gross = ${tandem?'½×(load + rigging) + block':'load + rigging + block'} = <b>${gross.toFixed(1)} t</b><br>Chart @ ${r} ft = ${c.toFixed(1)} t → <b>${pct.toFixed(0)}%</b>${tandem?' <span class="c">(share assumes CG centered; it shifts as the load tilts)</span>':''}<br><span class="c">${pct>limit?'Over the limit: shorten radius, bigger crane, or change configuration.':pct>75?'Critical lift by typical company triggers: engineered plan, sign-offs.':'Routine range: still needs a lift plan.'}</span>`;
+  const pl = $('cPill');
+  if (pct > limit){ pl.className = 'pill ng'; pl.textContent = tandem ? 'over 75% tandem cap' : 'over chart'; }
+  else if (pct > 75){ pl.className = 'pill warn'; pl.textContent = 'critical lift'; }
+  else { pl.className = 'pill ok'; pl.textContent = 'routine'; }
+  CR = {r, pct, gross, c};
+  if (P.reduce) P.redraw();
+}
+P.bind(['cR','cL','cRig','cBlk','cTandem'], crane);
+let crR = 60;
+P.anim($('crane'), (ctx, w, h, t, dt) => {
+  crR += (CR.r - crR)*Math.min(1, (P.reduce?1:dt*3));
+  const g = h - 16, s = Math.min(w*0.5/150, h/180);
+  ground(ctx, 0, w, g);
+  const cx = 30 + 16*s;
+  const ang = Math.acos(clamp((crR - 4)/BOOM, 0, 1));
+  const color = CR.pct > 100 ? C.bad : CR.pct > 75 ? C.warn : C.storm;
+  const tip = crawler(ctx, cx, g, s, ang, BOOM, color);
+  const ly = Math.min(g - 10*s, tip.ty + 60*s);
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(tip.tx, tip.ty); ctx.lineTo(tip.tx, ly); ctx.stroke();
+  ctx.fillStyle = C.concrete; ctx.fillRect(tip.tx - 10*s, ly, 20*s, 6*s);
+  text(ctx, `${CR.pct.toFixed(0)}%`, tip.tx + 14*s, ly + 4*s, {size:14, weight:'bold', color, halo:C.paper});
+  // capacity curve inset
+  const box = {l: w*0.58, r: w-14, t: 30, b: h*0.62};
+  const A = axes(ctx, box, [20,140], [0,200], {xstep:20, ystep:50, xlabel:'radius (ft)', ylabel:'chart (t)'});
+  line(ctx, CHART.map(([r,c]) => [A.X(r), A.Y(c)]), {color:C.s1, width:2});
+  line(ctx, CHART.map(([r,c]) => [A.X(r), A.Y(0.75*c)]), {color:C['ink-soft'], width:1.2, dash:[4,4]});
+  text(ctx, '75%', A.X(130), A.Y(0.75*cap(130)) - 6, {size:10, color:C['ink-soft'], halo:C.paper});
+  ctx.fillStyle = color; ctx.beginPath(); ctx.arc(A.X(clamp(crR,20,140)), A.Y(clamp(CR.gross,0,200)), 6, 0, 7); ctx.fill(); ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.stroke();
+  line(ctx, [[cx, g+8],[tip.tx, g+8]], {color:C.pencil, width:1, dash:[3,3]});
+  text(ctx, `R = ${crR.toFixed(0)} ft`, (cx+tip.tx)/2, g+6, {size:10, align:'center', color:C.pencil, halo:C.paper});
+});
+
+/* ---------- SHEET 6: ground bearing ---------- */
+let G = {th:35*Math.PI/180};
+function trackDist(V, ex, L, B){
+  // returns {qmax (ksf), kind, len} for a rigid track with load V (k) at eccentricity ex along it
+  if (V <= 0) return {qmax:0, q1:0, q2:0, kind:'lifted', len:0};
+  const e = Math.abs(ex);
+  if (e <= L/6){ const q0 = V/(B*L); return {qmax:q0*(1+6*e/L), q1:q0*(1+6*ex/L), q2:q0*(1-6*ex/L), kind:'trapezoid', len:L}; }
+  const len = 3*(L/2 - e); if (len <= 0) return {qmax:Infinity, kind:'tipping', len:0};
+  return {qmax: 2*V/(B*len), kind:'triangle', len, sgn: Math.sign(ex)};
+}
+function gbp(th){
+  const Wc=+$('gWc').value, ec=+$('gEc').value, Wl=+$('gWl').value, R=+$('gR').value, L=+$('gL').value, Gg=+$('gG').value, B=+$('gB').value, Bm=+$('gMat').value, qa=+$('gQa').value;
+  const W = Wc + Wl, e = (Wl*R - Wc*ec)/W;       // + toward boom
+  const ex = e*Math.cos(th), ey = e*Math.sin(th);
+  const V1 = W/2 + W*ey/Gg, V2 = W/2 - W*ey/Gg;   // track 1 on the +y (boom side when swung)
+  const d1 = trackDist(V1, ex, L, B), d2 = trackDist(V2, ex, L, B);
+  const q = Math.max(d1.qmax, d2.qmax), qm = q*B/Math.max(B, Bm);
+  return {W, e, ex, ey, V1, V2, d1, d2, q, qm, qa, L, Gg, B, Bm, R, Wl, Wc};
+}
+function ground1(){
+  $('gWco').textContent = $('gWc').value+' k'; $('gEco').textContent = $('gEc').value+' ft'; $('gWlo').textContent = $('gWl').value+' k'; $('gRo').textContent = $('gR').value+' ft';
+  $('gThetao').textContent = $('gTheta').value+'°'; $('gLo').textContent = $('gL').value+' ft'; $('gGo').textContent = $('gG').value+' ft'; $('gBo').textContent = $('gB').value+' ft';
+  $('gMato').textContent = $('gMat').value+' ft'; $('gQao').textContent = $('gQa').value+' ksf';
+  if (!$('gAuto').checked || P.reduce) G.th = +$('gTheta').value*Math.PI/180;
+  updG();
+}
+let WORST = {wq:0, wth:0};
+function updG(){
+  const r = gbp(G.th); G.r = r;
+  $('gEq').innerHTML = `ΣW = ${r.W.toFixed(0)} k · e = (W<sub>L</sub>R − W<sub>c</sub>e<sub>c</sub>)/ΣW = <b>${r.e.toFixed(2)} ft</b> toward the boom<br>Tracks: V = ΣW/2 ± ΣW·e<sub>y</sub>/G → ${r.V1.toFixed(0)} k / ${r.V2.toFixed(0)} k<br>Along track: e<sub>x</sub> = ${Math.abs(r.ex).toFixed(2)} ft vs L/6 = ${(r.L/6).toFixed(2)} ft → <b>${r.d1.kind}</b><br>Worst swing ≈ ${WORST.wth}° → q<sub>max</sub> = ${Number.isFinite(WORST.wq)?WORST.wq.toFixed(2):'∞'} ksf on the shoe, ${Number.isFinite(WORST.wq)?(WORST.wq*r.B/Math.max(r.B,r.Bm)).toFixed(2):'∞'} ksf under mats`;
+  $('gTh').textContent = (G.th*180/Math.PI).toFixed(0);
+  $('gQ').textContent = Number.isFinite(r.q) ? r.q.toFixed(2) : '∞'; $('gQm').textContent = Number.isFinite(r.qm) ? r.qm.toFixed(2) : '∞';
+  const pl = $('gPill');
+  if (!Number.isFinite(r.q) || r.V2 < 0){ pl.className = 'pill ng'; pl.textContent = 'tipping'; }
+  else P.pill(pl, r.qm/r.qa, ['mats OK','tight','over allowable']);
+}
+P.bind(['gWc','gEc','gWl','gR','gTheta','gL','gG','gB','gMat','gQa','gAuto'], () => { worst(); ground1(); if (P.reduce) P.redraw(); });
+function worst(){
+  let wq = 0, wth = 0;
+  for (let d=0; d<=180; d+=2){ const r = gbp(d*Math.PI/180); if (r.q > wq){ wq = r.q; wth = d; } }
+  WORST = {wq, wth}; updG();
+}
+P.anim($('gbp'), (ctx, w, h, t, dt) => {
+  if ($('gAuto').checked && !P.reduce){ G.th = (Math.sin(t*0.35)*0.5 + 0.5)*Math.PI; updG(); $('gTheta').value = Math.round(G.th*180/Math.PI); $('gThetao').textContent = $('gTheta').value+'°'; }
+  const r = G.r; if (!r) return;
+  // plan view on left
+  const sc = Math.min((w*0.45)/(r.L + 14), (h*0.9)/(r.Gg + r.B + 30));
+  const cx = w*0.25, cy = h*0.5;
+  // tracks (x along track = screen x)
+  [[1, r.d1], [-1, r.d2]].forEach(([side, d]) => {
+    const y = cy - side*r.Gg/2*sc;
+    ctx.fillStyle = C.ink; ctx.globalAlpha = 0.85; ctx.fillRect(cx - r.L/2*sc, y - r.B/2*sc, r.L*sc, r.B*sc); ctx.globalAlpha = 1;
+    // mats outline
+    ctx.strokeStyle = C.timber; ctx.lineWidth = 1.5; ctx.setLineDash([5,3]); ctx.strokeRect(cx - (r.L/2+3)*sc, y - Math.max(r.B,r.Bm)/2*sc, (r.L+6)*sc, Math.max(r.B,r.Bm)*sc); ctx.setLineDash([]);
+  });
+  // upper + boom
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(-G.th);
+  ctx.fillStyle = C.storm; ctx.fillRect(-6*sc, -5*sc, 12*sc, 10*sc);
+  ctx.fillStyle = C.ink; ctx.fillRect(-11*sc, -4.5*sc, 5*sc, 9*sc);
+  ctx.strokeStyle = C.storm; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(4*sc, 0); ctx.lineTo(Math.min(r.R, 60)*sc*0.55 + 6*sc, 0); ctx.stroke();
+  ctx.restore();
+  // resultant location
+  const ex = r.e*Math.cos(G.th), ey = r.e*Math.sin(G.th);
+  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(cx + ex*sc, cy - ey*sc, 6, 0, 7); ctx.fill();
+  text(ctx, 'resultant', cx + ex*sc + 9, cy - ey*sc - 8, {size:10, color:C.pencil, halo:C.paper});
+  // kern (middle third) rectangle
+  ctx.strokeStyle = C['ink-soft']; ctx.setLineDash([2,3]); ctx.strokeRect(cx - r.L/6*sc, cy - r.Gg/2*sc, r.L/3*sc, r.Gg*sc); ctx.setLineDash([]);
+  // pressure diagrams on right
+  const bx = w*0.55, bw = w*0.42, by1 = h*0.3, by2 = h*0.75;
+  const qmaxScale = Math.max(r.qa*1.5, Number.isFinite(r.q) ? r.q : r.qa*2);
+  [[r.d1, by1, 'track 1 (boom side)'], [r.d2, by2, 'track 2']].forEach(([d, by, lab]) => {
+    line(ctx, [[bx, by],[bx+bw, by]], {color:C.ink, width:3});
+    const Y = q => by + (q/qmaxScale)*(h*0.18);
+    let pts = [];
+    if (d.kind === 'trapezoid') pts = [[bx, by],[bx, Y(d.q2)],[bx+bw, Y(d.q1)],[bx+bw, by]];
+    else if (d.kind === 'triangle'){ const lpx = d.len/r.L*bw; pts = d.sgn > 0 ? [[bx+bw-lpx, by],[bx+bw, Y(d.qmax)],[bx+bw, by]] : [[bx, by],[bx, Y(d.qmax)],[bx+lpx, by]]; }
+    if (pts.length){ const over = d.qmax*r.B/Math.max(r.B,r.Bm) > r.qa; line(ctx, pts, {color: over ? C.bad : C.wind, width:2, fill: over ? C.bad : C.wind, alpha:0.22, close:true}); }
+    line(ctx, [[bx, Y(r.qa*Math.max(r.B,r.Bm)/r.B)],[bx+bw, Y(r.qa*Math.max(r.B,r.Bm)/r.B)]], {color:C['ink-soft'], width:1, dash:[4,4]});
+    text(ctx, `${lab}: ${Number.isFinite(d.qmax)?d.qmax.toFixed(2):'∞'} ksf ${d.kind}`, bx, by - 8, {size:10, color:C['ink-soft']});
+  });
+  text(ctx, 'dashed = allowable, scaled to the shoe through the mats', bx, h - 8, {size:10, color:C['ink-soft']});
+});
+
+/* ---------- SHEET 7: pick location ---------- */
+let PK = {a:0.1};
+function pick(){
+  const a = +$('pAr').value; $('pAro').textContent = a.toFixed(3);
+  const neg = a*a/2, pos = Math.max(0, Math.pow(1-2*a,2)/8 - a*a/2);
+  $('pA').textContent = a.toFixed(3); $('pPos').textContent = pos.toFixed(4); $('pNeg').textContent = neg.toFixed(4);
+  PK = {a, neg, pos}; if (P.reduce) P.redraw();
+}
+P.bind(['pAr'], pick);
+$('pOpt').addEventListener('click', () => { $('pAr').value = (1/(2+2*Math.SQRT2)).toFixed(3); pick(); });
+let pkA = 0.1;
+P.anim($('pick'), (ctx, w, h, t, dt) => {
+  pkA += (PK.a - pkA)*Math.min(1, P.reduce ? 1 : dt*5);
+  const a = pkA, L = w - 80, x0 = 40, y = h*0.32;
+  const sway = P.reduce ? 0 : Math.sin(t*1.4)*1.5;
+  const p1 = x0 + a*L, p2 = x0 + (1-a)*L, hx = w/2;
+  line(ctx, [[hx, 6],[p1, y-8+sway]], {color:C.wind, width:2}); line(ctx, [[hx, 6],[p2, y-8-sway]], {color:C.wind, width:2});
+  ctx.fillStyle = C.concrete; ctx.fillRect(x0, y-8, L, 16);
+  [p1,p2].forEach(p => { ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(p, y-8, 4, 0, 7); ctx.fill(); });
+  // moment diagram: M(x)/(wL²); positive drawn below baseline (tension bottom), negative above
+  const base = h*0.68, scl = (h*0.26)/0.125;
+  const pts = [];
+  for (let i=0;i<=200;i++){
+    const x = i/200;
+    let M;
+    if (x < a) M = -x*x/2;
+    else if (x > 1-a) M = -(1-x)*(1-x)/2;
+    else M = -x*x/2 + (x - a)*0.5;   // reaction 0.5 at each pick
+    pts.push([x0 + x*L, base + M*scl]);
+  }
+  line(ctx, [[x0, base],[x0+L, base]], {color:C['ink-soft'], width:1});
+  line(ctx, [[x0, base], ...pts, [x0+L, base]], {color:C.pencil, width:2, fill:C.pencil, alpha:0.16, close:true});
+  const opt = 1/(2+2*Math.SQRT2);
+  line(ctx, [[x0 + opt*L, base-8],[x0 + opt*L, base+8]], {color:C.ink, width:1.5});
+  text(ctx, '0.207L', x0 + opt*L, base + 22, {size:10, align:'center', color:C['ink-soft']});
+  text(ctx, `M+ ${PK.pos.toFixed(4)}wL²`, w/2, base + PK.pos*scl + 16, {size:11, align:'center', weight:'bold', halo:C.paper});
+  text(ctx, `M− ${PK.neg.toFixed(4)}wL²`, p1, base - PK.neg*scl - 8, {size:11, align:'center', weight:'bold', halo:C.paper});
+});
+
+/* ---------- SHEET 8: power lines + checklist ---------- */
+const PL = [['≤ 50 kV',10],['50–200 kV',15],['200–350 kV',20],['350–500 kV',25],['500–750 kV',35],['750–1,000 kV',45],['> 1,000 kV','utility / RPE'],['unknown voltage','20 ft (≤350 kV) or 50 ft rule']];
+let plI = 2;
+function pline(){ plI = +$('pv').value; const [v, d] = PL[plI]; $('pvo').textContent = v; $('pvD').textContent = typeof d === 'number' ? d + ' ft' : '—'; $('pvN').textContent = typeof d === 'number' ? 'minimum clearance, Table A' : d; if (P.reduce) P.redraw(); }
+P.bind(['pv'], pline);
+P.anim($('pline'), (ctx, w, h, t) => {
+  const d = typeof PL[plI][1] === 'number' ? PL[plI][1] : 50;
+  const px = w*0.72, py = h*0.32, sc = Math.min(2.2, (h*0.6)/50);
+  ctx.fillStyle = C.bad; ctx.globalAlpha = 0.12 + (P.reduce?0:0.05*Math.sin(t*3)); ctx.beginPath(); ctx.arc(px, py, d*sc*2, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = C.bad; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.arc(px, py, d*sc*2, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+  line(ctx, [[0, py],[w, py + 6]], {color:C.ink, width:2});
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(px, py+4, 4, 0, 7); ctx.fill();
+  const bx = Math.max(10, px - d*sc*2 - 30 + (P.reduce?0:Math.sin(t*0.8)*12));
+  line(ctx, [[10, h-6],[bx, py+10]], {color:C.storm, width:4});
+  text(ctx, `${typeof PL[plI][1]==='number'?PL[plI][1]+' ft':'≥ 50 ft'} radius`, px, py + d*sc*2 + 14 > h-4 ? py - d*sc*2 - 6 : py + d*sc*2 + 14, {size:11, align:'center', color:C.bad, halo:C.paper});
+});
+const CHECK = ['Load weight (calculated + verified), CG located','Rigging: sling sizes, angles, hardware WLL, softeners','Below-the-hook device rated, tested, tagged','Crane config: boom, CW, radius, % of chart','Ground: bearing, mats, utilities, excavations nearby','Swing path, obstructions, power lines','Wind limit and stop-work criteria','Exclusion zone, tag lines, signal person','Tandem: load share, sequence, communications','Pre-lift meeting, sign-offs, critical-lift approvals'];
+$('checklist').innerHTML = CHECK.map((c,i) => `<label><input type="checkbox" data-i="${i}"> ${c}</label>`).join('');
+const saved = JSON.parse(localStorage.getItem('tw-liftcheck') || '[]');
+$('checklist').querySelectorAll('input').forEach(cb => { cb.checked = saved.includes(+cb.dataset.i); cb.addEventListener('change', () => localStorage.setItem('tw-liftcheck', JSON.stringify([...$('checklist').querySelectorAll('input:checked')].map(x => +x.dataset.i)))); });
+
+/* ---------- cards ---------- */
+P.cards('cards', [
+  ["A 40-kip beam has its CG 3 ft off center between picks 24 ft apart. Equal slings. What happens?", "It tilts until the CG is under the hook. The near leg goes steeper and carries more: the vertical split is 40×9/24 = 15 k and 40×15/24 = 25 k. Divide each by its own sin θ. To level it, shorten the sling on the heavy (CG) side or lengthen the other, using a chain-fall or adjustable link."],
+  ["Why assume only 2 legs of a 4-leg bridle carry the load?", "A rigid load on four slings is statically indeterminate. Small length differences mean two diagonal legs can take nearly everything. ASME and most rigging practice size each leg as if two carry the full load, unless an equalizing device is used."],
+  ["Spreader bar vs. lifting beam?", "A spreader is in compression: (W/2)cot θ, so check buckling, it's light, and it needs headroom. A lifting beam is in bending (W·s/4 for a center pick), so check LTB, it's heavier, and it suits low headroom. Both are designed to BTH-1 and tested to B30.20 at 125%."],
+  ["Walk me through designing a padeye.", "Get the sling load and angle (with a dynamic or side-load allowance per company standard). Pick the shackle, then set D<sub>h</sub> ≈ D<sub>p</sub> + 1/16–1/8 in. Run the BTH-1 checks: tension through the hole (C<sub>r</sub>, b<sub>eff</sub>), double-plane shear, and bearing with N<sub>d</sub> = 3 for Category B. Then the welds (combined tension, shear and moment from the angle), the base metal or flange local bending, cheek plates to fill the shackle jaw, and NDE."],
+  ["What is a critical lift?", "Company-defined. Typical triggers: above ~75% of chart, tandem or multi-crane picks, personnel platforms, lifts over occupied areas or live systems, near power lines, and cranes on barges, trestles or structures. Those need an engineered lift plan and sign-offs."],
+  ["Crawler track pressure: when does it go triangular?", "When the resultant's eccentricity along the track exceeds L/6 (outside the kern). Then q<sub>max</sub> = 2V/(3B(L/2 − e)) over a contact length of 3(L/2 − e). It's usually worst with the boom over a corner, with the load at max radius."],
+  ["Where should two pick points go on a long precast pile or panel?", "About 0.207L from each end with vertical slings, which equalizes the positive and negative moments at 0.0214wL². Then add dynamic and form-suction multipliers (PCI) and check cracking, not just strength."],
+  ["What's the personnel-lift capacity rule?", "OSHA 1926.1431: the loaded platform and rigging can't exceed 50% of rated capacity at the radius. Also a trial lift and a proof test, and only when conventional access is more hazardous or not possible."]
+]);
+})();
+</script>
+</body>
+</html>

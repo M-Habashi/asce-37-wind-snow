@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AASHTO &amp; Temporary Bridges · Temporary Works Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="assets/prep.css">
+<script src="assets/prep.js"></script>
+</head>
+<body>
+<script>P.nav('bridges.html')</script>
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>1</b> of 8</div><div>AASHTO LRFD · temporary bridges · erection</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">AASHTO LRFD BDS · Guide Design Specs for Bridge Temporary Works</span><span class="hand">trucks, trestles and girders that aren't braced yet →</span></div>
+    <h1>Bridges &amp;<br>Temporary Bridges</h1>
+    <div class="stage">
+      <canvas id="hero" role="img" aria-label="HL-93 design truck rolling across a 100 ft simple span; the moment diagram follows the truck and the maximum envelope builds up"></canvas>
+      <div class="readout"><span>front axle at <b id="hX">—</b> ft</span><span>M under axles <b id="hM">—</b> k-ft</span><span>envelope max <b id="hMax">—</b> k-ft</span></div>
+    </div>
+    <p class="lede">A temporary bridge is still a bridge. Owners usually make you design detours and haul bridges to AASHTO LRFD, sometimes with a reduced vehicle. Work trestles add crane tracks, stream flow and scour. Erecting the permanent girders brings the hardest stability cases on the job.</p>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b> of 8</div><div>LRFD refresher · Sec. 3.4</div><div>η Σγ<sub>i</sub>Q<sub>i</sub> ≤ φR<sub>n</sub></div></div>
+  <div class="sheet-body">
+    <h2>Limit states in one table</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Limit state</th><th>What it's for</th><th>Factors to remember</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Strength I</td><td>Normal vehicular use, no wind</td><td>1.25DC (0.90 min) + 1.50DW (0.65 min) + 1.75(LL+IM)</td></tr>
+        <tr><td class="k">Strength II</td><td>Owner's permit / special vehicles</td><td>LL factor 1.35</td></tr>
+        <tr><td class="k">Strength III</td><td>Wind on the structure, no live load</td><td>Check the edition: wind provisions were reworked in the 8th edition</td></tr>
+        <tr><td class="k">Strength IV</td><td>Very high dead-to-live ratio (long spans)</td><td>1.50DC, 1.50DW, no LL</td></tr>
+        <tr><td class="k">Strength V</td><td>Normal vehicles + wind</td><td>LL factor 1.35</td></tr>
+        <tr><td class="k">Service I</td><td>Deflection, cracking, normal operation. Also <strong>construction deflection</strong>.</td><td>All 1.0</td></tr>
+        <tr><td class="k">Service II / III</td><td>Steel yielding, slip-critical / prestressed tension</td><td>LL 1.30 / 0.80 (P/S)</td></tr>
+        <tr><td class="k">Extreme I / II</td><td>Earthquake / vessel, vehicle or ice collision, check flood</td><td>γ<sub>EQ</sub> per owner</td></tr>
+        <tr><td class="k">Fatigue I / II</td><td>Infinite / finite life</td><td>Fatigue truck only</td></tr>
+      </tbody></table></div>
+    <div class="callout diff"><span class="tag">Construction · Art. 3.4.2.1</span><p>Unless the owner says otherwise: the load factor on <strong>construction loads</strong> and their dynamic effects is <strong>at least 1.5 in Strength I</strong>. When you investigate Strength I, III and V during construction, DC and DW factors can't be less than <strong>1.25</strong> for maximized force effects. Strength IV uses the normal table values. Construction deflections are checked at <strong>Service I</strong>, with construction dead load treated as permanent load and construction transient loads as live load.</p></div>
+    <div class="callout remember"><span class="tag">Remember</span><p>η = η<sub>D</sub>η<sub>R</sub>η<sub>I</sub> (ductility, redundancy, importance). A two-girder temporary span or a single pile bent is <strong>non-redundant</strong>, so say so. Use the max/min factor that produces the worse effect: 0.90DC when dead load helps, as in uplift at bearings or overturning of a bent.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b> of 8</div><div>HL-93 · Art. 3.6.1</div><div>truck / tandem + lane</div></div>
+  <div class="sheet-body">
+    <h2>HL-93 by hand</h2>
+    <div class="ideas four">
+      <div class="idea"><h3>Design truck</h3><p>8 + 32 + 32 kips. Axles 14 ft apart, with the rear spacing variable from 14 to 30 ft. Use 14 ft for max moment on simple spans.</p></div>
+      <div class="idea"><h3>Design tandem</h3><p>2 × 25 kips at 4 ft. It governs short spans, roughly under 40 ft for moment.</p></div>
+      <div class="idea"><h3>Lane load</h3><p>0.64 klf over a 10 ft width. <strong>No impact</strong> on the lane load.</p></div>
+      <div class="idea"><h3>IM &amp; m</h3><p>IM = 33% (15% fatigue, 75% deck joints). Multiple presence m = 1.20 / 1.00 / 0.85 / 0.65 for 1 / 2 / 3 / &gt;3 lanes.</p></div>
+    </div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="lSpan">Simple span L: <span class="val" id="lSpano"></span></label><input id="lSpan" type="range" min="20" max="200" step="1" value="100"></div>
+        <label class="check"><input type="checkbox" id="lM" checked> Single lane: apply m = 1.20 (lever-rule style)</label>
+        <div class="stat-row">
+          <div class="stat"><span class="label">M<sub>LL+IM</sub> per lane</span><span class="big" id="lMout">—</span><span class="mono">k-ft</span></div>
+          <div class="stat"><span class="label">V<sub>LL+IM</sub> at support</span><span class="big" id="lVout">—</span><span class="mono">kips</span></div>
+        </div>
+        <div class="eq" id="lEq"></div>
+      </div>
+      <div class="col">
+        <div class="plot"><canvas id="lPlot" role="img" aria-label="Moment envelopes along the span for truck, tandem and lane load, plus the HL-93 total"></canvas><div class="tip" id="lTip"></div></div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>truck × 1.33</span><span><i style="background:var(--s2)"></i>tandem × 1.33</span><span><i style="background:var(--s3)"></i>lane</span><span><i style="background:var(--pencil)"></i>HL-93 total</span></div>
+      </div>
+    </div>
+    <span class="hand">sanity check: L = 100 ft truck alone ≈ 1,525 k-ft (the old HS20 table value). If you get that, your influence lines are right.</span>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b> of 8</div><div>Work trestle · crawler crane on a pile bent</div><div>bent → pile</div></div>
+  <div class="sheet-body">
+    <h2>A crane walks the trestle</h2>
+    <p>Kiewit builds many river and marine bridges from <strong>work trestles</strong>: driven pipe or H-pile bents, cap beams, stringers, and timber or steel mats. The crane is the design vehicle. Its tracks put a moving, swinging trapezoid of pressure onto the stringers. The bents collect it, and the cap splits it between piles by lever arm.</p>
+    <div class="stage tall"><canvas id="tr" role="img" aria-label="Side view of a crawler crane traveling across a pile-bent trestle; bent reactions and maximum pile load update as it moves and swings"></canvas>
+      <div class="readout right"><span>crane at <b id="tX">—</b> ft</span><span>max bent <b id="tB">—</b> k</span><span>max pile <b id="tP">—</b> k</span></div>
+      <div class="readout right bottom"><span class="pill" id="tPill">—</span></div></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="tS">Bent spacing: <span class="val" id="tSo"></span></label><input id="tS" type="range" min="15" max="50" step="1" value="30"></div>
+          <div class="ctrl"><label class="label" for="tN">Piles per bent: <span class="val" id="tNo"></span></label><input id="tN" type="range" min="2" max="6" step="1" value="4"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="tWc">Crane + CW: <span class="val" id="tWco"></span></label><input id="tWc" type="range" min="100" max="700" step="10" value="300"></div>
+          <div class="ctrl"><label class="label" for="tWl">Gross load: <span class="val" id="tWlo"></span></label><input id="tWl" type="range" min="0" max="120" step="1" value="40"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="tR">Radius: <span class="val" id="tRo"></span></label><input id="tR" type="range" min="15" max="100" step="1" value="45"></div>
+          <div class="ctrl"><label class="label" for="tTh">Swing (0 = ahead, 90 = over side): <span class="val" id="tTho"></span></label><input id="tTh" type="range" min="0" max="180" step="5" value="90"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="tDyn">Dynamic allowance: <span class="val" id="tDyno"></span></label><input id="tDyn" type="range" min="0" max="30" step="5" value="10"></div>
+          <div class="ctrl"><label class="label" for="tCap">Pile allowable: <span class="val" id="tCapo"></span></label><input id="tCap" type="range" min="50" max="400" step="10" value="160"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="tPos">Crane position (unchecks auto-travel): <span class="val" id="tPoso"></span></label><input id="tPos" type="range" min="0" max="100" step="1" value="40"></div>
+        <label class="check"><input type="checkbox" id="tAuto" checked> Auto-travel</label>
+        <div class="eq" id="tEq"></div>
+      </div>
+    </div>
+    <div class="callout trap"><span class="tag">What else they'll ask</span><p>Add the deck and mat dead load, the crane's travel and swing dynamics (company criteria; AASHTO's IM is for trucks, not crawlers), lateral loads (stream flow, wind on crane and load, braking), and bent bracing. Size the piles for <strong>axial capacity</strong> (wave equation, PDA/CAPWAP, set criteria), <strong>lateral</strong> resistance (p-y, scour depth!) and <strong>buckling of the free length</strong> in water. The crane stays where the stringers were designed: mark the track lines on the deck.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b> of 8</div><div>Water on temporary piers · Art. 3.7.3</div><div>p = C<sub>D</sub>V²/1000</div></div>
+  <div class="sheet-body">
+    <h2>Stream flow &amp; debris</h2>
+    <div class="twocol">
+      <div class="col">
+        <div class="stage short" style="min-height:0"><canvas id="sf" role="img" aria-label="Water flowing past a temporary pile with a debris raft; pressure arrows scale with velocity squared"></canvas></div>
+        <div class="tblwrap"><table class="tbl"><thead><tr><th>Pier shape</th><th class="num">C<sub>D</sub></th></tr></thead><tbody>
+          <tr><td>Semicircular-nosed (round pile)</td><td class="num">0.7</td></tr>
+          <tr><td>Square-ended (H-pile, sheet cell face)</td><td class="num">1.4</td></tr>
+          <tr><td>Debris lodged against pier</td><td class="num">1.4</td></tr>
+          <tr><td>Wedge-nosed, nose angle ≤ 90°</td><td class="num">0.8</td></tr></tbody></table></div>
+      </div>
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fV">Design velocity V: <span class="val" id="fVo"></span></label><input id="fV" type="range" min="1" max="15" step="0.5" value="7"></div>
+          <div class="ctrl"><label class="label" for="fCd">Shape</label><select id="fCd"><option value="0.7" selected>round · 0.7</option><option value="1.4">square · 1.4</option><option value="0.8">wedge · 0.8</option></select></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fD">Pile width: <span class="val" id="fDo"></span></label><input id="fD" type="range" min="12" max="72" step="2" value="36"></div>
+          <div class="ctrl"><label class="label" for="fH">Water depth: <span class="val" id="fHo"></span></label><input id="fH" type="range" min="4" max="60" step="1" value="25"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fDeb">Debris raft depth: <span class="val" id="fDebo"></span></label><input id="fDeb" type="range" min="0" max="10" step="0.5" value="4"></div>
+          <div class="ctrl"><label class="label" for="fDebW">Debris width: <span class="val" id="fDebWo"></span></label><input id="fDebW" type="range" min="0" max="40" step="1" value="20"></div>
+        </div>
+        <div class="eq" id="fEq"></div>
+        <p class="small muted">Shown as a uniform pressure over depth, resultant at mid-depth. Check the owner's practice; some apply a velocity profile. Use the design flood for the <em>construction</em> period agreed with the owner, not the 100-year event for the permanent bridge.</p>
+      </div>
+    </div>
+    <div class="callout trap"><span class="tag">Don't forget</span><p><strong>Scour</strong> lengthens the free length and removes lateral support exactly when stream force peaks. Also consider vessel and barge impact (Art. 3.14, and fendering for work barges), ice (Art. 3.9), and wave loads in marine work. Seasonal flood windows are often the real schedule constraint.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b> of 8</div><div>Girder erection stability · FHWA NHI-15-044</div><div>system buckling</div></div>
+  <div class="sheet-body">
+    <h2>Two girders aren't twice as stable</h2>
+    <p>Cross-frames make a girder pair act as a <strong>system</strong>. Its global lateral-torsional buckling depends on the girder <em>spacing</em>, not on the cross-frame spacing. Yura's system buckling moment for a twin-girder unit is <strong>M<sub>gs</sub> = C<sub>b</sub>(π²sE/L²)√(I<sub>y</sub>I<sub>x</sub>)</strong>, with I for one girder, compared against the total moment on both. Narrow, long, unbraced pairs are the danger. Adding more cross-frames doesn't fix it; a lateral (plan) bracing system, more girders, or an intermediate support does.</p>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gL">Span L: <span class="val" id="gLo"></span></label><input id="gL" type="range" min="60" max="250" step="5" value="120"></div>
+          <div class="ctrl"><label class="label" for="gS">Girder spacing s: <span class="val" id="gSo"></span></label><input id="gS" type="range" min="4" max="14" step="0.5" value="8"></div>
+        </div>
+        <div class="ctrl-row three">
+          <div class="ctrl"><label class="label" for="gD">Web depth: <span class="val" id="gDo"></span></label><input id="gD" type="range" min="36" max="120" step="2" value="60"></div>
+          <div class="ctrl"><label class="label" for="gBf">Flange width: <span class="val" id="gBfo"></span></label><input id="gBf" type="range" min="12" max="30" step="1" value="16"></div>
+          <div class="ctrl"><label class="label" for="gTf">Flange t: <span class="val" id="gTfo"></span></label><input id="gTf" type="range" min="0.75" max="3" step="0.125" value="1"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="gW">Load per girder (steel + forms + wet deck): <span class="val" id="gWo"></span></label><input id="gW" type="range" min="0.3" max="3" step="0.05" value="1"></div>
+        <div class="eq" id="gEq"></div>
+      </div>
+      <div class="col">
+        <div class="stage tall"><canvas id="gCv" role="img" aria-label="Cross-section of a twin girder pair with cross-frame swaying and rotating together in the global buckling mode; amplitude grows as the moment approaches the system buckling moment"></canvas>
+          <div class="readout"><span>M/M<sub>gs</sub> = <b id="gR">—</b></span><span>amplification ≈ <b id="gA">—</b></span></div>
+          <div class="readout right bottom"><span class="pill" id="gPill">—</span></div></div>
+      </div>
+    </div>
+    <div class="ideas">
+      <div class="idea"><h3>Fit-up</h3><p>Cross-frame <strong>detailing method</strong> for curved or skewed girders: no-load fit, steel-dead-load fit, or total-dead-load fit. It decides whether the frames go in easily and whether the girders end up plumb. It's a favorite erection-engineering question.</p></div>
+      <div class="idea"><h3>Holding crane / towers</h3><p>The first girder line often needs a holding crane, a falsework tower at the splice, or tie-backs until the second girder and cross-frames are in. Watch <strong>uplift at bearings</strong> on curved or skewed spans.</p></div>
+      <div class="idea"><h3>Deck pour</h3><p>Overhang brackets put torsion into the exterior girders. Check temporary bracing, the pour sequence (positive-moment regions first), and the screed-machine load at the edge (75 plf plus machine wheel loads).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 7 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>7</b> of 8</div><div>Kinds of temporary bridges</div><div>scope map</div></div>
+  <div class="sheet-body">
+    <h2>Know the family</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Type</th><th>Typical system</th><th>Governing checks</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Work trestle / access bridge</td><td>Pipe or H-pile bents, caps, W-shape stringers, timber or steel mats</td><td>Crane tracks and outriggers, pile capacity and scour, bracing, stream flow, deck and mat bending</td></tr>
+        <tr><td class="k">Detour / runaround bridge</td><td>Modular panel truss (Bailey-type, Acrow, Mabey) or rolled-beam spans on temporary abutments</td><td>HL-93 or owner vehicle, IM, approach settlement, barriers and crash loads, deflection, owner review</td></tr>
+        <tr><td class="k">Haul road crossing</td><td>Mats or beams over a culvert, utility or existing structure</td><td>Off-highway truck axle loads, load spread through fill, existing-structure evaluation</td></tr>
+        <tr><td class="k">Falsework bridge</td><td>Towers and stringers supporting cast-in-place girders</td><td>Caltrans / AASHTO temp-works loads, the 2% horizontal case, deflection and camber, traffic openings</td></tr>
+        <tr><td class="k">Erection support</td><td>Shoring towers at splices, strongbacks, jacking frames</td><td>Reactions by stage, jacking loads, lateral stability, foundations</td></tr>
+        <tr><td class="k">Floating / barge</td><td>Spud barges, sectional barges as platforms</td><td>Stability (GM), deck capacity, list and trim under crane swing, mooring</td></tr>
+      </tbody></table></div>
+    <div class="callout remember"><span class="tag">Reading</span><p>AASHTO <em>Guide Design Specifications for Bridge Temporary Works</em> and the <em>Construction Handbook for Bridge Temporary Works</em>. FHWA NHI-15-044, <em>Engineering for Structural Stability in Bridge Construction</em>. AASHTO/NSBA S10.1, <em>Steel Bridge Erection Guide Specification</em>. The PCI recommended practice on lateral stability of precast girders.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>8</b> of 8</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="sheet-body">
+    <h2>Questions they may ask</h2>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Study aid. AASHTO values are from the LRFD BDS as I remember them; the Art. 3.4.2.1 construction factors were checked against WSDOT's BDM summary. Verify against the edition your owner uses (9th/10th) and its state amendments.</p>
+  <p>Sources: <a href="https://wsdot.wa.gov/publications/manuals/fulltext/M23-50/Chapter3.pdf" target="_blank" rel="noopener">WSDOT BDM Ch. 3 (construction load factors)</a> · <a href="https://www.fhwa.dot.gov/bridge/pubs/nhi15044.pdf" target="_blank" rel="noopener">FHWA NHI-15-044</a> · <a href="https://www.in.gov/dot/div/contracts/standards/bridges/2015%20Bridge%20Conference/Latest%20on%20Construction%20Loads.pdf" target="_blank" rel="noopener">INDOT: AASHTO temp-works guide loads</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease, axes, hover} = P;
+const E = 29000;
+
+/* ---------- influence-line helpers ---------- */
+const TRUCK = [[0,8],[14,32],[28,32]];   // [offset behind front axle, kips]
+const TANDEM = [[0,25],[4,25]];
+function momentAt(a, L, axles, xFront){
+  let M = 0;
+  for (const [off, Pk] of axles){ const p = xFront - off; if (p < 0 || p > L) continue; M += a <= p ? Pk*(L-p)*a/L : Pk*p*(L-a)/L; }
+  return M;
+}
+function envelope(L, axles){
+  const n = 100, env = new Array(n+1).fill(0);
+  const span = axles[axles.length-1][0], steps = 1500;
+  for (let k=0;k<=steps;k++){ const xf = -1 + (L + span + 2)*k/steps;
+    for (let i=0;i<=n;i++){ const m = momentAt(L*i/n, L, axles, xf); if (m > env[i]) env[i] = m; } }
+  return env;
+}
+function shearMax(L, axles){
+  // front axle (heaviest first is not always best) — scan positions, shear just right of left support
+  let V = 0; const span = axles[axles.length-1][0];
+  for (let k=0;k<=600;k++){ const xf = (L + span)*k/600; let v = 0; for (const [off,Pk] of axles){ const p = xf - off; if (p >= 0 && p <= L) v += Pk*(1 - p/L); } V = Math.max(V, v); }
+  // also reversed travel direction
+  for (let k=0;k<=600;k++){ const xf = (L + span)*k/600; let v = 0; for (const [off,Pk] of axles){ const p = L - (xf - off); if (p >= 0 && p <= L) v += Pk*(1 - p/L); } V = Math.max(V, v); }
+  return V;
+}
+
+/* ---------- SHEET 1: hero truck ---------- */
+const HL = 100, heroEnv = envelope(HL, TRUCK);
+const heroMax = Math.max(...heroEnv);
+P.anim($('hero'), (ctx, w, h, t) => {
+  const x0 = 40, x1 = w - 40, sc = (x1-x0)/HL, deck = h*0.42;
+  const cyc = P.reduce ? 0.55 : (t/9) % 1;
+  const xf = -6 + (HL + 34)*cyc;
+  // supports + deck
+  ctx.fillStyle = C.concrete; ctx.fillRect(x0-14, deck+8, 28, h-deck-8); ctx.fillRect(x1-14, deck+8, 28, h-deck-8);
+  ctx.fillStyle = C.steel; ctx.fillRect(x0, deck, x1-x0, 8);
+  // truck body
+  const tx = x => x0 + x*sc;
+  const front = tx(xf), rear = tx(xf - 28);
+  ctx.save(); ctx.globalAlpha = 0.9;
+  ctx.fillStyle = C.storm; ctx.fillRect(front - 5*sc, deck - 26, 8*sc, 18); // cab
+  ctx.fillStyle = C['ink-soft']; ctx.fillRect(rear - 4*sc, deck - 30, (28-1)*sc, 22); // trailer
+  ctx.restore();
+  for (const [off, Pk] of TRUCK){
+    const p = xf - off, x = tx(p);
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(x, deck - 5, 5, 0, 7); ctx.fill();
+    if (p >= 0 && p <= HL){ arrow(ctx, x, deck - 62, x, deck - 34, {color:C.pencil, width:2, head:7}); text(ctx, Pk+'k', x, deck - 66, {size:10, align:'center', color:C.pencil}); }
+  }
+  // moment diagram for current position + envelope
+  const mBase = deck + 26, msc = (h - mBase - 14)/heroMax;
+  line(ctx, heroEnv.map((m,i) => [tx(HL*i/100), mBase + m*msc]), {color:C['ink-soft'], width:1.5, dash:[5,4]});
+  const cur = []; for (let i=0;i<=100;i++){ cur.push([tx(HL*i/100), mBase + momentAt(HL*i/100, HL, TRUCK, xf)*msc]); }
+  line(ctx, [[x0, mBase], ...cur, [x1, mBase]], {color:C.s1, width:2, fill:C.s1, alpha:0.18, close:true});
+  line(ctx, [[x0, mBase],[x1, mBase]], {color:C['ink-soft'], width:1});
+  const mid = xf - 14;
+  const Mmid = (mid >= 0 && mid <= HL) ? momentAt(mid, HL, TRUCK, xf) : 0;
+  $('hX').textContent = xf.toFixed(0); $('hM').textContent = Mmid.toFixed(0); $('hMax').textContent = heroMax.toFixed(0);
+  text(ctx, 'dashed = max envelope', x1, h - 4, {size:10, align:'right', color:C['ink-soft']});
+});
+
+/* ---------- SHEET 3: HL-93 ---------- */
+let LL = {L:100};
+const lPlot = P.still($('lPlot'), (ctx, w, h) => {
+  const L = LL.L, eT = LL.eT, eD = LL.eD;
+  if (!eT) return;
+  const lane = i => 0.64*(L*i/100)*(L - L*i/100)/2;
+  const tot = eT.map((m,i) => LL.m*(1.33*Math.max(m, eD[i]) + lane(i)));
+  const ymax = Math.max(...tot)*1.08;
+  const box = {l:56, r:w-14, t:24, b:h-36};
+  const A = axes(ctx, box, [0,L], [0,ymax], {xlabel:'x (ft)', ylabel:'M (k-ft)'});
+  const X = i => A.X(L*i/100);
+  line(ctx, eT.map((m,i)=>[X(i), A.Y(1.33*m)]), {color:C.s1, width:2});
+  line(ctx, eD.map((m,i)=>[X(i), A.Y(1.33*m)]), {color:C.s2, width:2});
+  line(ctx, eT.map((m,i)=>[X(i), A.Y(lane(i))]), {color:C.s3, width:2});
+  line(ctx, tot.map((m,i)=>[X(i), A.Y(m)]), {color:C.pencil, width:2.5});
+  if (LL.hx != null){
+    const i = clamp(Math.round(A.inv.x(LL.hx)/L*100), 0, 100);
+    line(ctx, [[X(i), box.t],[X(i), box.b]], {color:C['ink-soft'], width:1});
+    ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(X(i), A.Y(tot[i]), 4, 0, 7); ctx.fill();
+  }
+  LL.A = A; LL.tot = tot;
+});
+hover($('lPlot'), $('lTip'), x => {
+  LL.hx = x; lPlot.render();
+  if (x == null || !LL.A) return null;
+  const i = clamp(Math.round(LL.A.inv.x(x)/LL.L*100), 0, 100);
+  return `x ${(LL.L*i/100).toFixed(1)} ft · truck ${(1.33*LL.eT[i]).toFixed(0)} · tandem ${(1.33*LL.eD[i]).toFixed(0)} · lane ${(0.64*(LL.L*i/100)*(LL.L-LL.L*i/100)/2).toFixed(0)} · total ${LL.tot[i].toFixed(0)}`;
+});
+function hl93(){
+  const L = +$('lSpan').value, m = $('lM').checked ? 1.2 : 1.0;
+  $('lSpano').textContent = L + ' ft';
+  const eT = envelope(L, TRUCK), eD = envelope(L, TANDEM);
+  const MT = Math.max(...eT), MD = Math.max(...eD), Ml = 0.64*L*L/8;
+  const VT = shearMax(L, TRUCK), VD = shearMax(L, TANDEM), Vl = 0.64*L/2;
+  const Mtot = m*(1.33*Math.max(MT, MD) + Ml), Vtot = m*(1.33*Math.max(VT, VD) + Vl);
+  $('lMout').textContent = fmt(Mtot, 0); $('lVout').textContent = fmt(Vtot, 1);
+  $('lEq').innerHTML = `Truck M<sub>max</sub> = ${MT.toFixed(0)} k-ft · tandem ${MD.toFixed(0)} → ${MT >= MD ? 'truck' : 'tandem'} governs<br>Lane = 0.64L²/8 = ${Ml.toFixed(0)} k-ft<br>M<sub>LL+IM</sub> = ${m.toFixed(2)} × (1.33 × ${Math.max(MT,MD).toFixed(0)} + ${Ml.toFixed(0)}) = <b>${Mtot.toFixed(0)} k-ft</b><br>V: truck ${VT.toFixed(1)} · tandem ${VD.toFixed(1)} · lane ${Vl.toFixed(1)} → <b>${Vtot.toFixed(1)} k</b><br><span class="c">Strength I: × 1.75, then distribute to girders (DF) or use lever rule for single-lane temp spans</span>`;
+  LL = {L, m, eT, eD, hx: LL.hx};
+  lPlot.render();
+}
+P.bind(['lSpan','lM'], hl93);
+
+/* ---------- SHEET 4: trestle ---------- */
+const NB = 5;                  // bents
+let T = {x:40};
+function trackLoad(V, ex, L){
+  // returns function q(s) (k/ft) along track, s from -L/2 to L/2 (+ toward front)
+  const e = Math.abs(ex);
+  if (V <= 0) return () => 0;
+  if (e <= L/6){ const q0 = V/L; return s => q0*(1 + 12*ex*s/(L*L)); }
+  const len = 3*(L/2 - e), qm = 2*V/len, sg = Math.sign(ex);
+  return s => { const d = sg > 0 ? (L/2 - s) : (s + L/2); return d <= len ? qm*(1 - d/len) : 0; };
+}
+function trestle(xc){
+  const S=+$('tS').value, n=+$('tN').value, Wc=+$('tWc').value, Wl=+$('tWl').value, R=+$('tR').value, th=+$('tTh').value*Math.PI/180, dyn=+$('tDyn').value/100, cap=+$('tCap').value;
+  const Lt = 22, G = 16, ec = 3, ps = 6;          // track length, gauge, crane CG behind center, pile spacing
+  const W = Wc + Wl, e = (Wl*R - Wc*ec)/W;
+  const ex = e*Math.cos(th), ey = e*Math.sin(th);
+  const V1 = W/2 + W*ey/G, V2 = W/2 - W*ey/G;
+  const q1 = trackLoad(V1, ex, Lt), q2 = trackLoad(V2, ex, Lt);
+  const bents = Array.from({length:NB}, (_,i) => i*S);
+  const R1 = new Array(NB).fill(0), R2 = new Array(NB).fill(0);
+  const N = 80;
+  for (let k=0;k<N;k++){
+    const s = -Lt/2 + Lt*(k+0.5)/N, x = xc + s, ds = Lt/N;
+    if (x < 0 || x > bents[NB-1]) continue;
+    const j = Math.min(NB-2, Math.floor(x/S)), f = (x - bents[j])/S;
+    const a = q1(s)*ds, b = q2(s)*ds;
+    R1[j] += a*(1-f); R1[j+1] += a*f; R2[j] += b*(1-f); R2[j+1] += b*f;
+  }
+  const ys = Array.from({length:n}, (_,i) => (i - (n-1)/2)*ps), sy2 = ys.reduce((s,y)=>s+y*y,0);
+  const piles = bents.map((_,i) => { const Rt = (R1[i] + R2[i])*(1+dyn), Mt = (R1[i] - R2[i])*(1+dyn)*G/2; return ys.map(y => Rt/n + Mt*y/sy2); });
+  const Rb = bents.map((_,i) => (R1[i]+R2[i])*(1+dyn));
+  const pmax = Math.max(...piles.flat()), pmin = Math.min(...piles.flat());
+  return {S, n, Wc, Wl, R, th, dyn, cap, Lt, G, e, ex, ey, V1, V2, q1, q2, bents, Rb, piles, pmax, pmin, xc};
+}
+function trestleUI(){
+  $('tSo').textContent = $('tS').value+' ft'; $('tNo').textContent = $('tN').value; $('tWco').textContent = $('tWc').value+' k'; $('tWlo').textContent = $('tWl').value+' k';
+  $('tRo').textContent = $('tR').value+' ft'; $('tTho').textContent = $('tTh').value+'°'; $('tDyno').textContent = $('tDyn').value+'%'; $('tCapo').textContent = $('tCap').value+' k';
+  const Ltot = 4*(+$('tS').value);
+  $('tPos').min = 11; $('tPos').max = Ltot - 11; $('tPoso').textContent = $('tPos').value + ' ft';
+  if (P.reduce) P.redraw();
+}
+P.bind(['tS','tN','tWc','tWl','tR','tTh','tDyn','tCap','tAuto'], trestleUI);
+$('tPos').addEventListener('input', () => { $('tAuto').checked = false; $('tPoso').textContent = $('tPos').value + ' ft'; if (P.reduce) P.redraw(); });
+let tWorst = 0, tLastEq = 0;
+function crawlerSide(ctx, x, deck, sx, sy, R, th){
+  // tracks at true horizontal scale (sx), superstructure compressed vertically (sy) so the boom fits
+  const Lb = 80, alpha = Math.acos(clamp(R/Lb, 0, 0.98)), boomH = Lb*Math.sin(alpha), dx = R*Math.cos(th);
+  ctx.save();
+  ctx.fillStyle = C.ink; ctx.fillRect(x - 11*sx, deck - 3.5*sy, 22*sx, 3.5*sy);
+  ctx.fillStyle = C.storm; ctx.fillRect(x - 7*sx, deck - 10*sy, 13*sx, 6.5*sy);
+  ctx.fillStyle = C.ink; ctx.fillRect(x - 11*sx, deck - 9.5*sy, 4.5*sx, 5.5*sy);
+  const fx = x + 3*sx, fy = deck - 8*sy, tx = fx + dx*sx, ty = fy - boomH*sy;
+  ctx.strokeStyle = C.storm; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(tx, ty); ctx.stroke();
+  const hy = Math.min(deck - 14*sy, ty + 30*sy);
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(tx, hy); ctx.stroke();
+  ctx.fillStyle = C.concrete; ctx.fillRect(tx - 5*sx, hy, 10*sx, 4*sy);
+  ctx.restore();
+}
+P.anim($('tr'), (ctx, w, h, t, dt) => {
+  const S = +$('tS').value, Ltot = 4*S;
+  let xc;
+  if ($('tAuto').checked && !P.reduce){ xc = 11 + (Ltot - 22)*(0.5 - 0.5*Math.cos(t*0.25)); $('tPos').value = Math.round(xc); $('tPoso').textContent = Math.round(xc) + ' ft'; }
+  else xc = +$('tPos').value;
+  const r = trestle(xc);
+  const x0 = 40, sc = (w - 80)/Ltot, deck = h*0.48, mud = h - 30, water = deck + (mud - deck)*0.35;
+  const X = x => x0 + x*sc;
+  // water + mudline
+  ctx.fillStyle = C.water; ctx.globalAlpha = 0.16; ctx.fillRect(0, water, w, mud - water); ctx.globalAlpha = 1;
+  const wv = P.reduce ? 0 : t*30;
+  ctx.strokeStyle = C.water; ctx.lineWidth = 1.2; ctx.beginPath();
+  for (let x=0;x<=w;x+=6) ctx.lineTo(x, water + Math.sin((x + wv)*0.05)*2); ctx.stroke();
+  ground(ctx, 0, w, mud, C.soil);
+  // bents
+  const pmaxAll = Math.max(1, r.cap*1.3);
+  r.bents.forEach((b,i) => {
+    const x = X(b);
+    ctx.strokeStyle = C.steel; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x-6, deck+6); ctx.lineTo(x-6, mud+10); ctx.moveTo(x+6, deck+6); ctx.lineTo(x+6, mud+10); ctx.stroke();
+    ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x-6, deck+14); ctx.lineTo(x+6, water-6); ctx.moveTo(x+6, deck+14); ctx.lineTo(x-6, water-6); ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.fillRect(x-14, deck+2, 28, 6);
+    // reaction bar below mudline label
+    const pm = Math.max(...r.piles[i]), u = pm/r.cap;
+    const bh = clamp(pm/pmaxAll, 0, 1)*(mud - water - 14);
+    ctx.fillStyle = u > 1 ? C.bad : u > 0.9 ? C.warn : C.s1; ctx.globalAlpha = 0.85;
+    ctx.fillRect(x + 12, mud - bh, 8, bh); ctx.globalAlpha = 1;
+    text(ctx, `${r.Rb[i].toFixed(0)}k`, x, mud + 22, {size:10, align:'center', color:C['ink-soft']});
+  });
+  // deck / stringers
+  ctx.fillStyle = C.steel; ctx.fillRect(X(0) - 10, deck - 4, Ltot*sc + 20, 6);
+  ctx.fillStyle = C.timber; ctx.fillRect(X(0) - 10, deck - 8, Ltot*sc + 20, 4);
+  // track pressure diagram (both tracks) hung under the deck
+  const pts = [];
+  for (let k=0;k<=40;k++){ const sT = -r.Lt/2 + r.Lt*k/40, x = xc + sT; if (x < 0 || x > Ltot) continue; pts.push([X(x), deck + 4 + clamp((r.q1(sT) + r.q2(sT))*1.1, 0, (water - deck)*0.8)]); }
+  if (pts.length > 1) line(ctx, [[pts[0][0], deck + 4], ...pts, [pts[pts.length-1][0], deck + 4]], {color:C.pencil, width:1.5, fill:C.pencil, alpha:0.3, close:true});
+  // crane
+  crawlerSide(ctx, X(xc), deck - 8, sc, Math.min(sc, (deck - 30)/90), r.R, r.th);
+  // readouts
+  const pmax = Math.max(...r.piles.flat()), bmax = Math.max(...r.Rb);
+  $('tX').textContent = xc.toFixed(0); $('tB').textContent = bmax.toFixed(0); $('tP').textContent = pmax.toFixed(0);
+  tWorst = Math.max(tWorst*(1 - (dt||0)*0.05), pmax);
+  P.pill('tPill', pmax/r.cap, ['piles OK','tight','pile overload']);
+  if (t - tLastEq > 0.25 || P.reduce){ tLastEq = t;
+    $('tEq').innerHTML = `ΣW = ${(r.Wc+r.Wl).toFixed(0)} k · e = ${r.e.toFixed(2)} ft → along ${Math.abs(r.ex).toFixed(2)} ft (L<sub>t</sub>/6 = ${(r.Lt/6).toFixed(2)}), across ${r.ey.toFixed(2)} ft<br>Tracks (gauge ${r.G} ft): ${r.V1.toFixed(0)} k / ${r.V2.toFixed(0)} k<br>Bent reactions (+${(r.dyn*100).toFixed(0)}%): ${r.Rb.map(v=>v.toFixed(0)).join(' · ')} k<br>Max pile = R/n + M<sub>t</sub>y/Σy² = <b>${pmax.toFixed(0)} k</b> vs ${r.cap} k <span class="c">(${r.n} piles @ 6 ft; crawler 22 ft tracks; bars = max pile per bent)</span>`; }
+});
+
+/* ---------- SHEET 5: stream flow ---------- */
+let SF = {};
+function stream(){
+  const V=+$('fV').value, Cd=+$('fCd').value, D=+$('fD').value/12, H=+$('fH').value, dd=+$('fDeb').value, dw=+$('fDebW').value;
+  $('fVo').textContent = V+' ft/s'; $('fDo').textContent = (D*12).toFixed(0)+' in'; $('fHo').textContent = H+' ft'; $('fDebo').textContent = dd+' ft'; $('fDebWo').textContent = dw+' ft';
+  const p = Cd*V*V/1000, F = p*D*H, pdb = 1.4*V*V/1000, Fd = pdb*dd*dw;
+  const Mmud = F*H/2 + Fd*(H - dd/2);
+  $('fEq').innerHTML = `p = C<sub>D</sub>V²/1000 = ${Cd} × ${V}² / 1000 = <b>${(p*1000).toFixed(0)} psf</b><br>On the pile: F = p·D·h = ${(F).toFixed(2)} k at ${(H/2).toFixed(1)} ft above mudline<br>Debris: 1.4V²/1000 × ${dd} × ${dw} = <b>${Fd.toFixed(2)} k</b> near the surface<br>Overturning at mudline ≈ ${Mmud.toFixed(0)} k-ft <span class="c">(before scour; then p-y below)</span>`;
+  SF = {V, Cd, D, H, dd, dw, p, F, Fd};
+  if (P.reduce) P.redraw();
+}
+P.bind(['fV','fCd','fD','fH','fDeb','fDebW'], stream);
+const parts = Array.from({length:70}, () => ({x:Math.random(), y:Math.random(), s:0.6+Math.random()*0.8}));
+P.anim($('sf'), (ctx, w, h, t, dt) => {
+  const top = 26, mud = h - 22, cx = w*0.6, pw = clamp(SF.D*14, 10, 46);
+  ctx.fillStyle = C.water; ctx.globalAlpha = 0.15; ctx.fillRect(0, top, w, mud - top); ctx.globalAlpha = 1;
+  ground(ctx, 0, w, mud, C.soil);
+  // pile
+  ctx.fillStyle = C.steel; ctx.fillRect(cx - pw/2, 4, pw, mud + 10);
+  // debris raft
+  if (SF.dd > 0 && SF.dw > 0){ ctx.fillStyle = C.timber; ctx.globalAlpha = 0.8; ctx.fillRect(cx - pw/2 - 14, top, 14, clamp(SF.dd*5, 4, (mud-top)*0.5)); ctx.globalAlpha = 1; }
+  // particles
+  const sp = (SF.V||5)*0.022;
+  ctx.fillStyle = C.water;
+  for (const p of parts){
+    if (!P.reduce) p.x += sp*p.s*dt*8;
+    if (p.x > 1){ p.x = 0; p.y = Math.random(); }
+    let x = p.x*w, y = top + 6 + p.y*(mud - top - 12);
+    const dx = x - cx;
+    if (Math.abs(dx) < pw*2.2 && Math.abs(dx) > 0){ const k = Math.exp(-Math.pow(dx/(pw*1.4),2)); y += (y < (top+mud)/2 ? -1 : 1)*k*8; }
+    if (Math.abs(dx) < pw/2) continue;
+    ctx.globalAlpha = 0.7; ctx.fillRect(x, y, 6*p.s, 1.6); ctx.globalAlpha = 1;
+  }
+  // pressure arrows on upstream face
+  const n = 6, len = clamp((SF.p||0.05)*260, 8, 70);
+  for (let i=0;i<n;i++){ const y = top + (i+0.5)*(mud-top)/n; arrow(ctx, cx - pw/2 - 18 - len, y, cx - pw/2 - 3, y, {color:C.pencil, width:2, head:7}); }
+  text(ctx, `${((SF.p||0)*1000).toFixed(0)} psf`, cx - pw/2 - 22 - len, top - 8, {size:11, color:C.pencil, weight:'bold'});
+});
+
+/* ---------- SHEET 6: twin-girder system buckling ---------- */
+let GS = {ratio:0.5};
+function girders(){
+  const L=+$('gL').value, s=+$('gS').value, D=+$('gD').value, bf=+$('gBf').value, tf=+$('gTf').value, w=+$('gW').value, tw = Math.max(0.4375, Math.round(D/120*16)/16);
+  $('gLo').textContent = L+' ft'; $('gSo').textContent = s+' ft'; $('gDo').textContent = D+' in'; $('gBfo').textContent = bf+' in'; $('gTfo').textContent = tf+' in'; $('gWo').textContent = w.toFixed(2)+' klf';
+  const Ix = tw*D*D*D/12 + 2*bf*tf*Math.pow(D/2 + tf/2, 2), Iy = 2*tf*bf*bf*bf/12 + D*tw*tw*tw/12;
+  const Cb = 1.14;
+  const Mgs = Cb*Math.PI*Math.PI*(s*12)*E*Math.sqrt(Iy*Ix)/Math.pow(L*12,2)/12;   // k-ft, whole system
+  const Msys = 2*w*L*L/8;
+  // single girder elastic LTB (doubly symmetric) unbraced over L, for contrast
+  const J = (2*bf*tf*tf*tf + D*tw*tw*tw)/3, ho = D + tf, Cw = Iy*ho*ho/4, G = 11200, Lin = L*12;
+  const Mcr1 = Cb*Math.PI/Lin*Math.sqrt(E*Iy*G*J + Math.pow(Math.PI*E/Lin,2)*Iy*Cw)/12;
+  const ratio = Msys/Mgs;
+  $('gR').textContent = ratio.toFixed(2); $('gA').textContent = ratio < 1 ? (1/(1-ratio)).toFixed(2) : '∞';
+  $('gEq').innerHTML = `t<sub>w</sub> ≈ ${tw.toFixed(3)} in · I<sub>x</sub> = ${fmt(Ix,0)} in⁴ · I<sub>y</sub> = ${fmt(Iy,0)} in⁴<br>M<sub>gs</sub> = C<sub>b</sub>π²sE√(I<sub>y</sub>I<sub>x</sub>)/L² = <b>${fmt(Mgs,0)} k-ft</b> (C<sub>b</sub> = 1.14)<br>System demand 2 × wL²/8 = <b>${fmt(Msys,0)} k-ft</b> → ratio ${ratio.toFixed(2)}<br><span class="c">Compare: a single girder alone, unbraced over L: M<sub>cr</sub> ≈ ${fmt(Mcr1,0)} k-ft each. Cross-frames help that mode, not the system mode.</span>`;
+  const pl = $('gPill');
+  if (ratio >= 1){ pl.className = 'pill ng'; pl.textContent = 'system buckles'; }
+  else if (ratio > 0.7){ pl.className = 'pill warn'; pl.textContent = 'large amplification'; }
+  else { pl.className = 'pill ok'; pl.textContent = 'system stable'; }
+  GS = {ratio, s, D};
+  if (P.reduce) P.redraw();
+}
+P.bind(['gL','gS','gD','gBf','gTf','gW'], girders);
+P.anim($('gCv'), (ctx, w, h, t) => {
+  const r = clamp(GS.ratio, 0, 1.2);
+  const amp = r >= 1 ? 1 : Math.min(1, 0.06/(1 - r));
+  const ph = P.reduce ? 1 : Math.sin(t*1.2);
+  const cx = w/2, cy = h*0.52, sp = clamp(GS.s*14, 60, w*0.6), dh = clamp(GS.D*1.6, 70, h*0.55);
+  const rot = amp*0.35*ph, dx = amp*40*ph;
+  ground(ctx, cx - sp, cx + sp, cy + dh/2 + 30);
+  // bearings
+  [-1,1].forEach(sg => { ctx.fillStyle = C.concrete; ctx.fillRect(cx + sg*sp/2 - 14, cy + dh/2 + 18, 28, 12); });
+  ctx.save(); ctx.translate(cx + dx, cy); ctx.rotate(rot);
+  [-1,1].forEach(sg => {
+    const gx = sg*sp/2;
+    ctx.fillStyle = C.steel;
+    ctx.fillRect(gx - 22, -dh/2, 44, 7); ctx.fillRect(gx - 22, dh/2 - 7, 44, 7); ctx.fillRect(gx - 3, -dh/2, 6, dh);
+  });
+  // cross-frame (X)
+  ctx.strokeStyle = C.pencil; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(-sp/2, -dh/2 + 7); ctx.lineTo(sp/2, dh/2 - 7); ctx.moveTo(sp/2, -dh/2 + 7); ctx.lineTo(-sp/2, dh/2 - 7);
+  ctx.moveTo(-sp/2, -dh/2 + 7); ctx.lineTo(sp/2, -dh/2 + 7); ctx.moveTo(-sp/2, dh/2 - 7); ctx.lineTo(sp/2, dh/2 - 7); ctx.stroke();
+  ctx.restore();
+  text(ctx, 'section at midspan · girders sweep and twist together', 10, h - 8, {size:10, color:C['ink-soft']});
+});
+
+/* ---------- cards ---------- */
+P.cards('cards', [
+  ["What load factors apply to construction loads in AASHTO LRFD?", "Art. 3.4.2.1: construction loads (with dynamics) at no less than 1.5 in Strength I. DC and DW at no less than 1.25 when checking Strength I, III and V during construction. Strength IV uses the table. Construction deflections use Service I. The owner can specify otherwise."],
+  ["How would you design a work trestle for a 300-ton crawler?", "Use the manufacturer's track pressures for the worst swing and radius (over the corner, max load). Distribute them through the mats to the stringers, then to the caps and piles (rigid cap, lever arm). Add deck dead load, a dynamic allowance and lateral loads (stream, wind, braking, swing). Size piles for axial, lateral and scour-adjusted free length. Brace the bents, verify pile capacity in the field (PDA, set), and mark the crane paths."],
+  ["Why do twin girders sometimes buckle even with cross-frames at every panel point?", "Global system buckling. Cross-frames make the pair act as one section, whose capacity depends on the spacing s (M<sub>gs</sub> ∝ s√(I<sub>y</sub>I<sub>x</sub>)/L²), not on the cross-frame spacing. Fix it with plan bracing, a third girder, intermediate supports or a holding crane."],
+  ["When does the design tandem govern over the truck?", "On short spans, roughly under about 40 ft for moment. Two 25-k axles 4 ft apart concentrate more load than a 72-k truck spread over 28 ft."],
+  ["Stream force on a 36-in pipe pile in 7 ft/s water, 25 ft deep?", "p = 0.7 × 7² / 1000 = 0.034 ksf (34 psf). F = 0.034 × 3 × 25 ≈ 2.6 k at mid-depth. Then add debris (C<sub>D</sub> = 1.4 on the raft) and check with the scoured free length."],
+  ["Which IM do you use for a crawler crane on a trestle?", "AASHTO's 33% IM is calibrated for highway trucks. For crawlers, use the owner's or company's construction criteria (often a modest dynamic allowance) plus the manufacturer's dynamic and swing provisions, and factor construction loads by at least 1.5 in Strength I."],
+  ["What is cross-frame detailing (fit) and why should the erector care?", "On curved and skewed girders, the cross-frames are detailed to fit at no load, steel dead load, or total dead load. The choice controls fit-up forces during erection (come-alongs and jacks), web plumbness at the end, and locked-in stresses."]
+]);
+})();
+</script>
+</body>
+</html>

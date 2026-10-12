@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AISC Refresher for Temporary Works · Temporary Works Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="assets/prep.css">
+<script src="assets/prep.js"></script>
+<style>
+.kgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.kgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.kcase{border:1.5px solid var(--rule);background:var(--paper);padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font:inherit;color:inherit}
+.kcase[aria-pressed="true"]{border-color:var(--pencil);border-width:2.5px}
+.kcase svg{width:100%;max-width:70px;height:92px}
+.kcase .label{font-size:.62rem;text-align:center}
+.kcase b{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<script>P.nav('steel.html')</script>
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>1</b> of 7</div><div>AISC 360 · what temp works leans on</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">AISC 360-16 / Steel Construction Manual</span><span class="hand">temporary steel is mostly stability →</span></div>
+    <h1>Steel, Mostly<br>Stability</h1>
+    <div class="stage">
+      <canvas id="hero" role="img" aria-label="A pinned column bowing more and more as load approaches the Euler load, with the amplification factor curve 1/(1−P/Pe) tracking it"></canvas>
+      <div class="readout"><span>P/P<sub>e</sub> = <b id="hR">0.00</b></span><span>amplification = <b id="hA">1.00</b></span></div>
+    </div>
+    <p class="lede">Shoring legs, tower posts, spreader bars, girders before their cross-frames go in: most temporary steel is slender and lightly braced, and it hasn't got its final connections yet. The checks you learned all still apply. What changes is that out-of-plumb, unbraced length and bracing stiffness usually govern instead of yield.</p>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b> of 7</div><div>Compression · Chapter E</div><div>F<sub>cr</sub></div></div>
+  <div class="sheet-body">
+    <h2>The column curve</h2>
+    <div class="callout remember"><span class="tag">From your AISC course</span>
+      <p>F<sub>e</sub> = π²E/(KL/r)². If KL/r ≤ 4.71√(E/F<sub>y</sub>), or F<sub>y</sub>/F<sub>e</sub> ≤ 2.25: F<sub>cr</sub> = 0.658<sup>F<sub>y</sub>/F<sub>e</sub></sup>F<sub>y</sub>. Otherwise F<sub>cr</sub> = 0.877F<sub>e</sub>. Then P<sub>n</sub> = F<sub>cr</sub>A<sub>g</sub>, with φ = 0.90 or Ω = 1.67. Keep KL/r ≤ 200 as good practice.</p></div>
+    <h3>Pick the end condition (AISC Commentary Table C-A-7.1)</h3>
+    <div class="kgrid" id="kgrid"></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="cMem">Member</label>
+          <select id="cMem"></select></div>
+        <div class="ctrl"><label class="label" for="cL">Unbraced length L: <span class="val" id="cLo"></span></label><input id="cL" type="range" min="2" max="40" step="0.5" value="14"></div>
+        <div class="stat-row">
+          <div class="stat"><span class="label">KL/r</span><span class="big" id="cKLr">—</span></div>
+          <div class="stat"><span class="label">φP<sub>n</sub> (LRFD)</span><span class="big" id="cPhi">—</span><span class="mono">kips</span></div>
+          <div class="stat"><span class="label">P<sub>n</sub>/Ω (ASD)</span><span class="big" id="cAsd">—</span><span class="mono">kips</span></div>
+        </div>
+        <div class="eq" id="cEq"></div>
+      </div>
+      <div class="col">
+        <div class="plot"><canvas id="cPlot" role="img" aria-label="Critical stress versus slenderness with Euler curve and current member marked"></canvas><div class="tip" id="cTip"></div></div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>F<sub>cr</sub> (AISC E3)</span><span><i class="dash" style="color:var(--ink-soft)"></i>Euler F<sub>e</sub></span><span><i style="background:var(--pencil)"></i>your member</span></div>
+      </div>
+    </div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>A falsework post standing on a sill with no bracing at the top is a <strong>flagpole</strong>: K = 2.1. Bracing the top drops the effective length by a factor of 2 and the Euler load by a factor of 4. Also watch <strong>screw-jack extension</strong> on shoring legs. A long, eccentric jack is a short slender column, and manufacturers' capacity tables fall off quickly with extension.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b> of 7</div><div>Flexure · Chapter F2</div><div>L<sub>b</sub> · C<sub>b</sub></div></div>
+  <div class="sheet-body">
+    <h2>Lateral-torsional buckling</h2>
+    <div class="callout remember"><span class="tag">From your AISC course</span>
+      <p>Plastic for L<sub>b</sub> ≤ L<sub>p</sub> = 1.76r<sub>y</sub>√(E/F<sub>y</sub>). Linear (inelastic) between L<sub>p</sub> and L<sub>r</sub>. Elastic beyond L<sub>r</sub>. C<sub>b</sub> = 12.5M<sub>max</sub>/(2.5M<sub>max</sub> + 3M<sub>A</sub> + 4M<sub>B</sub> + 3M<sub>C</sub>) lifts the curve, capped at M<sub>p</sub>.</p></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="bShape">Shape (F<sub>y</sub> = 50 ksi)</label><select id="bShape"></select></div>
+          <div class="ctrl"><label class="label" for="bCb">C<sub>b</sub> case</label><select id="bCb">
+            <option value="1.0">1.00 · uniform moment / cantilever</option>
+            <option value="1.14" selected>1.14 · simple span, UDL, ends braced</option>
+            <option value="1.32">1.32 · midspan point load</option>
+            <option value="1.67">1.67 · linear, one end zero</option>
+            <option value="2.27">2.27 · reverse curvature</option></select></div>
+        </div>
+        <div class="ctrl"><label class="label" for="bLb">Unbraced length L<sub>b</sub>: <span class="val" id="bLbo"></span></label><input id="bLb" type="range" min="0" max="45" step="0.5" value="20"></div>
+        <div class="stage short"><canvas id="bPlan" role="img" aria-label="Plan view of a beam between brace points; the compression flange sweeps sideways between braces"></canvas>
+          <div class="readout"><span>plan view · compression flange</span></div></div>
+        <div class="stat-row">
+          <div class="stat"><span class="label">φM<sub>n</sub></span><span class="big" id="bPhi">—</span><span class="mono">k-ft</span></div>
+          <div class="stat"><span class="label">Zone</span><span class="big" id="bZone" style="font-size:2rem">—</span></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="plot"><canvas id="bPlot" role="img" aria-label="Design flexural strength versus unbraced length for the chosen shape and Cb"></canvas><div class="tip" id="bTip"></div></div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>φM<sub>n</sub> with your C<sub>b</sub></span><span><i class="dash" style="color:var(--ink-soft)"></i>C<sub>b</sub> = 1.0</span><span><i style="background:var(--pencil)"></i>your L<sub>b</sub></span></div>
+        <div class="eq" id="bEq"></div>
+      </div>
+    </div>
+    <div class="callout trap"><span class="tag">Erection trap</span><p>A girder set before its cross-frames go in has L<sub>b</sub> equal to the whole span, so the curve's far right is where erection lives. Two more things push you down the curve: <strong>load on the top flange</strong> (destabilizing, since AISC's C<sub>b</sub> assumes shear-center loading) and a <strong>cantilever overhang</strong> (use C<sub>b</sub> = 1.0 unless the tip is braced). For girder pairs, see the twin-girder system buckling check on the bridges page.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b> of 7</div><div>Stability bracing · Appendix 6</div><div>strength + stiffness</div></div>
+  <div class="sheet-body">
+    <h2>A brace needs two things</h2>
+    <p>Students remember the <strong>strength</strong> (the old "2% rule"). Interviewers ask about <strong>stiffness</strong>. A brace that's strong enough but too soft lets the member buckle in its unbraced shape. Appendix 6 sizes both, assuming an initial out-of-straightness of L<sub>br</sub>/500.</p>
+    <div class="twocol">
+      <div class="col">
+        <div class="chips" id="brType" role="group" aria-label="Bracing type">
+          <button class="chip" data-t="cn" aria-pressed="true">Column · nodal</button>
+          <button class="chip" data-t="cr" aria-pressed="false">Column · relative</button>
+          <button class="chip" data-t="bn" aria-pressed="false">Beam · nodal</button>
+          <button class="chip" data-t="br" aria-pressed="false">Beam · relative</button>
+        </div>
+        <div class="ctrl" id="brPWrap"><label class="label" for="brP">Required axial P<sub>r</sub>: <span class="val" id="brPo"></span></label><input id="brP" type="range" min="20" max="1500" step="10" value="400"></div>
+        <div class="ctrl" id="brMWrap" hidden><label class="label" for="brM">Required moment M<sub>r</sub>: <span class="val" id="brMo"></span></label><input id="brM" type="range" min="50" max="3000" step="25" value="800"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="brL">Brace spacing L<sub>br</sub>: <span class="val" id="brLo"></span></label><input id="brL" type="range" min="4" max="30" step="0.5" value="12"></div>
+          <div class="ctrl" id="brHWrap" hidden><label class="label" for="brH">Flange centroid distance h<sub>o</sub>: <span class="val" id="brHo"></span></label><input id="brH" type="range" min="10" max="96" step="1" value="36"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="brK">Provided brace stiffness: <span class="val" id="brKo"></span></label><input id="brK" type="range" min="0" max="300" step="1" value="150"></div>
+        <div class="eq" id="brEq"></div>
+      </div>
+      <div class="col">
+        <div class="stage tall"><canvas id="brCv" role="img" aria-label="Column with a mid-height brace spring; with low stiffness it buckles in one half-wave, with enough stiffness it buckles between braces"></canvas>
+          <div class="readout"><span>β provided / required = <b id="brRatio">—</b></span></div>
+          <div class="readout right bottom"><span class="pill" id="brPill">—</span></div></div>
+      </div>
+    </div>
+    <div class="callout verify"><span class="tag">Verify edition</span><p>These are the AISC 360-16 values. Column relative 0.005P<sub>r</sub>, nodal 0.01P<sub>r</sub>. Beam relative 0.005M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub>, nodal 0.02M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub>. Stiffness uses φ = 0.75 or Ω = 2.00. 360-10 used 0.004 and 0.008 for the relative cases. Torsional (cross-frame) bracing of beams has its own equations.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b> of 7</div><div>Combined forces · H1 · second order</div><div>P–M</div></div>
+  <div class="sheet-body">
+    <h2>Interaction &amp; amplification</h2>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl"><label class="label" for="iP">P<sub>r</sub>/P<sub>c</sub>: <span class="val" id="iPo"></span></label><input id="iP" type="range" min="0" max="1.2" step="0.01" value="0.35"></div>
+        <div class="ctrl"><label class="label" for="iM">M<sub>r</sub>/M<sub>c</sub> (first order, x + y): <span class="val" id="iMo"></span></label><input id="iM" type="range" min="0" max="1.2" step="0.01" value="0.4"></div>
+        <div class="ctrl"><label class="label" for="iPe">P<sub>r</sub>/P<sub>e1</sub> (for B<sub>1</sub>): <span class="val" id="iPeo"></span></label><input id="iPe" type="range" min="0" max="0.8" step="0.01" value="0.25"></div>
+        <label class="check"><input type="checkbox" id="iTr" checked> Transverse load between supports (C<sub>m</sub> = 1.0)</label>
+        <div class="eq" id="iEq"></div>
+        <span class="pill" id="iPill">—</span>
+      </div>
+      <div class="col">
+        <div class="plot"><canvas id="iPlot" role="img" aria-label="AISC H1-1 interaction diagram with first-order and amplified demand points"></canvas><div class="tip" id="iTip"></div></div>
+        <div class="legend"><span><i style="background:var(--ink)"></i>H1-1 limit</span><span><i style="background:var(--s1)"></i>first-order point</span><span><i style="background:var(--pencil)"></i>with B<sub>1</sub></span></div>
+      </div>
+    </div>
+    <div class="callout remember"><span class="tag">Why it matters for temp works</span><p>Shoring towers, tall posts and spreader bars carry axial load with an accidental eccentricity (out-of-plumb, a jack off center, a sling not quite on the centroid). B<sub>1</sub> = C<sub>m</sub>/(1 − αP<sub>r</sub>/P<sub>e1</sub>), with α = 1.0 (LRFD) or 1.6 (ASD). This amplification is why a "small" eccentricity governs once P approaches P<sub>e</sub>. The direct analysis method (Ch. C) handles this with notional loads (0.002Y<sub>i</sub>) and reduced stiffness (0.8EI, 0.8EA).</p></div>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b> of 7</div><div>Connections · Ch. J · Manual Parts 7–10</div><div>quick numbers</div></div>
+  <div class="sheet-body">
+    <h2>Bolts &amp; welds in your head</h2>
+    <div class="twocol">
+      <div class="col">
+        <h3>Bolt shear</h3>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="boG">Grade</label><select id="boG"><option value="A">Group A (A325 / F3125)</option><option value="B">Group B (A490)</option></select></div>
+          <div class="ctrl"><label class="label" for="boT">Threads</label><select id="boT"><option value="N">N · included in shear plane</option><option value="X">X · excluded</option></select></div>
+        </div>
+        <div class="ctrl-row three">
+          <div class="ctrl"><label class="label" for="boD">Diameter</label><select id="boD"><option value="0.75">3/4 in</option><option value="0.875" selected>7/8 in</option><option value="1">1 in</option><option value="1.125">1-1/8 in</option></select></div>
+          <div class="ctrl"><label class="label" for="boN">Bolts: <span class="val" id="boNo"></span></label><input id="boN" type="range" min="1" max="16" step="1" value="4"></div>
+          <div class="ctrl"><label class="label" for="boS">Shear planes</label><select id="boS"><option value="1">single</option><option value="2">double</option></select></div>
+        </div>
+        <div class="eq" id="boEq"></div>
+      </div>
+      <div class="col">
+        <h3>Fillet weld</h3>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="wS">Leg size: <span class="val" id="wSo"></span></label><input id="wS" type="range" min="3" max="12" step="1" value="5"></div>
+          <div class="ctrl"><label class="label" for="wL">Total length: <span class="val" id="wLo"></span></label><input id="wL" type="range" min="2" max="48" step="1" value="12"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="wT"> Load transverse to weld (1.0 + 0.5 sin<sup>1.5</sup>θ = 1.5)</label>
+        <div class="eq" id="wEq"></div>
+      </div>
+    </div>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Item</th><th>Remember</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Bolt shear F<sub>nv</sub></td><td>Group A: 54 ksi (N) / 68 ksi (X). Group B: 68 / 84 ksi. φ = 0.75, Ω = 2.00. F<sub>nt</sub> = 90 / 113 ksi.</td></tr>
+        <tr><td class="k">Bearing / tear-out</td><td>R<sub>n</sub> = 1.2l<sub>c</sub>tF<sub>u</sub> ≤ 2.4dtF<sub>u</sub> per bolt (deformation at service a concern)</td></tr>
+        <tr><td class="k">Slip-critical</td><td>R<sub>n</sub> = μD<sub>u</sub>h<sub>f</sub>T<sub>b</sub>n<sub>s</sub>. μ = 0.30 (Class A) / 0.50 (Class B), D<sub>u</sub> = 1.13. T<sub>b</sub> (A325): 28 / 39 / 51 k for 3/4, 7/8, 1 in. Use it where joints see load reversal or slip would hurt, as on repeatedly used lifting frames.</td></tr>
+        <tr><td class="k">Fillet weld</td><td>φR<sub>n</sub> = 0.75 × 0.60F<sub>EXX</sub> × 0.707w per inch, which is <strong>1.392 k/in per sixteenth</strong> for E70 (ASD 0.928)</td></tr>
+        <tr><td class="k">Block shear</td><td>R<sub>n</sub> = 0.6F<sub>u</sub>A<sub>nv</sub> + U<sub>bs</sub>F<sub>u</sub>A<sub>nt</sub> ≤ 0.6F<sub>y</sub>A<sub>gv</sub> + U<sub>bs</sub>F<sub>u</sub>A<sub>nt</sub>. Check it at lifting-lug plates and gusset ends.</td></tr>
+        <tr><td class="k">Prying</td><td>Hanger tees, bolted lifting attachments and flange-bolted brackets: Manual Part 9. A thin flange adds prying force to the bolt tension.</td></tr>
+        <tr><td class="k">Concrete bearing</td><td>φ = 0.65. P<sub>p</sub> = 0.85f'<sub>c</sub>A<sub>1</sub>√(A<sub>2</sub>/A<sub>1</sub>) ≤ 1.7f'<sub>c</sub>A<sub>1</sub>. Applies to base plates on footings and shoring jacks on slabs.</td></tr>
+        <tr><td class="k">Pin plates (AISC D5)</td><td>b<sub>eff</sub> = 2t + 0.63 in. Rupture 2tb<sub>eff</sub>F<sub>u</sub>, shear 0.6F<sub>u</sub>A<sub>sf</sub>, bearing 1.8F<sub>y</sub>A<sub>pb</sub>. For <em>lifting</em> lugs use ASME BTH-1 instead (lifting page).</td></tr>
+      </tbody></table></div>
+  </div>
+</section>
+
+<!-- SHEET 7 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>7</b> of 7</div><div>Erection world · AISC 303 · OSHA Subpart R</div><div>Rehearsal</div></div>
+  <div class="sheet-body">
+    <h2>Steel erection rules &amp; questions</h2>
+    <div class="ideas four">
+      <div class="idea"><h3>AISC 303 §7.10</h3><p>Temporary support of the frame (guys, bracing, falsework) is the <strong>erector's</strong> means and methods. The EOR has to identify a frame that isn't self-supporting.</p></div>
+      <div class="idea"><h3>4 anchor rods</h3><p>OSHA 1926.755: columns need at least 4 anchor rods, designed for a 300 lb eccentric load 18 in from the column face at the top.</p></div>
+      <div class="idea"><h3>2 bolts</h3><p>OSHA 1926.756: don't release the hoist line until each connection has at least two bolts, wrench-tight.</p></div>
+      <div class="idea"><h3>1 : 500</h3><p>AISC 303 column plumbness tolerance. It's also the L/500 imperfection behind Appendix 6 and the 0.002 notional load.</p></div>
+    </div>
+    <div class="callout remember"><span class="tag">Reading</span><p>AISC Design Guide 10, <em>Erection Bracing of Low-Rise Structural Steel Buildings</em>. Design Guide 1, <em>Base Plate and Anchor Rod Design</em>, for anchor rods during erection before grout. Manual Part 9 for prying.</p></div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Study aid built from AISC 360-16 and the 15th-edition Manual as I remember them. Shape properties come from Manual Table 1-1 and pipe properties use the 0.93t design wall. Verify any number you plan to rely on.</p>
+  <p>Sources: <a href="https://www.aisc.org/publications/steel-standards/" target="_blank" rel="noopener">AISC standards (free downloads)</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartR" target="_blank" rel="noopener">OSHA 1926 Subpart R</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const {C, $, fmt, text, arrow, ground, line, clamp, lerp, axes, hover} = P;
+const E = 29000;
+
+/* ---------- hero: amplification ---------- */
+P.anim($('hero'), (ctx, w, h, t) => {
+  const r = P.reduce ? 0.8 : 0.47 - 0.45*Math.cos(t*0.9);
+  const af = 1/(1-r);
+  $('hR').textContent = r.toFixed(2); $('hA').textContent = af.toFixed(2);
+  const g = h - 18, top = 50, cx = w*0.2;
+  ground(ctx, cx-60, cx+60, g);
+  // pin supports
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(cx, g-2); ctx.lineTo(cx-9, g); ctx.lineTo(cx+9, g); ctx.closePath(); ctx.fill();
+  const amp = 2.2*af;
+  const pts = []; for (let i=0;i<=40;i++){ const y = lerp(top, g-4, i/40); pts.push([cx + amp*Math.sin(Math.PI*i/40), y]); }
+  line(ctx, pts, {color: r > 0.75 ? C.pencil : C.steel, width: 6});
+  line(ctx, [[cx, top],[cx, g-4]], {color:C['ink-soft'], width:1, dash:[4,4]});
+  // load arrow
+  const len = 12 + r*40;
+  arrow(ctx, cx, top-len-6, cx, top-3, {color:C.pencil, width:3, head:10});
+  P.text(ctx, 'P', cx+10, top-len+4, {size:13, weight:'bold', color:C.pencil});
+  P.text(ctx, 'δ = δ₀ / (1 − P/Pe)', cx + 26, (top+g)/2, {size:11, color:C['ink-soft']});
+  // AF plot
+  const box = {l: w*0.46, r: w-24, t: 40, b: h-34};
+  const A = axes(ctx, box, [0,1], [1,6], {xstep:0.2, ystep:1, xlabel:'P / Pe', ylabel:'amplification 1/(1 − P/Pe)'});
+  const cpts = []; for (let x=0; x<=0.835; x+=0.005) cpts.push([A.X(x), A.Y(1/(1-x))]);
+  line(ctx, cpts, {color:C.s1, width:2});
+  line(ctx, [[A.X(1), box.t],[A.X(1), box.b]], {color:C['ink-soft'], width:1, dash:[5,4]});
+  const yy = Math.min(af, 6);
+  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(r), A.Y(yy), 6, 0, 7); ctx.fill();
+  ctx.strokeStyle = C.sheet; ctx.lineWidth = 2; ctx.stroke();
+  P.text(ctx, '×' + af.toFixed(2), A.X(r)+10, A.Y(yy)-8, {size:12, weight:'bold', color:C.ink, halo:C.paper});
+});
+
+/* ---------- SHEET 2: column ---------- */
+const pipe = (od, tn) => { const t = 0.93*tn, A = Math.PI*(od - t)*t, r = Math.sqrt((od*od + (od-2*t)*(od-2*t))/16); return {A, rx:r, ry:r}; };
+const MEMBERS = [
+  ['Pipe 4 STD · A53 Gr B (35 ksi)', 35, pipe(4.5, 0.237)],
+  ['Pipe 6 STD · A53 Gr B (35 ksi)', 35, pipe(6.625, 0.280)],
+  ['Pipe 8 STD · A53 Gr B (35 ksi)', 35, pipe(8.625, 0.322)],
+  ['HSS6×6×3/8 · A500 Gr C (50 ksi)', 50, {A:7.58, rx:2.28, ry:2.28}],
+  ['W8×31 · A992 (50 ksi)', 50, {A:9.13, rx:3.47, ry:2.02}],
+  ['W10×49 · A992 (50 ksi)', 50, {A:14.4, rx:4.35, ry:2.54}]
+];
+$('cMem').innerHTML = MEMBERS.map((m,i)=>`<option value="${i}" ${i===1?'selected':''}>${m[0]}</option>`).join('');
+const KCASES = [
+  ['Fixed–fixed', 0.65, 'ff'], ['Fixed–pinned', 0.80, 'fp'], ['Fixed, top slides', 1.2, 'fs'],
+  ['Pinned–pinned', 1.0, 'pp'], ['Flagpole', 2.1, 'fr'], ['Pinned, top slides', 2.0, 'ps']
+];
+function kSvg(kind){
+  // buckled shapes drawn by hand for each case
+  const base = '<line x1="10" y1="86" x2="60" y2="86" stroke="currentColor" stroke-width="1.5"/>';
+  const paths = {
+    ff: 'M35 86 C 35 70, 50 60, 50 46 C 50 32, 35 22, 35 8',
+    fp: 'M35 86 C 35 66, 52 50, 48 34 C 45 22, 38 14, 35 8',
+    fs: 'M35 86 C 35 60, 55 34, 55 8',
+    pp: 'M35 86 C 52 64, 52 30, 35 8',
+    fr: 'M35 86 C 35 60, 42 30, 58 8',
+    ps: 'M35 86 C 40 60, 52 30, 55 8'
+  };
+  const topFix = ['ff','fs'].includes(kind) ? '<line x1="22" y1="8" x2="48" y2="8" stroke="currentColor" stroke-width="3"/>' : '';
+  const topFix2 = kind==='fs' ? '<line x1="42" y1="8" x2="68" y2="8" stroke="currentColor" stroke-width="3"/>' : '';
+  const topPin = ['fp','pp'].includes(kind) ? '<circle cx="35" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>' : kind==='ps' ? '<line x1="44" y1="8" x2="66" y2="8" stroke="currentColor" stroke-width="1.5"/><circle cx="55" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>' : '';
+  const botPin = ['pp','ps'].includes(kind) ? '<circle cx="35" cy="83" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>' : '<rect x="27" y="84" width="16" height="4" fill="currentColor"/>';
+  return `<svg viewBox="0 0 70 92" aria-hidden="true"><line x1="35" y1="86" x2="35" y2="8" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1" opacity=".45"/>${base}<path d="${paths[kind]}" fill="none" stroke="var(--pencil)" stroke-width="3"/>${kind==='fs'?'':topFix}${topFix2}${topPin}${botPin}</svg>`;
+}
+let K = 1.0;
+$('kgrid').innerHTML = KCASES.map(([n,k,kind],i)=>`<button type="button" class="kcase" data-k="${k}" aria-pressed="${k===1.0?'true':'false'}">${kSvg(kind)}<b>K = ${k}</b><span class="label">${n}</span></button>`).join('');
+$('kgrid').addEventListener('click', e => { const b = e.target.closest('.kcase'); if (!b) return; $('kgrid').querySelectorAll('.kcase').forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); K = +b.dataset.k; column(); });
+function fcr(Fy, klr){ const Fe = Math.PI*Math.PI*E/(klr*klr); return klr <= 4.71*Math.sqrt(E/Fy) ? Math.pow(0.658, Fy/Fe)*Fy : 0.877*Fe; }
+let col = {Fy:35, klr:100, hx:null};
+const cPlot = P.still($('cPlot'), (ctx, w, h) => {
+  const box = {l:46, r:w-14, t:24, b:h-36};
+  const Fy = col.Fy;
+  const A = axes(ctx, box, [0,200], [0, Math.ceil(Fy*1.1/10)*10], {xstep:25, xlabel:'KL/r', ylabel:'stress (ksi)'});
+  const eu = []; for (let x=Math.max(5, Math.PI*Math.sqrt(E/(Fy*1.1))); x<=200; x+=1) eu.push([A.X(x), A.Y(Math.PI*Math.PI*E/(x*x))]);
+  line(ctx, eu, {color:C['ink-soft'], width:1.5, dash:[5,4]});
+  const fc = []; for (let x=0.5; x<=200; x+=1) fc.push([A.X(x), A.Y(fcr(Fy,x))]);
+  line(ctx, fc, {color:C.s1, width:2});
+  const tr = 4.71*Math.sqrt(E/Fy);
+  line(ctx, [[A.X(tr), box.t],[A.X(tr), box.b]], {color:C.rule, width:1, dash:[2,3]});
+  text(ctx, 'inelastic | elastic', A.X(tr), box.t+10, {size:10, align:'center', color:C['ink-soft'], halo:C.paper});
+  const k = clamp(col.klr, 0, 200);
+  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(k), A.Y(fcr(Fy, Math.max(k,0.5))), 6, 0, 7); ctx.fill(); ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.stroke();
+  if (col.hx != null){
+    const x = clamp(A.inv.x(col.hx), 0.5, 200);
+    line(ctx, [[A.X(x), box.t],[A.X(x), box.b]], {color:C['ink-soft'], width:1});
+    ctx.fillStyle = C.s1; ctx.beginPath(); ctx.arc(A.X(x), A.Y(fcr(Fy,x)), 4, 0, 7); ctx.fill();
+  }
+  col.A = A;
+});
+hover($('cPlot'), $('cTip'), (x) => {
+  col.hx = x; cPlot.render();
+  if (x == null || !col.A) return null;
+  const k = clamp(col.A.inv.x(x), 0.5, 200), f = fcr(col.Fy, k);
+  return `KL/r ${k.toFixed(0)} · F<sub>cr</sub> ${f.toFixed(1)} ksi · φF<sub>cr</sub> ${(0.9*f).toFixed(1)}`;
+});
+function column(){
+  const m = MEMBERS[+$('cMem').value], L = +$('cL').value, Fy = m[1], r = Math.min(m[2].rx, m[2].ry);
+  const klr = K*L*12/r, f = fcr(Fy, klr), Pn = f*m[2].A, Fe = Math.PI*Math.PI*E/(klr*klr);
+  $('cLo').textContent = L+' ft';
+  $('cKLr').textContent = klr.toFixed(0);
+  $('cPhi').textContent = fmt(0.9*Pn, 0); $('cAsd').textContent = fmt(Pn/1.67, 0);
+  $('cEq').innerHTML = `KL/r = ${K} × ${L} × 12 / ${r.toFixed(2)} = <b>${klr.toFixed(0)}</b>${klr>200?' <span class="c">(> 200!)</span>':''}<br>F<sub>e</sub> = π²(29,000)/${klr.toFixed(0)}² = ${Fe.toFixed(1)} ksi · F<sub>y</sub>/F<sub>e</sub> = ${(Fy/Fe).toFixed(2)} ${Fy/Fe<=2.25?'≤':'>'} 2.25<br>F<sub>cr</sub> = <b>${f.toFixed(1)} ksi</b> · A<sub>g</sub> = ${m[2].A.toFixed(2)} in² → P<sub>n</sub> = ${Pn.toFixed(0)} k`;
+  col = {Fy, klr, hx:col.hx}; cPlot.render();
+}
+P.bind(['cMem','cL'], column);
+
+/* ---------- SHEET 3: LTB ---------- */
+const SHAPES = [
+  ['W12×26', {Sx:33.4, Zx:37.2, ry:1.51, Iy:17.3, J:0.300, Cw:607, ho:11.8}],
+  ['W10×49', {Sx:54.6, Zx:60.4, ry:2.54, Iy:93.4, J:1.39, Cw:2070, ho:9.42}],
+  ['W18×50', {Sx:88.9, Zx:101, ry:1.65, Iy:40.1, J:1.24, Cw:3040, ho:17.4}],
+  ['W24×76', {Sx:176, Zx:200, ry:1.92, Iy:82.5, J:2.68, Cw:11100, ho:23.2}]
+];
+$('bShape').innerHTML = SHAPES.map((s,i)=>`<option value="${i}" ${i===2?'selected':''}>${s[0]}</option>`).join('');
+const Fyb = 50;
+function ltbProps(s){
+  const rts = Math.sqrt(Math.sqrt(s.Iy*s.Cw)/s.Sx);
+  const Lp = 1.76*s.ry*Math.sqrt(E/Fyb);
+  const jc = s.J/(s.Sx*s.ho);
+  const Lr = 1.95*rts*(E/(0.7*Fyb))*Math.sqrt(jc + Math.sqrt(jc*jc + 6.76*Math.pow(0.7*Fyb/E,2)));
+  return {rts, Lp, Lr, jc, Mp: Fyb*s.Zx, Mr: 0.7*Fyb*s.Sx};
+}
+function Mn(s, p, LbIn, Cb){
+  if (LbIn <= p.Lp) return p.Mp;
+  if (LbIn <= p.Lr) return Math.min(p.Mp, Cb*(p.Mp - (p.Mp - p.Mr)*(LbIn - p.Lp)/(p.Lr - p.Lp)));
+  const x = LbIn/p.rts, F = Cb*Math.PI*Math.PI*E/(x*x)*Math.sqrt(1 + 0.078*p.jc*x*x);
+  return Math.min(p.Mp, F*s.Sx);
+}
+let ltb = {i:2, Lb:20, Cb:1.14, hx:null, util:0.5};
+const bPlot = P.still($('bPlot'), (ctx, w, h) => {
+  const s = SHAPES[ltb.i][1], p = ltbProps(s), maxM = 0.9*p.Mp/12;
+  const box = {l:52, r:w-14, t:24, b:h-36};
+  const A = axes(ctx, box, [0,45], [0, Math.ceil(maxM*1.1/50)*50], {xstep:5, xlabel:'Lb (ft)', ylabel:'φMn (k-ft)'});
+  const c1 = [], cb = [];
+  for (let L=0; L<=45; L+=0.25){ c1.push([A.X(L), A.Y(0.9*Mn(s,p,L*12,1.0)/12)]); cb.push([A.X(L), A.Y(0.9*Mn(s,p,L*12,ltb.Cb)/12)]); }
+  [[p.Lp,'Lp'],[p.Lr,'Lr']].forEach(([v,l]) => { line(ctx, [[A.X(v/12), box.t],[A.X(v/12), box.b]], {color:C.rule, width:1, dash:[2,3]}); text(ctx, `${l} ${(v/12).toFixed(1)} ft`, A.X(v/12)+4, box.t+10, {size:10, color:C['ink-soft'], halo:C.paper}); });
+  line(ctx, c1, {color:C['ink-soft'], width:1.5, dash:[5,4]});
+  line(ctx, cb, {color:C.s1, width:2});
+  const m = 0.9*Mn(s,p,ltb.Lb*12,ltb.Cb)/12;
+  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(ltb.Lb), A.Y(m), 6, 0, 7); ctx.fill(); ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.stroke();
+  if (ltb.hx != null){ const L = clamp(A.inv.x(ltb.hx), 0, 45); line(ctx, [[A.X(L), box.t],[A.X(L), box.b]], {color:C['ink-soft'], width:1}); }
+  ltb.A = A;
+});
+hover($('bPlot'), $('bTip'), (x) => {
+  ltb.hx = x; bPlot.render();
+  if (x == null || !ltb.A) return null;
+  const s = SHAPES[ltb.i][1], p = ltbProps(s), L = clamp(ltb.A.inv.x(x), 0, 45);
+  return `L<sub>b</sub> ${L.toFixed(1)} ft · φM<sub>n</sub> ${(0.9*Mn(s,p,L*12,ltb.Cb)/12).toFixed(0)} k-ft`;
+});
+function beam(){
+  const i = +$('bShape').value, Lb = +$('bLb').value, Cb = +$('bCb').value;
+  const s = SHAPES[i][1], p = ltbProps(s), m = 0.9*Mn(s,p,Lb*12,Cb)/12;
+  $('bLbo').textContent = Lb + ' ft';
+  $('bPhi').textContent = fmt(m, 0);
+  const zone = Lb*12 <= p.Lp ? 'Plastic' : Lb*12 <= p.Lr ? 'Inelastic' : 'Elastic';
+  $('bZone').textContent = zone;
+  $('bEq').innerHTML = `L<sub>p</sub> = 1.76(${s.ry})√(E/F<sub>y</sub>) = ${(p.Lp/12).toFixed(2)} ft · r<sub>ts</sub> = ${p.rts.toFixed(2)} in<br>L<sub>r</sub> = ${(p.Lr/12).toFixed(1)} ft · φM<sub>p</sub> = ${(0.9*p.Mp/12).toFixed(0)} k-ft<br>L<sub>b</sub> = ${Lb} ft, C<sub>b</sub> = ${Cb} → <b>φM<sub>n</sub> = ${m.toFixed(0)} k-ft</b> (${(m/(0.9*p.Mp/12)*100).toFixed(0)}% of φM<sub>p</sub>)`;
+  ltb = {i, Lb, Cb, hx:ltb.hx, util: 1 - m/(0.9*p.Mp/12)};
+  bPlot.render(); if (P.reduce) P.redraw();
+}
+P.bind(['bShape','bLb','bCb'], beam);
+P.anim($('bPlan'), (ctx, w, h, t) => {
+  const L = w - 60, x0 = 30, y = h/2 + 6;
+  const n = Math.max(1, Math.round(45 / Math.max(ltb.Lb, 2)));
+  const segs = Math.min(8, n);
+  const amp = (6 + 26*ltb.util) * (P.reduce ? 1 : (0.65 + 0.35*Math.sin(t*1.6)));
+  const pts = [];
+  for (let i=0;i<=200;i++){ const s = i/200; pts.push([x0 + s*L, y + amp*Math.sin(Math.PI*s*segs)*(ltb.Lb<1?0:1)]); }
+  line(ctx, [[x0,y],[x0+L,y]], {color:C['ink-soft'], width:1, dash:[4,4]});
+  line(ctx, pts, {color:C.steel, width:5});
+  for (let i=0;i<=segs;i++){
+    const x = x0 + i*L/segs;
+    ctx.fillStyle = C.pencil; ctx.fillRect(x-3, y-22, 6, 44);
+  }
+  text(ctx, `${segs} unbraced segment${segs>1?'s':''} · braces in pencil`, x0, h-10, {size:11, color:C['ink-soft']});
+});
+
+/* ---------- SHEET 4: bracing ---------- */
+let brT = 'cn', brState = {ratio:1};
+P.chips('brType', d => { brT = d.t; const beam = brT[0]==='b'; $('brPWrap').hidden = beam; $('brMWrap').hidden = !beam; $('brHWrap').hidden = !beam; brace(); });
+function brace(){
+  const Pr=+$('brP').value, Mr=+$('brM').value, Lbr=+$('brL').value, ho=+$('brH').value, kp=+$('brK').value;
+  $('brPo').textContent = Pr+' kips'; $('brMo').textContent = Mr+' k-ft'; $('brLo').textContent = Lbr+' ft'; $('brHo').textContent = ho+' in'; $('brKo').textContent = kp+' k/in';
+  const L = Lbr*12, phi = 0.75, Cd = 1.0;
+  let Pbr, beta, eqs;
+  if (brT === 'cn'){ Pbr = 0.01*Pr; beta = (1/phi)*(8*Pr/L); eqs = `P<sub>br</sub> = 0.01P<sub>r</sub> = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(8P<sub>r</sub>/L<sub>br</sub>) = <b>${fmt(beta,1)} k/in</b>`; }
+  if (brT === 'cr'){ Pbr = 0.005*Pr; beta = (1/phi)*(2*Pr/L); eqs = `P<sub>br</sub> = 0.005P<sub>r</sub> = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(2P<sub>r</sub>/L<sub>br</sub>) = <b>${fmt(beta,1)} k/in</b>`; }
+  if (brT === 'bn'){ const F = Mr*12*Cd/ho; Pbr = 0.02*F; beta = (1/phi)*(10*Mr*12*Cd/(L*ho)); eqs = `flange force M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub> = ${fmt(F,0)} k → P<sub>br</sub> = 2% = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(10M<sub>r</sub>C<sub>d</sub>/(L<sub>br</sub>h<sub>o</sub>)) = <b>${fmt(beta,1)} k/in</b>`; }
+  if (brT === 'br'){ const F = Mr*12*Cd/ho; Pbr = 0.005*F; beta = (1/phi)*(4*Mr*12*Cd/(L*ho)); eqs = `P<sub>br</sub> = 0.005M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub> = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(4M<sub>r</sub>C<sub>d</sub>/(L<sub>br</sub>h<sub>o</sub>)) = <b>${fmt(beta,1)} k/in</b>`; }
+  $('brEq').innerHTML = eqs + `<br><span class="c">e.g. a pipe brace: k = AE/L<sub>brace</sub> × cos²θ, and connection slip softens it</span>`;
+  const ratio = kp/beta;
+  $('brRatio').textContent = fmt(ratio,2);
+  const pl = $('brPill');
+  if (ratio >= 1){ pl.className = 'pill ok'; pl.textContent = 'stiff enough · buckles between braces'; }
+  else if (ratio >= 0.5){ pl.className = 'pill warn'; pl.textContent = 'too soft · capacity reduced'; }
+  else { pl.className = 'pill ng'; pl.textContent = 'brace ineffective'; }
+  brState = {ratio, Pbr};
+  if (P.reduce) P.redraw();
+}
+P.bind(['brP','brM','brL','brH','brK'], brace);
+P.anim($('brCv'), (ctx, w, h, t) => {
+  const cx = w*0.42, top = 30, g = h - 22;
+  ground(ctx, cx-70, cx+170, g);
+  const m = clamp(brState.ratio, 0, 1);                   // 0 → one half-wave, 1 → two half-waves
+  const amp = (P.reduce ? 1 : 0.7 + 0.3*Math.sin(t*1.8)) * 26;
+  const pts = [];
+  for (let i=0;i<=60;i++){ const s = i/60; const y = lerp(g-4, top, s);
+    const shape = (1-m)*Math.sin(Math.PI*s) + m*Math.sin(2*Math.PI*s)*0.7;
+    pts.push([cx + amp*shape, y]); }
+  line(ctx, [[cx, top],[cx, g-4]], {color:C['ink-soft'], width:1, dash:[4,4]});
+  line(ctx, pts, {color: m >= 1 ? C.steel : C.pencil, width:6});
+  // brace spring at mid-height
+  const ym = (top + g)/2, xm = cx + amp*((1-m)*1 + m*0);
+  const sx = cx + 150;
+  ctx.save(); ctx.strokeStyle = C.wind; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(xm, ym);
+  const coils = 9, len = sx - xm;
+  for (let i=1;i<=coils*2;i++){ ctx.lineTo(xm + len*i/(coils*2+1), ym + (i%2?-8:8)); }
+  ctx.lineTo(sx, ym); ctx.stroke(); ctx.restore();
+  ctx.fillStyle = C.ink; ctx.fillRect(sx, ym-18, 6, 36);
+  text(ctx, 'brace β', sx-40, ym-14, {size:11, color:C.wind});
+  arrow(ctx, cx, top-38, cx, top-4, {color:C.pencil, width:3, head:10});
+  text(ctx, m >= 1 ? 'mode 2: L_br governs' : 'mode 1 creeping in', cx-60, g-10, {size:11, color:C['ink-soft'], align:'right'});
+});
+
+/* ---------- SHEET 5: interaction ---------- */
+let inter = {p:0.35, m:0.4, m2:0.5, hx:null, hy:null};
+const iPlot = P.still($('iPlot'), (ctx, w, h) => {
+  const box = {l:44, r:w-14, t:24, b:h-36};
+  const A = axes(ctx, box, [0,1.3], [0,1.3], {xstep:0.2, ystep:0.2, xlabel:'Mr / Mc', ylabel:'Pr / Pc'});
+  line(ctx, [[A.X(0),A.Y(1)],[A.X(0.9),A.Y(0.2)],[A.X(1),A.Y(0)]], {color:C.ink, width:2});
+  text(ctx, 'H1-1a', A.X(0.3), A.Y(0.78), {size:10, color:C['ink-soft'], halo:C.paper});
+  text(ctx, 'H1-1b', A.X(0.9), A.Y(0.13), {size:10, color:C['ink-soft'], halo:C.paper});
+  arrow(ctx, A.X(inter.m), A.Y(inter.p), A.X(inter.m2), A.Y(inter.p), {color:C['ink-soft'], width:1.5, head:6});
+  ctx.fillStyle = C.s1; ctx.beginPath(); ctx.arc(A.X(inter.m), A.Y(inter.p), 5, 0, 7); ctx.fill();
+  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(inter.m2), A.Y(inter.p), 6.5, 0, 7); ctx.fill(); ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.stroke();
+  if (inter.hx != null){ line(ctx, [[inter.hx, box.t],[inter.hx, box.b]], {color:C['ink-soft'], width:1}); line(ctx, [[box.l, inter.hy],[box.r, inter.hy]], {color:C['ink-soft'], width:1}); }
+  inter.A = A;
+});
+hover($('iPlot'), $('iTip'), (x, y) => {
+  inter.hx = x; inter.hy = y; iPlot.render();
+  if (x == null || !inter.A) return null;
+  const m = inter.A.inv.x(x), p = inter.A.inv.y(y);
+  if (m < 0 || p < 0) return null;
+  const u = p >= 0.2 ? p + 8/9*m : p/2 + m;
+  return `P/Pc ${p.toFixed(2)} · M/Mc ${m.toFixed(2)} → ${u.toFixed(2)}`;
+});
+function inter1(){
+  const p=+$('iP').value, m=+$('iM').value, pe=+$('iPe').value, tr=$('iTr').checked;
+  $('iPo').textContent = p.toFixed(2); $('iMo').textContent = m.toFixed(2); $('iPeo').textContent = pe.toFixed(2);
+  const Cm = tr ? 1.0 : 0.6, B1 = Math.max(1, Cm/(1 - pe));
+  const m2 = m*B1, u = p >= 0.2 ? p + 8/9*m2 : p/2 + m2;
+  $('iEq').innerHTML = `B<sub>1</sub> = ${Cm.toFixed(1)}/(1 − ${pe.toFixed(2)}) = <b>${B1.toFixed(2)}</b> ${tr?'':'<span class="c">(C<sub>m</sub> = 0.6 − 0.4M<sub>1</sub>/M<sub>2</sub>, taking M<sub>1</sub> = 0)</span>'}<br>${p>=0.2?`H1-1a: ${p.toFixed(2)} + 8/9(${m2.toFixed(2)})`:`H1-1b: ${p.toFixed(2)}/2 + ${m2.toFixed(2)}`} = <b>${u.toFixed(2)}</b>`;
+  P.pill('iPill', u);
+  inter = {p, m, m2, hx:inter.hx, hy:inter.hy}; iPlot.render();
+}
+P.bind(['iP','iM','iPe','iTr'], inter1);
+
+/* ---------- SHEET 6: bolts & welds ---------- */
+function bolts(){
+  const g=$('boG').value, th=$('boT').value, d=+$('boD').value, n=+$('boN').value, s=+$('boS').value;
+  $('boNo').textContent = n;
+  const Fnv = g==='A' ? (th==='N'?54:68) : (th==='N'?68:84);
+  const Ab = Math.PI*d*d/4, rn = Fnv*Ab*s;
+  $('boEq').innerHTML = `A<sub>b</sub> = ${Ab.toFixed(3)} in² · F<sub>nv</sub> = ${Fnv} ksi · ${s===2?'double':'single'} shear<br>φr<sub>n</sub> = 0.75 × ${Fnv} × ${Ab.toFixed(3)} × ${s} = <b>${(0.75*rn).toFixed(1)} k/bolt</b> (ASD ${(rn/2).toFixed(1)})<br>${n} bolts → <b>φR<sub>n</sub> = ${(0.75*rn*n).toFixed(0)} k</b> <span class="c">(then check bearing/tear-out, block shear)</span>`;
+}
+P.bind(['boG','boT','boD','boN','boS'], bolts);
+function weld(){
+  const s=+$('wS').value, L=+$('wL').value, tr=$('wT').checked;
+  $('wSo').textContent = s+'/16 in'; $('wLo').textContent = L+' in';
+  const k = tr ? 1.5 : 1.0, per = 1.392*s*k;
+  $('wEq').innerHTML = `φr<sub>n</sub> = 1.392 × ${s}${tr?' × 1.5':''} = <b>${per.toFixed(2)} k/in</b> (ASD ${(0.928*s*k).toFixed(2)})<br>× ${L} in → <b>φR<sub>n</sub> = ${(per*L).toFixed(0)} k</b> <span class="c">(also check base metal shear)</span>`;
+}
+P.bind(['wS','wL','wT'], weld);
+
+/* ---------- cards ---------- */
+P.cards('cards', [
+  ['A shoring post is braced at the top in one direction only. Which K and r do you use?','Check both axes. Use K and the unbraced length for each axis with that axis\'s r. In the unbraced direction the post may be a flagpole (K ≈ 2.1). The larger KL/r governs.'],
+  ['Why does a brace need stiffness and not just strength?','Without enough stiffness the member buckles in a longer mode and never reaches the capacity you assumed with L<sub>br</sub>. Appendix 6 requires about twice the ideal stiffness (that\'s what 1/φ covers) and a strength based on an L/500 imperfection.'],
+  ['What is the "2% rule" and where did it come from?','The classic brace strength of 2% of the compression force. AISC App. 6 now gives 1% of P<sub>r</sub> for nodal column bracing and 2% of the flange force (M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub>) for nodal beam bracing, each with a stiffness requirement.'],
+  ['A girder is lifted and set with no cross-frames. What governs its flexure?','LTB with L<sub>b</sub> = full length (or between the lifting points and the ends while hanging). Use C<sub>b</sub> conservatively, account for top-flange loading, and check system buckling of girder pairs. Often the answer is a holding crane or temporary bracing until the cross-frames are in.'],
+  ['When would you use slip-critical bolts in temporary works?','When slip would be harmful: load reversal (wind on falsework bracing), fatigue or repeated use (lifting beams, reusable frames), or oversized/slotted holes. Otherwise snug-tight bearing bolts are fine.'],
+  ['Why direct analysis for a temporary tower?',"It's tall and slender, and its legs are often out of plumb. Notional loads (0.002Y<sub>i</sub>) and reduced stiffness capture second-order effects directly, so you can use K = 1.0. That makes it conservative and simple to defend."]
+]);
+})();
+</script>
+</body>
+</html>
