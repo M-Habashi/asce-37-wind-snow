@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASCE 37 Wind &amp; Snow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: an engineer's green computation pad. Six numbered "sheets" in study order, each with a calc-pad header strip, margin notes in pencil, and one moving diagram. */
+:root{
+  --paper:#E9F0DD; --sheet:#F3F7EC; --grid:#CFDEC0; --rule:#9DB88C;
+  --ink:#1D2A24; --ink-soft:#4B5D52; --pencil:#B83D28; --storm:#B97C0C;
+  --wind:#2C6987; --snow:#7F99AE; --snow-pile:#C9D8E3;
+  --display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --hand:"Caveat","Comic Sans MS","Bradley Hand",cursive;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#111A15; --sheet:#17221C; --grid:#1F2E25; --rule:#3B5546;
+    --ink:#E2ECDA; --ink-soft:#9FB2A4; --pencil:#EE7458; --storm:#E5AE41;
+    --wind:#72B9D9; --snow:#E6EFF5; --snow-pile:#B9CAD6; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111A15; --sheet:#17221C; --grid:#1F2E25; --rule:#3B5546;
+  --ink:#E2ECDA; --ink-soft:#9FB2A4; --pencil:#EE7458; --storm:#E5AE41;
+  --wind:#72B9D9; --snow:#E6EFF5; --snow-pile:#B9CAD6; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:20px 20px;
+  color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6;
+  padding-inline:16px; padding-block:24px 64px;
+}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--display);line-height:1.02;text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(2.8rem,9vw,5.6rem);font-weight:900;text-transform:uppercase}
+h2{font-size:clamp(2rem,5vw,3rem);font-weight:800;text-transform:uppercase}
+h3{font-size:1.5rem;font-weight:800;text-transform:uppercase}
+p{margin:0;max-width:65ch}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.hand{font-family:var(--hand);color:var(--pencil);font-size:1.35rem;line-height:1.2}
+.label{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* sheet */
+.sheet{background:var(--sheet);border:1.5px solid var(--rule);display:flex;flex-direction:column}
+.padhead{display:grid;grid-template-columns:auto 1fr auto;border-bottom:1.5px solid var(--rule)}
+.padhead > div{padding:8px 14px;font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);min-width:0}
+.padhead > div + div{border-left:1.5px solid var(--rule)}
+.padhead b{color:var(--ink);font-weight:600}
+.sheet-body{padding:24px clamp(16px,4vw,36px) 32px;display:flex;flex-direction:column;gap:22px}
+.twocol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:760px){.twocol{grid-template-columns:minmax(0,1fr)}}
+
+/* hero */
+.hero .sheet-body{gap:16px}
+.kicker{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline}
+.stage{position:relative;border:1.5px solid var(--rule);background:var(--paper);overflow:hidden}
+.stage canvas{display:block;width:100%;height:clamp(220px,36vw,330px)}
+.readout{position:absolute;left:12px;top:10px;display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--mono);font-size:.8rem;background:var(--sheet);border:1px solid var(--rule);padding:6px 10px;font-variant-numeric:tabular-nums}
+.readout b{color:var(--pencil);font-weight:600}
+.lede{font-size:1.15rem;max-width:60ch}
+
+/* idea list */
+.ideas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.ideas{grid-template-columns:minmax(0,1fr)}}
+.idea{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.idea .hand{font-size:1.25rem}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--mono);font-size:.85rem;padding:8px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;font-variant-numeric:tabular-nums;transition:background .2s,color .2s,transform .15s}
+.chip:hover{transform:translateY(-2px)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.chip:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--wind);outline-offset:2px}
+.chip small{display:block;font-size:.68rem;opacity:.75}
+
+/* diagrams */
+.diag{width:100%;height:auto;max-width:100%;display:block}
+.diag text{fill:var(--ink);font-family:var(--mono)}
+.sq-outer{fill:none;stroke:var(--ink-soft);stroke-dasharray:5 4;stroke-width:1.5}
+.sq-inner{fill:var(--pencil);fill-opacity:.85;transform-box:fill-box;transform-origin:0% 100%;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.bar-bg{fill:var(--grid)}
+.bar-v{fill:var(--wind);transform-box:fill-box;transform-origin:0% 50%;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.needle{transform-origin:150px 150px;transition:transform 1s cubic-bezier(.3,1.4,.4,1)}
+.big{font-family:var(--display);font-weight:900;font-size:clamp(2.6rem,7vw,4rem);line-height:1;font-variant-numeric:tabular-nums}
+.stat-row{display:flex;flex-wrap:wrap;gap:22px}
+.stat{display:flex;flex-direction:column;gap:2px}
+
+/* controls */
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media (max-width:520px){.ctrl-row{grid-template-columns:minmax(0,1fr)}}
+input[type=range]{width:100%;accent-color:var(--pencil)}
+select{font:inherit;font-family:var(--mono);font-size:.9rem;padding:6px 8px;background:var(--sheet);color:var(--ink);border:1.5px solid var(--rule)}
+.check{display:flex;gap:8px;align-items:center;font-size:.95rem}
+.check input{accent-color:var(--pencil);width:18px;height:18px}
+.val{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* hurricane */
+.ring-wrap{position:relative;max-width:340px;width:100%;margin:0 auto}
+.seg{stroke:var(--sheet);stroke-width:2}
+.seg.calm{fill:var(--grid)}
+.seg.season{fill:var(--storm);fill-opacity:.55}
+.window-arc{fill:none;stroke:var(--pencil);stroke-width:12;stroke-linecap:butt;transition:stroke-dasharray .8s ease,transform .8s ease}
+.spin{transform-origin:170px 170px;animation:spin 6s linear infinite}
+.spin.fast{animation-duration:1.4s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:520px){.routes{grid-template-columns:minmax(0,1fr)}}
+.route{border:1.5px solid var(--rule);padding:14px;display:flex;flex-direction:column;gap:6px;transition:border-color .3s,background .3s;min-width:0}
+.route.win{border-color:var(--pencil);border-width:2.5px}
+.route.off{opacity:.5}
+.route .big{font-size:2.6rem}
+.pill{align-self:flex-start;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border:1.5px solid currentColor}
+.pill.storm{color:var(--storm)} .pill.ok{color:var(--wind)} .pill.no{color:var(--ink-soft)}
+.verdict{border-left:4px solid var(--storm);padding:10px 14px;background:var(--paper)}
+
+/* snow */
+.snowstage canvas{height:clamp(200px,30vw,260px)}
+.eq{font-family:var(--mono);font-size:clamp(.82rem,2.4vw,1rem);background:var(--paper);border:1px dashed var(--rule);padding:12px 14px;overflow-x:auto;white-space:nowrap}
+.eq b{color:var(--pencil)}
+.btn{font-family:var(--mono);font-size:.85rem;padding:9px 14px;border:1.5px solid var(--ink);background:var(--ink);color:var(--sheet);cursor:pointer;align-self:flex-start}
+.btn:hover{background:var(--pencil);border-color:var(--pencil)}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{perspective:1000px;background:none;border:0;padding:0;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.card-in{display:grid;transition:transform .7s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.card.flip .card-in{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1.5px solid var(--ink);padding:16px;display:flex;flex-direction:column;gap:8px;min-height:180px;background:var(--sheet)}
+.face.back{transform:rotateY(180deg);background:var(--paper);border-color:var(--pencil)}
+.face .q{font-weight:700;font-size:1.05rem}
+.face .a{font-size:.96rem}
+.tap{margin-top:auto;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+
+footer{font-size:.88rem;color:var(--ink-soft);display:flex;flex-direction:column;gap:8px}
+footer a{color:var(--wind)}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet hero">
+  <div class="padhead"><div>Sheet <b>1</b> of 6</div><div>Temporary Works · Interview Prep</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">ASCE/SEI 37-14 · references ASCE 7-10</span><span class="hand">loads while it's still being built →</span></div>
+    <h1>Wind &amp; Snow<br>During Construction</h1>
+    <div class="stage" aria-hidden="true">
+      <canvas id="heroCanvas"></canvas>
+      <div class="readout"><span>f = <b id="hf">1.00</b></span><span>V = <b id="hv">150</b> mph</span><span>q = <b id="hq">100%</b> of permanent</span></div>
+    </div>
+    <p class="lede">A falsework tower sits in a gust stream. Watch the speed factor step down from a permanent design (1.00) to a structure that only stands for six weeks (0.75). Pressure follows V², so the load drops faster than the speed.</p>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b> of 6</div><div>The philosophy</div><div>Ch. 6</div></div>
+  <div class="sheet-body">
+    <h2>Why loads go down</h2>
+    <p>A temporary configuration is exposed for months, not 50 years. ASCE 37 sizes the construction wind so it has the <strong>same chance of being exceeded during the construction period</strong> as the permanent design wind has over a 50-year life. The reduced loads only hold if the site is managed: people kept out when loads exceed the design, and snow cleared promptly.</p>
+    <div class="ideas">
+      <div class="idea"><h3>Risk Category II</h3><p>All environmental loads during construction use RC II, whatever the finished structure is, unless the AHJ says otherwise.</p><span class="hand">raise it next to a hospital or other essential facility</span></div>
+      <div class="idea"><h3>No 16 psf floor</h3><p>The ASCE 7-10 minimum wind pressure does not have to be applied.</p><span class="hand">commentary: consider it for hazardous ops anyway</span></div>
+      <div class="idea"><h3>No phase-splitting</h3><p>You can't cut one continuous operation into short pieces to earn a lower factor, or extend an interim condition past its original period.</p><span class="hand">classic interview trap!</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b> of 6</div><div>Design wind speed · Sec. 6.2.1</div><div>V × f</div></div>
+  <div class="sheet-body">
+    <h2>Pick a construction period</h2>
+    <p>The construction period runs from first erection to structural completion of each independent structural system, cladding included. The factor multiplies the ASCE 7-10 basic wind speed. Everything else in the ASCE 7-10 procedure (exposure, Kz, Kzt, Kd, G, Cf) stays the same.</p>
+    <div class="chips" id="periodChips" role="group" aria-label="Construction period">
+      <button class="chip" data-f="0.75" aria-pressed="true">0.75<small>&lt; 6 weeks</small></button>
+      <button class="chip" data-f="0.80" aria-pressed="false">0.80<small>6 wk – 1 yr</small></button>
+      <button class="chip" data-f="0.85" aria-pressed="false">0.85<small>1 – 2 yr</small></button>
+      <button class="chip" data-f="0.90" aria-pressed="false">0.90<small>2 – 5 yr</small></button>
+      <button class="chip" data-f="1.00" aria-pressed="false">1.00<small>permanent</small></button>
+    </div>
+    <div class="twocol">
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div class="ctrl">
+          <label class="label" for="vmap">Mapped V, ASCE 7-10 RC II: <span class="val" id="vmapOut">150</span> mph</label>
+          <input id="vmap" type="range" min="105" max="180" step="5" value="150">
+        </div>
+        <svg class="diag" viewBox="0 0 300 175" role="img" aria-label="Gauge comparing mapped and design wind speed">
+          <path d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="var(--grid)" stroke-width="18"/>
+          <g id="ticks"></g>
+          <g class="needle" id="needleMap"><line x1="150" y1="150" x2="150" y2="44" stroke="var(--ink-soft)" stroke-width="3" stroke-dasharray="4 3"/></g>
+          <g class="needle" id="needleDes"><line x1="150" y1="150" x2="150" y2="38" stroke="var(--pencil)" stroke-width="4"/></g>
+          <circle cx="150" cy="150" r="7" fill="var(--ink)"/>
+        </svg>
+        <div class="stat-row">
+          <div class="stat"><span class="label">Design V</span><span class="big" id="vdes">112</span><span class="mono">mph</span></div>
+          <div class="stat"><span class="label">Pressure vs permanent</span><span class="big" id="qpct">56%</span><span class="mono" id="qeq">0.75² = 0.56</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+        <svg class="diag" viewBox="0 0 300 290" role="img" aria-label="Speed ratio as a bar and pressure ratio as a square area">
+          <text x="0" y="14" font-size="11" letter-spacing="1.5">SPEED RATIO (LINEAR)</text>
+          <rect class="bar-bg" x="0" y="22" width="300" height="18"/>
+          <rect class="bar-v" id="barV" x="0" y="22" width="300" height="18"/>
+          <text x="0" y="74" font-size="11" letter-spacing="1.5">PRESSURE RATIO (AREA = f²)</text>
+          <rect class="sq-outer" x="50" y="84" width="200" height="200"/>
+          <rect class="sq-inner" id="sqIn" x="50" y="84" width="200" height="200"/>
+          <text x="244" y="100" font-size="10" text-anchor="end" fill="var(--ink-soft)">permanent = 1.00</text>
+        </svg>
+        <span class="hand">speed −25% → load −44%. say this out loud in the interview</span>
+      </div>
+    </div>
+    <p>For periods under six weeks, a factor below 0.75 is allowed if a statistical analysis of local wind data for that season supports it. Separately, Sec. 6.2.1.2 covers <em>continuously monitored work periods</em> such as crane lifts with a stop-work wind speed. Read that text directly before the interview.</p>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b> of 6</div><div>Hurricane-prone areas · Sec. 6.2.1.1.1</div><div>115 mph</div></div>
+  <div class="sheet-body">
+    <h2>When does 115 mph apply?</h2>
+    <p>On the Gulf Coast and Eastern Seaboard, where the ASCE 7-10 mapped speed exceeds 115 mph, you may substitute 115 mph (roughly the inland RC II speed). The rules depend on whether your construction window touches <strong>July 1 – October 31</strong>. Set up a job below and watch the window sweep the calendar.</p>
+    <div class="twocol">
+      <div class="ring-wrap">
+        <svg class="diag" viewBox="0 0 340 340" role="img" aria-label="Twelve-month calendar ring with hurricane season shaded and the construction window drawn as an arc" id="ring">
+          <g id="segs"></g>
+          <circle id="winArc" class="window-arc" cx="170" cy="170" r="146"/>
+          <g class="spin" id="spinner">
+            <path d="M170 170 m0 -26 a26 26 0 0 1 22 13 M170 170 m22 13 a26 26 0 0 1 -22 13 M170 170 m0 26 a26 26 0 0 1 -22 -13 M170 170 m-22 -13 a26 26 0 0 1 22 -13" fill="none" stroke="var(--storm)" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="170" cy="170" r="7" fill="var(--storm)"/>
+          </g>
+        </svg>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="startM">Start month</label>
+            <select id="startM"></select></div>
+          <div class="ctrl"><label class="label" for="weeks">Duration: <span class="val" id="weeksOut">20 wk</span></label>
+            <input id="weeks" type="range" min="2" max="104" step="1" value="20"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="hv2">Mapped V, ASCE 7-10 RC II: <span class="val" id="hv2Out">150</span> mph</label>
+          <input id="hv2" type="range" min="105" max="180" step="5" value="150"></div>
+        <label class="check"><input type="checkbox" id="coast" checked> Site near the Gulf Coast or Eastern Seaboard</label>
+        <label class="check"><input type="checkbox" id="rc34"> AHJ requires RC III/IV (use 120 mph)</label>
+      </div>
+    </div>
+    <div class="routes">
+      <div class="route" id="routeA">
+        <span class="pill ok">Route A · always allowed</span>
+        <h3>Mapped V × f</h3>
+        <span class="big mono" id="aV">120</span>
+        <span class="mono" id="aNote">0.80 × 150 mph</span>
+        <p id="aTxt">No storm plan required by this route.</p>
+      </div>
+      <div class="route" id="routeB">
+        <span class="pill" id="bPill">Route B</span>
+        <h3 id="bTitle">115 mph option</h3>
+        <span class="big mono" id="bV">92</span>
+        <span class="mono" id="bNote">0.80 × 115 mph</span>
+        <p id="bTxt"></p>
+      </div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <span class="hand">if a known hurricane is heading for the site, brace for the full unmodified ASCE 7-10 load (commentary)</span>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b> of 6</div><div>Snow during construction</div><div>p<sub>f</sub></div></div>
+  <div class="sheet-body">
+    <h2>Yes, snow counts</h2>
+    <p>Snow is one of the environmental loads ASCE 37 covers. It is reduced, not dropped. Use ASCE 7-10 Chapter 7 with a reduced ground snow load, and keep checking drift, unbalanced, sliding and rain-on-snow wherever the temporary geometry creates them (forms beside a parapet, a deck step at a construction joint).</p>
+    <div class="stage snowstage" aria-hidden="true"><canvas id="snowCanvas"></canvas>
+      <div class="readout"><span>p<sub>f</sub> = <b id="pfTop">16.8</b> psf on the forms</span></div>
+    </div>
+    <div class="twocol">
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div class="ctrl"><label class="label" for="pg">Ground snow p<sub>g</sub> (ASCE 7-10): <span class="val" id="pgOut">25</span> psf</label>
+          <input id="pg" type="range" min="0" max="70" step="5" value="25"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="ce">C<sub>e</sub> exposure</label>
+            <select id="ce"><option value="0.9">0.9 fully exposed</option><option value="1.0" selected>1.0 partially exposed</option><option value="1.1">1.1</option><option value="1.2">1.2 sheltered</option></select></div>
+          <div class="ctrl"><label class="label" for="ct">C<sub>t</sub> thermal</label>
+            <select id="ct"><option value="1.0">1.0 heated</option><option value="1.1">1.1</option><option value="1.2" selected>1.2 unheated</option></select></div>
+        </div>
+        <button class="btn" id="clearBtn" type="button">Run snow removal</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <div class="eq" id="eq1"></div>
+        <div class="eq" id="eq2"></div>
+        <div class="stat"><span class="label">Flat snow load on the temporary deck</span><span class="big" id="pfBig">16.8</span><span class="mono">psf</span></div>
+      </div>
+    </div>
+    <p>I<sub>s</sub> = 1.0 because Sec. 6.1 sets Risk Category II. The 0.8 factor on p<sub>g</sub> is how practitioners apply ASCE 37-14 for construction periods of five years or less. Combine snow with construction loads per ASCE 37 Chapter 2. Sec. 2.3.1 gives no ASD combination that pairs construction snow with other loads, so some engineers fall back on ASCE 7 combinations with construction live load treated as L.</p>
+    <span class="hand">the reduced load assumes a removal / no-access protocol. pair the calc with the plan. (Omaha &amp; Lenexa winters!)</span>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b> of 6</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="sheet-body">
+    <h2>Five questions they may ask</h2>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Study aid built from ASCE/SEI 37-14 excerpts and practitioner discussion. Verify every clause against a licensed copy, and check whether your project uses ASCE 37-14, a newer edition, AASHTO's Guide Design Specifications for Bridge Temporary Works, or TxDOT falsework requirements.</p>
+  <p>Sources: <a href="https://www.collegesidekick.com/study-docs/9899215" target="_blank" rel="noopener">ASCE 37-14 Ch. 6 excerpt</a> · <a href="https://www.skghoshassociates.com/blog/wind-loads-on-temporary-structures/" target="_blank" rel="noopener">SK Ghosh: Wind Loads on Temporary Structures</a> · <a href="https://collaborate.asce.org/standards-exchange/discussion/asce-37-14-asd-load-combinations-for-snow-load" target="_blank" rel="noopener">ASCE Standards Exchange: snow load combinations</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let C = {};
+function readTokens(){
+  const s = getComputedStyle(document.documentElement);
+  ['paper','sheet','grid','rule','ink','ink-soft','pencil','storm','wind','snow','snow-pile'].forEach(k=>C[k]=s.getPropertyValue('--'+k).trim());
+}
+readTokens();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{readTokens();drawStatic();});
+new MutationObserver(()=>{readTokens();drawStatic();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+function fit(cv){
+  const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio||1,2);
+  cv.width = Math.round(r.width*d); cv.height = Math.round(r.height*d);
+  const ctx = cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+  return {ctx,w:r.width,h:r.height};
+}
+
+/* ---------- HERO WIND ---------- */
+const hc = document.getElementById('heroCanvas');
+let H = fit(hc), parts = [], t = 0;
+const factors = [1.00,0.90,0.85,0.80,0.75]; let fi = 0, fCur = 1, fTarget = 1;
+function seed(){
+  parts = [];
+  const n = Math.round(Math.min(160, H.w/5));
+  for(let i=0;i<n;i++) parts.push({x:Math.random()*H.w, y:Math.random()*H.h*0.92, s:0.7+Math.random()*0.6, trail:[]});
+}
+seed();
+function tower(){
+  const g = H.h - 8, tx = H.w*0.68, tw = Math.max(46,H.w*0.09), top = H.h*0.42;
+  return {g,tx,tw,top};
+}
+function deflect(x,y){
+  const T = tower(), cx = T.tx + T.tw/2;
+  const bump = Math.exp(-Math.pow((x-cx)/(T.tw*1.6),2));
+  const ceil = T.top - 34;
+  if (y > ceil) return -bump*Math.min(y-ceil, 140)*0.95;
+  if (y > ceil-90) return -bump*22*(1-(ceil-y)/90);
+  return 0;
+}
+function drawTower(ctx){
+  const T = tower(), sway = reduce?0:Math.sin(t*1.7)*2.2*fCur;
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
+  const L = T.tx, R = T.tx+T.tw;
+  ctx.beginPath(); ctx.moveTo(L,T.g); ctx.lineTo(L+sway,T.top); ctx.moveTo(R,T.g); ctx.lineTo(R+sway,T.top); ctx.stroke();
+  const n = 5, dh = (T.g-T.top)/n;
+  ctx.lineWidth = 1.3;
+  for(let i=0;i<=n;i++){ const y=T.top+i*dh, s=sway*(1-i/n); ctx.beginPath(); ctx.moveTo(L+s,y); ctx.lineTo(R+s,y); ctx.stroke(); }
+  for(let i=0;i<n;i++){ const y1=T.top+i*dh, y2=y1+dh, s1=sway*(1-i/n), s2=sway*(1-(i+1)/n);
+    ctx.beginPath(); ctx.moveTo(L+s1,y1); ctx.lineTo(R+s2,y2); ctx.moveTo(R+s1,y1); ctx.lineTo(L+s2,y2); ctx.stroke(); }
+  // girder segment on top
+  const gw = T.tw*3.4, gx = T.tx + T.tw/2 - gw/2 + sway;
+  ctx.fillStyle = C.pencil; ctx.fillRect(gx, T.top-16, gw, 4); ctx.fillRect(gx, T.top-4, gw, 4); ctx.fillRect(gx+gw/2-1.5, T.top-14, 3, 12);
+  // ground
+  ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0,T.g); ctx.lineTo(H.w,T.g); ctx.stroke();
+  for(let x=4;x<H.w;x+=14){ ctx.beginPath(); ctx.moveTo(x,T.g); ctx.lineTo(x-6,T.g+7); ctx.stroke(); }
+  // base plates
+  ctx.fillStyle = C.ink; ctx.fillRect(L-6,T.g-4,12,4); ctx.fillRect(R-6,T.g-4,12,4);
+}
+function heroFrame(){
+  const ctx = H.ctx; ctx.clearRect(0,0,H.w,H.h);
+  fCur += (fTarget-fCur)*0.04;
+  const gust = 1 + 0.25*Math.sin(t*0.9) + 0.1*Math.sin(t*2.3);
+  const sp = 3.2*fCur*fCur*gust + 0.3;
+  ctx.strokeStyle = C.wind; ctx.lineCap='round';
+  for(const p of parts){
+    p.x += sp*p.s;
+    if (p.x > H.w+20){ p.x = -20; p.trail.length = 0; p.y = Math.random()*H.h*0.92; }
+    const y = p.y + deflect(p.x,p.y) + Math.sin(t*2+p.y*0.05)*1.2;
+    p.trail.push([p.x,y]); if (p.trail.length > 14) p.trail.shift();
+    if (p.trail.length>1){
+      ctx.globalAlpha = 0.25 + 0.55*fCur*p.s*0.8; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(p.trail[0][0],p.trail[0][1]);
+      for (const q of p.trail) ctx.lineTo(q[0],q[1]);
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
+  drawTower(ctx);
+  t += 0.016;
+}
+function setHero(f){
+  fTarget = f;
+  document.getElementById('hf').textContent = f.toFixed(2);
+  document.getElementById('hv').textContent = Math.round(150*f);
+  document.getElementById('hq').textContent = Math.round(f*f*100)+'%';
+}
+setHero(1);
+if (!reduce) setInterval(()=>{ fi=(fi+1)%factors.length; setHero(factors[fi]); }, 2800);
+
+/* ---------- SNOW ---------- */
+const sc = document.getElementById('snowCanvas');
+let S = fit(sc), flakes = [], pile = 0, pileTarget = 0, sweeping = -1;
+function seedFlakes(){ flakes=[]; const n=Math.round(Math.min(140,S.w/5)); for(let i=0;i<n;i++) flakes.push({x:Math.random()*S.w,y:Math.random()*S.h,r:1+Math.random()*2.2,v:0.5+Math.random()*0.9,ph:Math.random()*6}); }
+seedFlakes();
+function deck(){ const y = S.h*0.58, x1 = S.w*0.08, x2 = S.w*0.92; return {y,x1,x2,g:S.h-6}; }
+function snowFrame(){
+  const ctx = S.ctx, D = deck(); ctx.clearRect(0,0,S.w,S.h);
+  // shores
+  ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 2;
+  const n = Math.max(4, Math.round((D.x2-D.x1)/70));
+  for(let i=0;i<=n;i++){ const x = D.x1+10+(D.x2-D.x1-20)*i/n; ctx.beginPath(); ctx.moveTo(x,D.y+14); ctx.lineTo(x,D.g); ctx.stroke(); }
+  ctx.lineWidth=1; for(let i=0;i<n;i++){ const xa=D.x1+10+(D.x2-D.x1-20)*i/n, xb=D.x1+10+(D.x2-D.x1-20)*(i+1)/n, ym=(D.y+14+D.g)/2; ctx.beginPath(); ctx.moveTo(xa,D.y+14); ctx.lineTo(xb,ym); ctx.lineTo(xa,D.g); ctx.stroke(); }
+  // ground
+  ctx.beginPath(); ctx.moveTo(0,D.g); ctx.lineTo(S.w,D.g); ctx.stroke();
+  // deck forms
+  ctx.fillStyle = C.ink; ctx.fillRect(D.x1, D.y, D.x2-D.x1, 14);
+  ctx.fillStyle = C.pencil; ctx.fillRect(D.x1, D.y+14, D.x2-D.x1, 3);
+  // pile
+  if (sweeping >= 0){
+    sweeping += 0.012;
+    const sx = D.x1 + (D.x2-D.x1)*sweeping;
+    drawPile(ctx,D,sx);
+    ctx.strokeStyle = C.pencil; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(sx, D.y-4); ctx.lineTo(sx+14, D.y-50); ctx.stroke();
+    ctx.fillStyle = C.pencil; ctx.fillRect(sx-10, D.y-6, 20, 5);
+    if (sweeping >= 1){ sweeping = -1; pile = 0; }
+  } else drawPile(ctx,D,D.x1);
+  // flakes
+  ctx.fillStyle = C.snow;
+  for (const f of flakes){
+    f.y += f.v; f.x += Math.sin(t*1.3+f.ph)*0.4;
+    const onDeck = f.x>D.x1 && f.x<D.x2 && f.y > D.y - pile;
+    if (onDeck || f.y > D.g){ if (onDeck && sweeping<0 && pile < pileTarget) pile = Math.min(pileTarget, pile + 0.12); f.y = -5; f.x = Math.random()*S.w; }
+    ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fill();
+  }
+  if (sweeping<0 && pile > pileTarget) pile += (pileTarget-pile)*0.08;
+}
+function drawPile(ctx,D,startX){
+  if (pile < 0.5 || startX >= D.x2) return;
+  ctx.fillStyle = C['snow-pile'];
+  ctx.beginPath(); ctx.moveTo(startX, D.y);
+  const w = D.x2-startX;
+  for (let i=0;i<=40;i++){ const x = startX + w*i/40; const wob = Math.sin(x*0.05)*Math.min(3,pile*0.15); const edge = Math.min(1, (x-D.x1)/30, (D.x2-x)/30); ctx.lineTo(x, D.y - pile*Math.max(0.15,edge) + wob); }
+  ctx.lineTo(D.x2, D.y); ctx.closePath(); ctx.fill();
+}
+
+/* ---------- loop ---------- */
+function drawStatic(){ if (reduce){ heroFrame(); snowFrame(); } }
+function loop(){ heroFrame(); snowFrame(); requestAnimationFrame(loop); }
+let rz; addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ H=fit(hc); S=fit(sc); seed(); seedFlakes(); drawStatic(); },150); });
+
+/* ---------- SHEET 3: factor ---------- */
+let fSel = 0.75;
+const ticks = document.getElementById('ticks');
+for (let v=0; v<=180; v+=30){
+  const a = Math.PI*(1 - v/180), x1 = 150+108*Math.cos(a), y1 = 150-108*Math.sin(a), x2 = 150+132*Math.cos(a), y2 = 150-132*Math.sin(a);
+  const tx = 150+148*Math.cos(a), ty = 150-148*Math.sin(a)+4;
+  ticks.insertAdjacentHTML('beforeend', `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--ink)" stroke-width="1.5"/><text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" font-size="10" text-anchor="middle">${v}</text>`);
+}
+const vmap = document.getElementById('vmap');
+function updFactor(){
+  const vm = +vmap.value, vd = vm*fSel;
+  document.getElementById('vmapOut').textContent = vm;
+  document.getElementById('vdes').textContent = Math.round(vd);
+  document.getElementById('qpct').textContent = Math.round(fSel*fSel*100)+'%';
+  document.getElementById('qeq').textContent = fSel.toFixed(2)+'² = '+(fSel*fSel).toFixed(2);
+  document.getElementById('needleMap').style.transform = `rotate(${-90+vm}deg)`;
+  document.getElementById('needleDes').style.transform = `rotate(${-90+vd}deg)`;
+  document.getElementById('barV').style.transform = `scaleX(${fSel})`;
+  document.getElementById('sqIn').style.transform = `scale(${fSel})`;
+}
+document.querySelectorAll('#periodChips .chip').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#periodChips .chip').forEach(x=>x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true'); fSel = +b.dataset.f; updFactor();
+}));
+vmap.addEventListener('input',updFactor);
+updFactor();
+
+/* ---------- SHEET 4: hurricane ---------- */
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const segs = document.getElementById('segs');
+for (let m=0;m<12;m++){
+  const a0 = (m*30-90)*Math.PI/180, a1 = ((m+1)*30-90)*Math.PI/180, r0=70, r1=128;
+  const p = (r,a)=>[(170+r*Math.cos(a)).toFixed(1),(170+r*Math.sin(a)).toFixed(1)];
+  const [x0,y0]=p(r1,a0),[x1,y1]=p(r1,a1),[x2,y2]=p(r0,a1),[x3,y3]=p(r0,a0);
+  const am = ((m+0.5)*30-90)*Math.PI/180, [lx,ly]=p(99,am);
+  const season = m>=6 && m<=9;
+  segs.insertAdjacentHTML('beforeend', `<path class="seg ${season?'season':'calm'}" d="M${x0} ${y0} A${r1} ${r1} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r0} ${r0} 0 0 0 ${x3} ${y3} Z"/><text x="${lx}" y="${(+ly+4).toFixed(1)}" font-size="11" text-anchor="middle" font-weight="600">${MON[m]}</text>`);
+}
+const startM = document.getElementById('startM');
+MON.forEach((m,i)=>startM.insertAdjacentHTML('beforeend',`<option value="${i}" ${i===11?'selected':''}>${m} 1</option>`));
+const weeks = document.getElementById('weeks'), hv2 = document.getElementById('hv2'), coast = document.getElementById('coast'), rc34 = document.getElementById('rc34');
+const arc = document.getElementById('winArc'), CIRC = 2*Math.PI*146;
+function factorFor(w){ return w<6?0.75 : w<=52?0.80 : w<=104?0.85 : 0.90; }
+function hurr(){
+  const s = +startM.value, w = +weeks.value, vm = +hv2.value, months = w*7/30.44;
+  const f = factorFor(w), cap = rc34.checked ? 120 : 115;
+  document.getElementById('weeksOut').textContent = w+' wk'+(w<6?' (<6)':'');
+  document.getElementById('hv2Out').textContent = vm;
+  // arc
+  const len = Math.min(months,12)/12*CIRC;
+  arc.style.strokeDasharray = `${len.toFixed(1)} ${CIRC.toFixed(1)}`;
+  arc.style.transformOrigin = '170px 170px';
+  arc.style.transform = `rotate(${s*30-90}deg)`;
+  // season overlap
+  let touches = false;
+  for (let x=s; x<s+months; x+=0.02){ const m = Math.floor(x)%12; if (m>=6 && m<=9){ touches=true; break; } }
+  document.getElementById('spinner').classList.toggle('fast', touches);
+  const end = new Date(2027, s, 1); end.setDate(end.getDate()+w*7);
+  const endTxt = MON[end.getMonth()]+' '+end.getDate();
+  // route A
+  const vA = f*vm;
+  document.getElementById('aV').textContent = Math.round(vA);
+  document.getElementById('aNote').textContent = `${f.toFixed(2)} × ${vm} mph`;
+  document.getElementById('aTxt').textContent = `Pressure = ${Math.round((vA/vm)**2*100)}% of the permanent design. No storm bracing plan required by this route.`;
+  // route B
+  const eligible = coast.checked && vm > cap;
+  const B = document.getElementById('routeB'), bPill = document.getElementById('bPill');
+  document.getElementById('bTitle').textContent = cap+' mph option';
+  let vB = null;
+  if (!eligible){
+    B.classList.add('off'); bPill.className='pill no'; bPill.textContent='Route B · not available';
+    document.getElementById('bV').textContent='—';
+    document.getElementById('bNote').textContent = coast.checked ? `mapped V ≤ ${cap} mph` : 'site not on hurricane coast';
+    document.getElementById('bTxt').textContent = `The ${cap} mph substitution only applies on the Gulf Coast or Eastern Seaboard where the mapped speed exceeds ${cap} mph.`;
+  } else if (!touches){
+    vB = f*cap; B.classList.remove('off'); bPill.className='pill ok'; bPill.textContent='Route B · outside season';
+    document.getElementById('bV').textContent = Math.round(vB);
+    document.getElementById('bNote').textContent = `${f.toFixed(2)} × ${cap} mph`;
+    document.getElementById('bTxt').textContent = `Window stays inside Nov 1 – Jun 30, so the period factor may reduce ${cap} mph. If the schedule slips into July, review and redesign to the in-season rules.`;
+  } else {
+    vB = cap; B.classList.remove('off'); bPill.className='pill storm'; bPill.textContent='Route B · in season';
+    document.getElementById('bV').textContent = cap;
+    document.getElementById('bNote').textContent = `${cap} mph, no factor`;
+    document.getElementById('bTxt').textContent = `Window touches Jul 1 – Oct 31. ${cap} mph cannot be reduced, and you must have extra bracing designed for the full ${vm} mph, prepared in advance and installed before an announced hurricane.`;
+  }
+  document.getElementById('routeA').classList.toggle('win', vB===null || vA <= vB);
+  B.classList.toggle('win', vB!==null && vB < vA);
+  const v = document.getElementById('verdict');
+  if (vB===null) v.innerHTML = `<strong>${MON[s]} 1 → ${endTxt}:</strong> design for <span class="mono">${Math.round(vA)} mph</span> (Route A).`;
+  else if (vB < vA) v.innerHTML = `<strong>${MON[s]} 1 → ${endTxt}:</strong> Route B gives the lighter everyday design, <span class="mono">${Math.round(vB)}</span> vs <span class="mono">${Math.round(vA)} mph</span>${touches?', but you carry a standby bracing plan for the full mapped speed.':'.'}`;
+  else v.innerHTML = `<strong>${MON[s]} 1 → ${endTxt}:</strong> Route B saves nothing here (<span class="mono">${Math.round(vB)}</span> vs <span class="mono">${Math.round(vA)} mph</span>)${touches?' and adds a standby bracing obligation. Use Route A.':'. Use Route A.'}`;
+}
+[startM,weeks,hv2,coast,rc34].forEach(el=>el.addEventListener('input',hurr));
+hurr();
+
+/* ---------- SHEET 5: snow calc ---------- */
+const pg = document.getElementById('pg'), ce = document.getElementById('ce'), ct = document.getElementById('ct');
+function snow(){
+  const g = +pg.value, e = +ce.value, th = +ct.value, red = 0.8*g, pf = 0.7*e*th*1.0*red;
+  document.getElementById('pgOut').textContent = g;
+  document.getElementById('eq1').innerHTML = `p<sub>g,c</sub> = 0.8 × ${g} = <b>${red.toFixed(1)} psf</b>`;
+  document.getElementById('eq2').innerHTML = `p<sub>f</sub> = 0.7 × ${e.toFixed(1)} × ${th.toFixed(1)} × 1.0 × ${red.toFixed(1)} = <b>${pf.toFixed(1)} psf</b>`;
+  document.getElementById('pfBig').textContent = pf.toFixed(1);
+  document.getElementById('pfTop').textContent = pf.toFixed(1);
+  pileTarget = Math.min(70, pf*1.3);
+  if (reduce){ pile = pileTarget; drawStatic(); }
+}
+[pg,ce,ct].forEach(el=>el.addEventListener('input',snow));
+document.getElementById('clearBtn').addEventListener('click',()=>{ if (reduce){ pile=0; drawStatic(); } else sweeping = 0; });
+snow();
+if (reduce) pile = pileTarget;
+
+/* ---------- SHEET 6: cards ---------- */
+const QA = [
+  ['ASCE 37 reduces wind speed. What is the effective reduction in pressure for a 5-week falsework condition?','Factor 0.75 on V. Pressure goes as V², so 0.75² ≈ 0.56: about 56% of the permanent-structure wind load.'],
+  ['Your Nov–Jun erection on the Gulf Coast slips into August. What changes?','You lose the factor on 115 mph. Review and redesign to the in-season rules: 115 mph unreduced, plus pre-designed standby bracing for the full mapped ASCE 7-10 speed, installed before an announced hurricane. Or switch to mapped V × factor.'],
+  ['The finished bridge is Risk Category IV. What risk category do you use for the falsework?','Risk Category II for environmental loads during construction, unless the AHJ requires more. Consider raising it when a failure would threaten an adjacent essential facility. If the AHJ requires III/IV, the 115 mph substitution becomes 120 mph.'],
+  ['Can a 14-month operation be split into three phases to use the 0.80 factor?','No. ASCE 37 forbids dividing one continuous operation into short pieces to get lower loads, and forbids extending an interim condition past its original construction period.'],
+  ['Does ASCE 37 require snow load on formwork, and how do you get it?','Yes. Use ASCE 7-10 Ch. 7 with 0.8 × p_g (construction ≤ 5 yr), I_s = 1.0 (RC II), typically C_t = 1.2 for unheated temporary work. Check drift and unbalanced cases, combine with construction loads, and back the reduced load with a snow removal / no-access protocol.']
+];
+const cards = document.getElementById('cards');
+QA.forEach(([q,a],i)=>{
+  cards.insertAdjacentHTML('beforeend', `<button class="card" type="button" aria-label="Flashcard ${i+1}: ${q.replace(/"/g,'&quot;')}"><div class="card-in"><div class="face"><span class="label">Q${i+1}</span><span class="q">${q}</span><span class="tap">Tap to flip</span></div><div class="face back"><span class="label">Answer</span><span class="a">${a}</span><span class="tap">Tap to flip back</span></div></div></button>`);
+});
+cards.addEventListener('click',e=>{ const c = e.target.closest('.card'); if (c) c.classList.toggle('flip'); });
+
+/* ---------- start ---------- */
+if (reduce){ setHero(0.75); drawStatic(); } else requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
