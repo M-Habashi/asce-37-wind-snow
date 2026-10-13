@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <link rel="stylesheet" href="assets/prep.css">
 <script src="assets/prep.js"></script>
 <style>
@@ -25,59 +28,65 @@
 
 <!-- SHEET 1 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>1</b> of 7</div><div>AISC 360 · what temp works leans on</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="padhead"><div>Sheet <b>1</b> of 8</div><div>AISC 360-16 · what temp works leans on</div><div>Chk'd: <b>M.</b></div></div>
   <div class="sheet-body">
-    <div class="kicker"><span class="label">AISC 360-16 / Steel Construction Manual</span><span class="hand">temporary steel is mostly stability →</span></div>
+    <div class="kicker"><span class="label">ANSI/AISC 360-16 · 15th ed. Steel Construction Manual</span><span class="hand">temporary steel is mostly stability →</span></div>
     <h1>Steel, Mostly<br>Stability</h1>
     <div class="stage">
-      <canvas id="hero" role="img" aria-label="A pinned column bowing more and more as load approaches the Euler load, with the amplification factor curve 1/(1−P/Pe) tracking it"></canvas>
-      <div class="readout"><span>P/P<sub>e</sub> = <b id="hR">0.00</b></span><span>amplification = <b id="hA">1.00</b></span></div>
+      <canvas id="hero" role="img" aria-label="A pinned column bowing more and more as load approaches the Euler load, with the amplification factor curve tracking it"></canvas>
+      <div class="readout"><span>\(P/P_e\) = <b id="hR">0.00</b></span><span>amplification = <b id="hA">1.00</b></span></div>
     </div>
-    <p class="lede">Shoring legs, tower posts, spreader bars, girders before their cross-frames go in: most temporary steel is slender and lightly braced, and it hasn't got its final connections yet. The checks you learned all still apply. What changes is that out-of-plumb, unbraced length and bracing stiffness usually govern instead of yield.</p>
+    <div class="eqblock">$$\delta = \frac{\delta_0}{1 - P/P_e} \qquad B_1 = \frac{C_m}{1-\alpha P_r/P_{e1}} \ge 1 \qquad P_{e1} = \frac{\pi^2 EI^*}{(L_{c1})^2}$$<span class="fref">AISC 360-16 App. 8 · Eq. A-8-3, A-8-5 · α = 1.00 (LRFD), 1.60 (ASD)</span></div>
+    <p class="lede">Shoring legs, tower posts, spreader bars, girders before their cross-frames go in: most temporary steel is slender and lightly braced, and it hasn't got its final connections yet. The checks are the ones you learned. What changes is that out-of-plumb, unbraced length and brace stiffness govern far more often than yield.</p>
   </div>
 </section>
 
 <!-- SHEET 2 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>2</b> of 7</div><div>Compression · Chapter E</div><div>F<sub>cr</sub></div></div>
+  <div class="padhead"><div>Sheet <b>2</b> of 8</div><div>Compression · AISC 360-16 Chapter E</div><div>\(F_{cr}\)</div></div>
   <div class="sheet-body">
     <h2>The column curve</h2>
-    <div class="callout remember"><span class="tag">From your AISC course</span>
-      <p>F<sub>e</sub> = π²E/(KL/r)². If KL/r ≤ 4.71√(E/F<sub>y</sub>), or F<sub>y</sub>/F<sub>e</sub> ≤ 2.25: F<sub>cr</sub> = 0.658<sup>F<sub>y</sub>/F<sub>e</sub></sup>F<sub>y</sub>. Otherwise F<sub>cr</sub> = 0.877F<sub>e</sub>. Then P<sub>n</sub> = F<sub>cr</sub>A<sub>g</sub>, with φ = 0.90 or Ω = 1.67. Keep KL/r ≤ 200 as good practice.</p></div>
-    <h3>Pick the end condition (AISC Commentary Table C-A-7.1)</h3>
+    <div class="eqblock">$$F_e=\frac{\pi^2E}{(L_c/r)^2}\ \text{(E3-4)}\qquad F_{cr}=\begin{cases}0.658^{F_y/F_e}\,F_y & \dfrac{L_c}{r}\le 4.71\sqrt{\dfrac{E}{F_y}}\ \ \text{(E3-2)}\\[6pt] 0.877\,F_e & \dfrac{L_c}{r}> 4.71\sqrt{\dfrac{E}{F_y}}\ \ \text{(E3-3)}\end{cases}\qquad P_n=F_{cr}A_g\ \text{(E3-1)}$$<span class="fref">§E1: φ<sub>c</sub> = 0.90, Ω<sub>c</sub> = 1.67 · §E2: L<sub>c</sub> = KL, keep L<sub>c</sub>/r ≤ 200 (user note) · slender elements → §E7</span></div>
+    <h3>End condition (AISC Commentary Table C-A-7.1, recommended K)</h3>
     <div class="kgrid" id="kgrid"></div>
     <div class="twocol">
       <div class="col">
-        <div class="ctrl"><label class="label" for="cMem">Member</label>
-          <select id="cMem"></select></div>
-        <div class="ctrl"><label class="label" for="cL">Unbraced length L: <span class="val" id="cLo"></span></label><input id="cL" type="range" min="2" max="40" step="0.5" value="14"></div>
+        <div class="ctrl"><label class="label" for="cMem">Member</label><select id="cMem"></select></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="cL">Unbraced length L: <span class="val" id="cLo"></span></label><input id="cL" type="range" min="2" max="40" step="0.5" value="14"></div>
+          <div class="ctrl"><label class="label" for="cPu">Required \(P_u\) (LRFD): <span class="val" id="cPuo"></span></label><input id="cPu" type="range" min="5" max="600" step="5" value="90"></div>
+        </div>
         <div class="stat-row">
-          <div class="stat"><span class="label">KL/r</span><span class="big" id="cKLr">—</span></div>
+          <div class="stat"><span class="label">L<sub>c</sub>/r</span><span class="big" id="cKLr">—</span></div>
           <div class="stat"><span class="label">φP<sub>n</sub> (LRFD)</span><span class="big" id="cPhi">—</span><span class="mono">kips</span></div>
           <div class="stat"><span class="label">P<sub>n</sub>/Ω (ASD)</span><span class="big" id="cAsd">—</span><span class="mono">kips</span></div>
         </div>
-        <div class="eq" id="cEq"></div>
       </div>
       <div class="col">
         <div class="plot"><canvas id="cPlot" role="img" aria-label="Critical stress versus slenderness with Euler curve and current member marked"></canvas><div class="tip" id="cTip"></div></div>
-        <div class="legend"><span><i style="background:var(--s1)"></i>F<sub>cr</sub> (AISC E3)</span><span><i class="dash" style="color:var(--ink-soft)"></i>Euler F<sub>e</sub></span><span><i style="background:var(--pencil)"></i>your member</span></div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>F<sub>cr</sub> (E3-2/E3-3)</span><span><i class="dash" style="color:var(--ink-soft)"></i>Euler F<sub>e</sub></span><span><i style="background:var(--pencil)"></i>your member</span></div>
       </div>
     </div>
-    <div class="callout trap"><span class="tag">Interview angle</span><p>A falsework post standing on a sill with no bracing at the top is a <strong>flagpole</strong>: K = 2.1. Bracing the top drops the effective length by a factor of 2 and the Euler load by a factor of 4. Also watch <strong>screw-jack extension</strong> on shoring legs. A long, eccentric jack is a short slender column, and manufacturers' capacity tables fall off quickly with extension.</p></div>
+    <div class="flowwrap">
+      <div class="col"><h3>Calc sheet</h3><div id="cSheet"></div></div>
+      <div class="col"><h3>Design flow · Ch. E</h3><div id="cFlow"></div></div>
+    </div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>A falsework post on a sill with nothing at the top is a <strong>flagpole</strong> with K = 2.1. Brace the top and L<sub>c</sub> drops about 2×, so F<sub>e</sub> rises about 4×. Watch <strong>screw-jack extension</strong> on shoring legs: a long, eccentric jack is a short slender column, and the manufacturer's capacity tables fall off quickly with extension.</p></div>
   </div>
 </section>
 
 <!-- SHEET 3 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>3</b> of 7</div><div>Flexure · Chapter F2</div><div>L<sub>b</sub> · C<sub>b</sub></div></div>
+  <div class="padhead"><div>Sheet <b>3</b> of 8</div><div>Flexure · AISC 360-16 §F2 (compact doubly symmetric I)</div><div>\(L_b\) · \(C_b\)</div></div>
   <div class="sheet-body">
     <h2>Lateral-torsional buckling</h2>
-    <div class="callout remember"><span class="tag">From your AISC course</span>
-      <p>Plastic for L<sub>b</sub> ≤ L<sub>p</sub> = 1.76r<sub>y</sub>√(E/F<sub>y</sub>). Linear (inelastic) between L<sub>p</sub> and L<sub>r</sub>. Elastic beyond L<sub>r</sub>. C<sub>b</sub> = 12.5M<sub>max</sub>/(2.5M<sub>max</sub> + 3M<sub>A</sub> + 4M<sub>B</sub> + 3M<sub>C</sub>) lifts the curve, capped at M<sub>p</sub>.</p></div>
+    <div class="eqblock">$$L_p = 1.76\,r_y\sqrt{\frac{E}{F_y}}\ \text{(F2-5)}\qquad L_r = 1.95\,r_{ts}\frac{E}{0.7F_y}\sqrt{\frac{Jc}{S_xh_o}+\sqrt{\left(\frac{Jc}{S_xh_o}\right)^2+6.76\left(\frac{0.7F_y}{E}\right)^2}}\ \text{(F2-6)}$$
+    $$M_n=\begin{cases}M_p=F_yZ_x & L_b\le L_p\ \ \text{(F2-1)}\\ C_b\left[M_p-(M_p-0.7F_yS_x)\dfrac{L_b-L_p}{L_r-L_p}\right]\le M_p & L_p<L_b\le L_r\ \ \text{(F2-2)}\\ F_{cr}S_x\le M_p,\ \ F_{cr}=\dfrac{C_b\pi^2E}{(L_b/r_{ts})^2}\sqrt{1+0.078\dfrac{Jc}{S_xh_o}\left(\dfrac{L_b}{r_{ts}}\right)^2} & L_b>L_r\ \ \text{(F2-3, F2-4)}\end{cases}$$
+    $$C_b=\frac{12.5M_{max}}{2.5M_{max}+3M_A+4M_B+3M_C}\ \text{(F1-1)}\qquad r_{ts}^2=\frac{\sqrt{I_yC_w}}{S_x}\ \text{(F2-7)}$$<span class="fref">§F1: φ<sub>b</sub> = 0.90, Ω<sub>b</sub> = 1.67 · c = 1.0 for doubly symmetric I (F2-8a) · compactness per Table B4.1b</span></div>
     <div class="twocol">
       <div class="col">
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="bShape">Shape (F<sub>y</sub> = 50 ksi)</label><select id="bShape"></select></div>
+          <div class="ctrl"><label class="label" for="bShape">Shape (A992, F<sub>y</sub> = 50 ksi)</label><select id="bShape"></select></div>
           <div class="ctrl"><label class="label" for="bCb">C<sub>b</sub> case</label><select id="bCb">
             <option value="1.0">1.00 · uniform moment / cantilever</option>
             <option value="1.14" selected>1.14 · simple span, UDL, ends braced</option>
@@ -85,7 +94,10 @@
             <option value="1.67">1.67 · linear, one end zero</option>
             <option value="2.27">2.27 · reverse curvature</option></select></div>
         </div>
-        <div class="ctrl"><label class="label" for="bLb">Unbraced length L<sub>b</sub>: <span class="val" id="bLbo"></span></label><input id="bLb" type="range" min="0" max="45" step="0.5" value="20"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="bLb">Unbraced length L<sub>b</sub>: <span class="val" id="bLbo"></span></label><input id="bLb" type="range" min="0" max="45" step="0.5" value="20"></div>
+          <div class="ctrl"><label class="label" for="bMu">Required \(M_u\): <span class="val" id="bMuo"></span></label><input id="bMu" type="range" min="10" max="800" step="5" value="160"></div>
+        </div>
         <div class="stage short"><canvas id="bPlan" role="img" aria-label="Plan view of a beam between brace points; the compression flange sweeps sideways between braces"></canvas>
           <div class="readout"><span>plan view · compression flange</span></div></div>
         <div class="stat-row">
@@ -96,123 +108,221 @@
       <div class="col">
         <div class="plot"><canvas id="bPlot" role="img" aria-label="Design flexural strength versus unbraced length for the chosen shape and Cb"></canvas><div class="tip" id="bTip"></div></div>
         <div class="legend"><span><i style="background:var(--s1)"></i>φM<sub>n</sub> with your C<sub>b</sub></span><span><i class="dash" style="color:var(--ink-soft)"></i>C<sub>b</sub> = 1.0</span><span><i style="background:var(--pencil)"></i>your L<sub>b</sub></span></div>
-        <div class="eq" id="bEq"></div>
       </div>
     </div>
-    <div class="callout trap"><span class="tag">Erection trap</span><p>A girder set before its cross-frames go in has L<sub>b</sub> equal to the whole span, so the curve's far right is where erection lives. Two more things push you down the curve: <strong>load on the top flange</strong> (destabilizing, since AISC's C<sub>b</sub> assumes shear-center loading) and a <strong>cantilever overhang</strong> (use C<sub>b</sub> = 1.0 unless the tip is braced). For girder pairs, see the twin-girder system buckling check on the bridges page.</p></div>
+    <div class="flowwrap">
+      <div class="col"><h3>Calc sheet</h3><div id="bSheet"></div></div>
+      <div class="col"><h3>Design flow · §F2</h3><div id="bFlow"></div></div>
+    </div>
+    <div class="callout trap"><span class="tag">Erection trap</span><p>A girder set before its cross-frames go in has L<sub>b</sub> equal to the whole span, so erection lives on the far right of the curve. <strong>Top-flange loading</strong> is destabilizing (C<sub>b</sub> assumes shear-center loading), and an unbraced <strong>cantilever</strong> takes C<sub>b</sub> = 1.0. For girder pairs, check system buckling on the bridges page.</p></div>
   </div>
 </section>
 
 <!-- SHEET 4 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>4</b> of 7</div><div>Stability bracing · Appendix 6</div><div>strength + stiffness</div></div>
+  <div class="padhead"><div>Sheet <b>4</b> of 8</div><div>Stability bracing · AISC 360-16 Appendix 6</div><div>strength + stiffness</div></div>
   <div class="sheet-body">
-    <h2>A brace needs two things</h2>
-    <p>Students remember the <strong>strength</strong> (the old "2% rule"). Interviewers ask about <strong>stiffness</strong>. A brace that's strong enough but too soft lets the member buckle in its unbraced shape. Appendix 6 sizes both, assuming an initial out-of-straightness of L<sub>br</sub>/500.</p>
+    <h2>A brace needs strength <em>and</em> stiffness</h2>
+    <p>Appendix 6 gives two requirements per brace, both based on an initial out-of-straightness of L<sub>br</sub>/500: a <strong>required strength</strong> (the old "2% rule", now 0.5–2%) and a <strong>required stiffness</strong> β<sub>br</sub>, which is twice the ideal stiffness through the 1/φ factor. To check stiffness you compute the <em>provided</em> stiffness of the real brace (axial spring of the member, softened by its connections) and show it is ≥ β<sub>br</sub>. Since 360-16 the terms are <strong>panel</strong> bracing (was "relative") and <strong>point</strong> bracing (was "nodal").</p>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Case</th><th>Required strength</th><th>Required stiffness (LRFD; ASD: replace 1/φ by Ω)</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Column · panel §6.2.1</td><td>\(V_{br}=0.005P_r\) (A-6-1)</td><td>\(\beta_{br}=\frac{1}{\phi}\frac{2P_r}{L_{br}}\) (A-6-2a)</td></tr>
+        <tr><td class="k">Column · point §6.2.2</td><td>\(P_{br}=0.01P_r\) (A-6-3)</td><td>\(\beta_{br}=\frac{1}{\phi}\frac{8P_r}{L_{br}}\) (A-6-4a)</td></tr>
+        <tr><td class="k">Beam · panel §6.3.1a</td><td>\(V_{br}=0.01\frac{M_rC_d}{h_o}\) (A-6-5)</td><td>\(\beta_{br}=\frac{1}{\phi}\frac{4M_rC_d}{L_{br}h_o}\) (A-6-6a)</td></tr>
+        <tr><td class="k">Beam · point §6.3.1b</td><td>\(P_{br}=0.02\frac{M_rC_d}{h_o}\) (A-6-7)</td><td>\(\beta_{br}=\frac{1}{\phi}\frac{10M_rC_d}{L_{br}h_o}\) (A-6-8a)</td></tr>
+      </tbody></table></div>
+    <p class="small muted">φ = 0.75, Ω = 2.00 for stiffness. C<sub>d</sub> = 1.0, or 2.0 for the brace closest to the inflection point in double curvature. h<sub>o</sub> = distance between flange centroids. 360-10 used 0.004 (column panel) and 0.008 (beam panel). Torsional (cross-frame) beam bracing is §6.3.2 with its own equations.</p>
     <div class="twocol">
       <div class="col">
         <div class="chips" id="brType" role="group" aria-label="Bracing type">
-          <button class="chip" data-t="cn" aria-pressed="true">Column · nodal</button>
-          <button class="chip" data-t="cr" aria-pressed="false">Column · relative</button>
-          <button class="chip" data-t="bn" aria-pressed="false">Beam · nodal</button>
-          <button class="chip" data-t="br" aria-pressed="false">Beam · relative</button>
+          <button class="chip" data-t="cn" aria-pressed="true">Column · point</button>
+          <button class="chip" data-t="cr" aria-pressed="false">Column · panel</button>
+          <button class="chip" data-t="bn" aria-pressed="false">Beam · point</button>
+          <button class="chip" data-t="br" aria-pressed="false">Beam · panel</button>
+        </div>
+        <div class="chips" id="brMeth" role="group" aria-label="Design method">
+          <button class="chip" data-m="lrfd" aria-pressed="true">LRFD</button>
+          <button class="chip" data-m="asd" aria-pressed="false">ASD</button>
         </div>
         <div class="ctrl" id="brPWrap"><label class="label" for="brP">Required axial P<sub>r</sub>: <span class="val" id="brPo"></span></label><input id="brP" type="range" min="20" max="1500" step="10" value="400"></div>
         <div class="ctrl" id="brMWrap" hidden><label class="label" for="brM">Required moment M<sub>r</sub>: <span class="val" id="brMo"></span></label><input id="brM" type="range" min="50" max="3000" step="25" value="800"></div>
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="brL">Brace spacing L<sub>br</sub>: <span class="val" id="brLo"></span></label><input id="brL" type="range" min="4" max="30" step="0.5" value="12"></div>
-          <div class="ctrl" id="brHWrap" hidden><label class="label" for="brH">Flange centroid distance h<sub>o</sub>: <span class="val" id="brHo"></span></label><input id="brH" type="range" min="10" max="96" step="1" value="36"></div>
+          <div class="ctrl" id="brHWrap" hidden><label class="label" for="brH">h<sub>o</sub>: <span class="val" id="brHo"></span></label><input id="brH" type="range" min="10" max="96" step="1" value="36"></div>
         </div>
-        <div class="ctrl"><label class="label" for="brK">Provided brace stiffness: <span class="val" id="brKo"></span></label><input id="brK" type="range" min="0" max="300" step="1" value="150"></div>
-        <div class="eq" id="brEq"></div>
+        <div class="ctrl" id="brCdWrap" hidden><label class="label" for="brCd">C<sub>d</sub></label><select id="brCd"><option value="1">1.0 · single curvature</option><option value="2">2.0 · brace nearest inflection point</option></select></div>
+        <h4>The brace you provide</h4>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="brMem">Brace member</label><select id="brMem"></select></div>
+          <div class="ctrl"><label class="label" for="brLen">Brace length: <span class="val" id="brLeno"></span></label><input id="brLen" type="range" min="2" max="40" step="0.5" value="10"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="brAng">Angle θ to braced direction: <span class="val" id="brAngo"></span></label><input id="brAng" type="range" min="0" max="70" step="1" value="30"></div>
+          <div class="ctrl"><label class="label" for="brKc">Connection stiffness β<sub>conn</sub>: <span class="val" id="brKco"></span></label><input id="brKc" type="range" min="10" max="1000" step="10" value="150"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="brConn" checked> Include connection flexibility (bolt slip, oversized holes, guy sag)</label>
       </div>
       <div class="col">
         <div class="stage tall"><canvas id="brCv" role="img" aria-label="Column with a mid-height brace spring; with low stiffness it buckles in one half-wave, with enough stiffness it buckles between braces"></canvas>
-          <div class="readout"><span>β provided / required = <b id="brRatio">—</b></span></div>
+          <div class="readout"><span>β<sub>sys</sub> / β<sub>br</sub> = <b id="brRatio">—</b></span></div>
           <div class="readout right bottom"><span class="pill" id="brPill">—</span></div></div>
       </div>
     </div>
-    <div class="callout verify"><span class="tag">Verify edition</span><p>These are the AISC 360-16 values. Column relative 0.005P<sub>r</sub>, nodal 0.01P<sub>r</sub>. Beam relative 0.005M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub>, nodal 0.02M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub>. Stiffness uses φ = 0.75 or Ω = 2.00. 360-10 used 0.004 and 0.008 for the relative cases. Torsional (cross-frame) bracing of beams has its own equations.</p></div>
+    <div class="flowwrap">
+      <div class="col"><h3>Calc sheet · strength &amp; stiffness check</h3><div id="brSheet"></div></div>
+      <div class="col"><h3>Design flow · App. 6</h3><div id="brFlow"></div></div>
+    </div>
+    <div class="callout remember"><span class="tag">How to get the provided stiffness</span><p>For an axial strut or tie at angle θ to the braced movement: \(k=\frac{AE}{L}\cos^2\theta\). Springs in series add as reciprocals: \(\frac{1}{\beta_{sys}}=\frac{1}{k_{brace}}+\frac{1}{\beta_{conn}}+\dots\) (App. 6 user note to §6.2.1). Long guy cables: use the cable's effective modulus (≈ 12,000–15,000 ksi for wire rope) and pretension with a turnbuckle (FHWA NHI-15-044 §5.5). Bracing to a "rigid" support only works if that support is itself stiff, so include it in the chain.</p></div>
   </div>
 </section>
 
 <!-- SHEET 5 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>5</b> of 7</div><div>Combined forces · H1 · second order</div><div>P–M</div></div>
+  <div class="padhead"><div>Sheet <b>5</b> of 8</div><div>Combined forces · §H1.1 · App. 8</div><div>P–M</div></div>
   <div class="sheet-body">
     <h2>Interaction &amp; amplification</h2>
+    <div class="eqblock">$$\frac{P_r}{P_c}\ge0.2:\ \ \frac{P_r}{P_c}+\frac{8}{9}\left(\frac{M_{rx}}{M_{cx}}+\frac{M_{ry}}{M_{cy}}\right)\le1.0\ \text{(H1-1a)}\qquad \frac{P_r}{P_c}<0.2:\ \ \frac{P_r}{2P_c}+\left(\frac{M_{rx}}{M_{cx}}+\frac{M_{ry}}{M_{cy}}\right)\le1.0\ \text{(H1-1b)}$$
+    $$M_r = B_1M_{nt}+B_2M_{lt}\ \text{(A-8-1)}\qquad B_1=\frac{C_m}{1-\alpha P_r/P_{e1}}\ \text{(A-8-3)}\qquad C_m=0.6-0.4\frac{M_1}{M_2}\ \text{(A-8-4)}$$<span class="fref">C<sub>m</sub> = 1.0 when transverse load acts between supports (conservative) · α = 1.0 LRFD / 1.6 ASD</span></div>
     <div class="twocol">
       <div class="col">
-        <div class="ctrl"><label class="label" for="iP">P<sub>r</sub>/P<sub>c</sub>: <span class="val" id="iPo"></span></label><input id="iP" type="range" min="0" max="1.2" step="0.01" value="0.35"></div>
-        <div class="ctrl"><label class="label" for="iM">M<sub>r</sub>/M<sub>c</sub> (first order, x + y): <span class="val" id="iMo"></span></label><input id="iM" type="range" min="0" max="1.2" step="0.01" value="0.4"></div>
-        <div class="ctrl"><label class="label" for="iPe">P<sub>r</sub>/P<sub>e1</sub> (for B<sub>1</sub>): <span class="val" id="iPeo"></span></label><input id="iPe" type="range" min="0" max="0.8" step="0.01" value="0.25"></div>
+        <div class="ctrl"><label class="label" for="iP">\(P_r/P_c\): <span class="val" id="iPo"></span></label><input id="iP" type="range" min="0" max="1.2" step="0.01" value="0.35"></div>
+        <div class="ctrl"><label class="label" for="iM">\(M_{nt}/M_c\) (first order, x + y): <span class="val" id="iMo"></span></label><input id="iM" type="range" min="0" max="1.2" step="0.01" value="0.4"></div>
+        <div class="ctrl"><label class="label" for="iPe">\(\alpha P_r/P_{e1}\): <span class="val" id="iPeo"></span></label><input id="iPe" type="range" min="0" max="0.8" step="0.01" value="0.25"></div>
+        <div class="ctrl"><label class="label" for="iM1">\(M_1/M_2\) (only if no transverse load; + = reverse curvature): <span class="val" id="iM1o"></span></label><input id="iM1" type="range" min="-1" max="1" step="0.05" value="0"></div>
         <label class="check"><input type="checkbox" id="iTr" checked> Transverse load between supports (C<sub>m</sub> = 1.0)</label>
-        <div class="eq" id="iEq"></div>
-        <span class="pill" id="iPill">—</span>
       </div>
       <div class="col">
         <div class="plot"><canvas id="iPlot" role="img" aria-label="AISC H1-1 interaction diagram with first-order and amplified demand points"></canvas><div class="tip" id="iTip"></div></div>
-        <div class="legend"><span><i style="background:var(--ink)"></i>H1-1 limit</span><span><i style="background:var(--s1)"></i>first-order point</span><span><i style="background:var(--pencil)"></i>with B<sub>1</sub></span></div>
+        <div class="legend"><span><i style="background:var(--ink)"></i>H1-1 limit</span><span><i style="background:var(--s1)"></i>first order</span><span><i style="background:var(--pencil)"></i>with B<sub>1</sub></span></div>
       </div>
     </div>
-    <div class="callout remember"><span class="tag">Why it matters for temp works</span><p>Shoring towers, tall posts and spreader bars carry axial load with an accidental eccentricity (out-of-plumb, a jack off center, a sling not quite on the centroid). B<sub>1</sub> = C<sub>m</sub>/(1 − αP<sub>r</sub>/P<sub>e1</sub>), with α = 1.0 (LRFD) or 1.6 (ASD). This amplification is why a "small" eccentricity governs once P approaches P<sub>e</sub>. The direct analysis method (Ch. C) handles this with notional loads (0.002Y<sub>i</sub>) and reduced stiffness (0.8EI, 0.8EA).</p></div>
+    <div class="flowwrap">
+      <div class="col"><h3>Calc sheet</h3><div id="iSheet"></div></div>
+      <div class="col"><h3>Design flow · stability (Ch. C) → H1</h3><div id="iFlow"></div></div>
+    </div>
+    <div class="callout remember"><span class="tag">Why it matters for temp works</span><p>Shoring towers, posts and spreader bars carry axial load with an accidental eccentricity: out-of-plumb, a jack off center, a sling not quite on the centroid. Near P<sub>e</sub> that "small" eccentricity governs. The direct analysis method (§C2) models it with notional loads N<sub>i</sub> = 0.002αY<sub>i</sub> (C2-1) and reduced stiffness 0.8τ<sub>b</sub>EI, 0.8EA (§C2.3), and then lets you use L<sub>c</sub> = L.</p></div>
   </div>
 </section>
 
 <!-- SHEET 6 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>6</b> of 7</div><div>Connections · Ch. J · Manual Parts 7–10</div><div>quick numbers</div></div>
+  <div class="padhead"><div>Sheet <b>6</b> of 8</div><div>Connections · Chapter J</div><div>bolts · welds</div></div>
   <div class="sheet-body">
-    <h2>Bolts &amp; welds in your head</h2>
+    <h2>Bolts &amp; welds with real checks</h2>
     <div class="twocol">
       <div class="col">
-        <h3>Bolt shear</h3>
+        <h3>Bolted lap / single plate</h3>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="boG">Grade</label><select id="boG"><option value="A">Group A (A325 / F3125)</option><option value="B">Group B (A490)</option></select></div>
+          <div class="ctrl"><label class="label" for="boG">Grade</label><select id="boG"><option value="A">Group A · F3125 Gr A325</option><option value="B">Group B · F3125 Gr A490</option></select></div>
           <div class="ctrl"><label class="label" for="boT">Threads</label><select id="boT"><option value="N">N · included in shear plane</option><option value="X">X · excluded</option></select></div>
         </div>
         <div class="ctrl-row three">
-          <div class="ctrl"><label class="label" for="boD">Diameter</label><select id="boD"><option value="0.75">3/4 in</option><option value="0.875" selected>7/8 in</option><option value="1">1 in</option><option value="1.125">1-1/8 in</option></select></div>
+          <div class="ctrl"><label class="label" for="boD">Diameter</label><select id="boD"><option value="0.75">3/4 in</option><option value="0.875" selected>7/8 in</option><option value="1">1 in</option></select></div>
           <div class="ctrl"><label class="label" for="boN">Bolts: <span class="val" id="boNo"></span></label><input id="boN" type="range" min="1" max="16" step="1" value="4"></div>
           <div class="ctrl"><label class="label" for="boS">Shear planes</label><select id="boS"><option value="1">single</option><option value="2">double</option></select></div>
         </div>
-        <div class="eq" id="boEq"></div>
+        <div class="ctrl-row three">
+          <div class="ctrl"><label class="label" for="boTp">Ply t (A36): <span class="val" id="boTpo"></span></label><input id="boTp" type="range" min="0.25" max="1.25" step="0.0625" value="0.5"></div>
+          <div class="ctrl"><label class="label" for="boLe">Edge dist. L<sub>e</sub>: <span class="val" id="boLeo"></span></label><input id="boLe" type="range" min="0.75" max="3" step="0.125" value="1.5"></div>
+          <div class="ctrl"><label class="label" for="boVu">Demand V<sub>u</sub>: <span class="val" id="boVuo"></span></label><input id="boVu" type="range" min="5" max="400" step="5" value="70"></div>
+        </div>
+        <div id="boSheet"></div>
       </div>
       <div class="col">
         <h3>Fillet weld</h3>
-        <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="wS">Leg size: <span class="val" id="wSo"></span></label><input id="wS" type="range" min="3" max="12" step="1" value="5"></div>
+        <div class="ctrl-row three">
+          <div class="ctrl"><label class="label" for="wS">Leg w: <span class="val" id="wSo"></span></label><input id="wS" type="range" min="3" max="12" step="1" value="5"></div>
           <div class="ctrl"><label class="label" for="wL">Total length: <span class="val" id="wLo"></span></label><input id="wL" type="range" min="2" max="48" step="1" value="12"></div>
+          <div class="ctrl"><label class="label" for="wTk">Thicker part t: <span class="val" id="wTko"></span></label><input id="wTk" type="range" min="0.25" max="2" step="0.125" value="0.75"></div>
         </div>
-        <label class="check"><input type="checkbox" id="wT"> Load transverse to weld (1.0 + 0.5 sin<sup>1.5</sup>θ = 1.5)</label>
-        <div class="eq" id="wEq"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="wAng">Load angle to weld axis θ: <span class="val" id="wAngo"></span></label><input id="wAng" type="range" min="0" max="90" step="5" value="0"></div>
+          <div class="ctrl"><label class="label" for="wPu">Demand P<sub>u</sub>: <span class="val" id="wPuo"></span></label><input id="wPu" type="range" min="5" max="300" step="5" value="60"></div>
+        </div>
+        <div id="wSheet"></div>
       </div>
     </div>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Item</th><th>Remember</th></tr></thead>
+      <thead><tr><th>Check</th><th>Equation</th><th>Reference</th></tr></thead>
       <tbody>
-        <tr><td class="k">Bolt shear F<sub>nv</sub></td><td>Group A: 54 ksi (N) / 68 ksi (X). Group B: 68 / 84 ksi. φ = 0.75, Ω = 2.00. F<sub>nt</sub> = 90 / 113 ksi.</td></tr>
-        <tr><td class="k">Bearing / tear-out</td><td>R<sub>n</sub> = 1.2l<sub>c</sub>tF<sub>u</sub> ≤ 2.4dtF<sub>u</sub> per bolt (deformation at service a concern)</td></tr>
-        <tr><td class="k">Slip-critical</td><td>R<sub>n</sub> = μD<sub>u</sub>h<sub>f</sub>T<sub>b</sub>n<sub>s</sub>. μ = 0.30 (Class A) / 0.50 (Class B), D<sub>u</sub> = 1.13. T<sub>b</sub> (A325): 28 / 39 / 51 k for 3/4, 7/8, 1 in. Use it where joints see load reversal or slip would hurt, as on repeatedly used lifting frames.</td></tr>
-        <tr><td class="k">Fillet weld</td><td>φR<sub>n</sub> = 0.75 × 0.60F<sub>EXX</sub> × 0.707w per inch, which is <strong>1.392 k/in per sixteenth</strong> for E70 (ASD 0.928)</td></tr>
-        <tr><td class="k">Block shear</td><td>R<sub>n</sub> = 0.6F<sub>u</sub>A<sub>nv</sub> + U<sub>bs</sub>F<sub>u</sub>A<sub>nt</sub> ≤ 0.6F<sub>y</sub>A<sub>gv</sub> + U<sub>bs</sub>F<sub>u</sub>A<sub>nt</sub>. Check it at lifting-lug plates and gusset ends.</td></tr>
-        <tr><td class="k">Prying</td><td>Hanger tees, bolted lifting attachments and flange-bolted brackets: Manual Part 9. A thin flange adds prying force to the bolt tension.</td></tr>
-        <tr><td class="k">Concrete bearing</td><td>φ = 0.65. P<sub>p</sub> = 0.85f'<sub>c</sub>A<sub>1</sub>√(A<sub>2</sub>/A<sub>1</sub>) ≤ 1.7f'<sub>c</sub>A<sub>1</sub>. Applies to base plates on footings and shoring jacks on slabs.</td></tr>
-        <tr><td class="k">Pin plates (AISC D5)</td><td>b<sub>eff</sub> = 2t + 0.63 in. Rupture 2tb<sub>eff</sub>F<sub>u</sub>, shear 0.6F<sub>u</sub>A<sub>sf</sub>, bearing 1.8F<sub>y</sub>A<sub>pb</sub>. For <em>lifting</em> lugs use ASME BTH-1 instead (lifting page).</td></tr>
+        <tr><td class="k">Bolt shear / tension</td><td>\(R_n=F_nA_b\), φ = 0.75, Ω = 2.00</td><td>Eq. J3-1, Table J3.2</td></tr>
+        <tr><td class="k">Combined tension + shear</td><td>\(F'_{nt}=1.3F_{nt}-\frac{F_{nt}}{\phi F_{nv}}f_{rv}\le F_{nt}\)</td><td>Eq. J3-3a</td></tr>
+        <tr><td class="k">Slip-critical</td><td>\(R_n=\mu D_uh_fT_bn_s\), μ = 0.30 (A) / 0.50 (B), D<sub>u</sub> = 1.13</td><td>Eq. J3-4, Table J3.1</td></tr>
+        <tr><td class="k">Bearing / tear-out</td><td>\(R_n=2.4dtF_u\) (J3-6a), \(R_n=1.2l_ctF_u\) (J3-6c)</td><td>§J3.10</td></tr>
+        <tr><td class="k">Fillet weld</td><td>\(R_n=F_{nw}A_{we}\), \(F_{nw}=0.60F_{EXX}(1.0+0.50\sin^{1.5}\theta)\)</td><td>Eq. J2-4, J2-5, Table J2.5</td></tr>
+        <tr><td class="k">Block shear</td><td>\(R_n=0.60F_uA_{nv}+U_{bs}F_uA_{nt}\le0.60F_yA_{gv}+U_{bs}F_uA_{nt}\)</td><td>Eq. J4-5</td></tr>
+        <tr><td class="k">Tension member</td><td>\(P_n=F_yA_g\) (φ 0.90) · \(P_n=F_uA_e\) (φ 0.75)</td><td>Eq. D2-1, D2-2</td></tr>
+        <tr><td class="k">Concrete bearing</td><td>\(P_p=0.85f'_cA_1\sqrt{A_2/A_1}\le1.7f'_cA_1\), φ = 0.65</td><td>Eq. J8-2</td></tr>
+        <tr><td class="k">Pin plate (structural)</td><td>\(P_n=2tb_eF_u\), \(b_e=2t+0.63\) in · \(P_n=0.6F_uA_{sf}\)</td><td>Eq. D5-1, D5-2 (lifting lugs → BTH-1)</td></tr>
       </tbody></table></div>
   </div>
 </section>
 
 <!-- SHEET 7 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>7</b> of 7</div><div>Erection world · AISC 303 · OSHA Subpart R</div><div>Rehearsal</div></div>
+  <div class="padhead"><div>Sheet <b>7</b> of 8</div><div>Common values · memorize these</div><div>grades · φ · bolts · welds</div></div>
+  <div class="sheet-body">
+    <h2>What's actually used</h2>
+    <div class="cv">
+      <div><h4>Steel grades (ASTM)</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Spec</th><th class="num">F<sub>y</sub></th><th class="num">F<sub>u</sub></th><th>Typical use</th></tr></thead><tbody>
+        <tr><td class="k">A992</td><td class="num">50</td><td class="num">65</td><td>W-shapes: the default</td></tr>
+        <tr><td class="k">A36</td><td class="num">36</td><td class="num">58</td><td>Plates, angles, channels, rods</td></tr>
+        <tr><td class="k">A572 Gr 50</td><td class="num">50</td><td class="num">65</td><td>Plates (lugs, base plates), HP piles</td></tr>
+        <tr><td class="k">A500 Gr C</td><td class="num">50 / 46</td><td class="num">62</td><td>HSS rectangular / round</td></tr>
+        <tr><td class="k">A500 Gr B</td><td class="num">46 / 42</td><td class="num">58</td><td>Older HSS rect / round</td></tr>
+        <tr><td class="k">A53 Gr B</td><td class="num">35</td><td class="num">60</td><td>Pipe (shores, spreaders)</td></tr>
+        <tr><td class="k">A709 Gr 50 / 50W</td><td class="num">50</td><td class="num">65 / 70</td><td>Bridge girders</td></tr>
+        <tr><td class="k">A252 Gr 3</td><td class="num">45</td><td class="num">66</td><td>Pipe piles (trestles)</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Resistance / safety factors</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Limit state</th><th class="num">φ</th><th class="num">Ω</th></tr></thead><tbody>
+        <tr><td>Tension yield / compression / flexure</td><td class="num">0.90</td><td class="num">1.67</td></tr>
+        <tr><td>Tension rupture, bolts, welds, block shear</td><td class="num">0.75</td><td class="num">2.00</td></tr>
+        <tr><td>Shear, rolled I with h/t<sub>w</sub> ≤ 2.24√(E/F<sub>y</sub>)</td><td class="num">1.00</td><td class="num">1.50</td></tr>
+        <tr><td>Concrete bearing (J8)</td><td class="num">0.65</td><td class="num">2.31</td></tr>
+        <tr><td>Brace stiffness (App. 6)</td><td class="num">0.75</td><td class="num">2.00</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Bolts (Table J3.2 · J3.1 · J3.3 · J3.4)</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th></th><th class="num">3/4</th><th class="num">7/8</th><th class="num">1</th></tr></thead><tbody>
+        <tr><td>A325-N φr<sub>n</sub> single shear (k)</td><td class="num">17.9</td><td class="num">24.3</td><td class="num">31.8</td></tr>
+        <tr><td>A325-X φr<sub>n</sub> (k)</td><td class="num">22.5</td><td class="num">30.7</td><td class="num">40.1</td></tr>
+        <tr><td>Min pretension T<sub>b</sub>, A325 / A490 (k)</td><td class="num">28 / 35</td><td class="num">39 / 49</td><td class="num">51 / 64</td></tr>
+        <tr><td>Standard hole (in)</td><td class="num">13/16</td><td class="num">15/16</td><td class="num">1-1/8</td></tr>
+        <tr><td>Min edge distance (in)</td><td class="num">1</td><td class="num">1-1/8</td><td class="num">1-1/4</td></tr>
+      </tbody></table></div><p class="small muted">F<sub>nv</sub>: Group A 54/68 ksi (N/X), Group B 68/84. F<sub>nt</sub> 90/113. Spacing ≥ 2⅔d, 3d preferred (§J3.3). 360-22 renames the groups to 120 and 150.</p></div>
+      <div><h4>Welds</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Electrode</td><td><strong>E70XX</strong> (F<sub>EXX</sub> = 70 ksi) matches A36/A992/A572-50</td></tr>
+        <tr><td>Fillet strength (memorize)</td><td><span class="memo">1.392</span> k/in per 1/16 in LRFD · <span class="memo">0.928</span> ASD</td></tr>
+        <tr><td>1/4 in fillet</td><td>4 × 1.392 = 5.57 k/in (ASD 3.71)</td></tr>
+        <tr><td>Min fillet (Table J2.4)</td><td>t ≤ 1/4: 1/8 · ≤ 1/2: 3/16 · ≤ 3/4: 1/4 · &gt; 3/4: 5/16</td></tr>
+        <tr><td>Max along an edge (§J2.2b)</td><td>t − 1/16 in for t ≥ 1/4 in</td></tr>
+        <tr><td>Largest single pass</td><td>≈ 5/16 in (shop practice)</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Constants &amp; limits</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>E · G</td><td>29,000 ksi · 11,200 ksi</td></tr>
+        <tr><td>Steel weight</td><td>490 pcf (0.2836 lb/in³)</td></tr>
+        <tr><td>L<sub>c</sub>/r limit</td><td>≤ 200 compression (§E2 note) · L/r ≤ 300 tension (§D1 note)</td></tr>
+        <tr><td>F<sub>y</sub> = 50: \(4.71\sqrt{E/F_y}\)</td><td>113.4 (inelastic/elastic break) · for 36 ksi: 133.7 · for 35: 135.6</td></tr>
+        <tr><td>Recommended K</td><td>0.65 · 0.80 · 1.0 · 1.2 · 2.0 · 2.1 (flagpole)</td></tr>
+        <tr><td>Plumbness</td><td>1:500 (AISC 303 §7.13.1.1)</td></tr>
+        <tr><td>Deflection habits</td><td>L/360 live · L/240 total · L/180 cantilever tip</td></tr>
+      </tbody></table></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>8</b> of 8</div><div>Erection world · AISC 303 · OSHA Subpart R</div><div>Rehearsal</div></div>
   <div class="sheet-body">
     <h2>Steel erection rules &amp; questions</h2>
     <div class="ideas four">
-      <div class="idea"><h3>AISC 303 §7.10</h3><p>Temporary support of the frame (guys, bracing, falsework) is the <strong>erector's</strong> means and methods. The EOR has to identify a frame that isn't self-supporting.</p></div>
-      <div class="idea"><h3>4 anchor rods</h3><p>OSHA 1926.755: columns need at least 4 anchor rods, designed for a 300 lb eccentric load 18 in from the column face at the top.</p></div>
-      <div class="idea"><h3>2 bolts</h3><p>OSHA 1926.756: don't release the hoist line until each connection has at least two bolts, wrench-tight.</p></div>
-      <div class="idea"><h3>1 : 500</h3><p>AISC 303 column plumbness tolerance. It's also the L/500 imperfection behind Appendix 6 and the 0.002 notional load.</p></div>
+      <div class="idea"><h3>AISC 303 §7.10</h3><p>Temporary support of the frame (guys, bracing, falsework) is the <strong>erector's</strong> means and methods. The EOR must identify a frame that isn't self-supporting.</p></div>
+      <div class="idea"><h3>4 anchor rods</h3><p>OSHA 1926.755(a): columns need at least 4 anchor rods, designed for a 300 lb eccentric load 18 in from the column face at the top.</p></div>
+      <div class="idea"><h3>2 bolts</h3><p>OSHA 1926.756(a)(1): don't release the hoist line until each connection has at least two bolts, wrench-tight.</p></div>
+      <div class="idea"><h3>1 : 500</h3><p>AISC 303 column plumbness tolerance. It's also the L/500 imperfection behind App. 6 and the 0.002 notional load.</p></div>
     </div>
     <div class="callout remember"><span class="tag">Reading</span><p>AISC Design Guide 10, <em>Erection Bracing of Low-Rise Structural Steel Buildings</em>. Design Guide 1, <em>Base Plate and Anchor Rod Design</em>, for anchor rods during erection before grout. Manual Part 9 for prying.</p></div>
     <div class="cards" id="cards"></div>
@@ -220,14 +330,15 @@
 </section>
 
 <footer>
-  <p>Study aid built from AISC 360-16 and the 15th-edition Manual as I remember them. Shape properties come from Manual Table 1-1 and pipe properties use the 0.93t design wall. Verify any number you plan to rely on.</p>
-  <p>Sources: <a href="https://www.aisc.org/publications/steel-standards/" target="_blank" rel="noopener">AISC standards (free downloads)</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartR" target="_blank" rel="noopener">OSHA 1926 Subpart R</a></p>
+  <p>Equation numbers follow ANSI/AISC 360-16. The App. 6 factors and the panel/point terminology were checked against AISC's 360-16 vs 360-10 comparison and secondary sources. Shape properties are from Manual Table 1-1; pipe properties use the 0.93t design wall. Verify against your licensed copy, and note that 360-22 renumbers some items.</p>
+  <p>Sources: <a href="https://www.aisc.org/aisc/publications/current-standards/aisc-360/" target="_blank" rel="noopener">AISC 360</a> · <a href="https://www.fhwa.dot.gov/bridge/pubs/nhi15044.pdf" target="_blank" rel="noopener">FHWA NHI-15-044 (brace stiffness, guys)</a> · <a href="https://www.dlubal.com/en/support-and-learning/support/knowledge-base/001767" target="_blank" rel="noopener">App. 6 Eq. A-6-7/A-6-8</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartR" target="_blank" rel="noopener">OSHA 1926 Subpart R</a></p>
 </footer>
 </div>
 
 <script>
 (function(){
-const {C, $, fmt, text, arrow, ground, line, clamp, lerp, axes, hover} = P;
+const {C, $, fmt, n, text, arrow, ground, line, clamp, lerp, axes, hover} = P;
+const T = String.raw;
 const E = 29000;
 
 /* ---------- hero: amplification ---------- */
@@ -237,18 +348,14 @@ P.anim($('hero'), (ctx, w, h, t) => {
   $('hR').textContent = r.toFixed(2); $('hA').textContent = af.toFixed(2);
   const g = h - 18, top = 50, cx = w*0.2;
   ground(ctx, cx-60, cx+60, g);
-  // pin supports
   ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(cx, g-2); ctx.lineTo(cx-9, g); ctx.lineTo(cx+9, g); ctx.closePath(); ctx.fill();
   const amp = 2.2*af;
   const pts = []; for (let i=0;i<=40;i++){ const y = lerp(top, g-4, i/40); pts.push([cx + amp*Math.sin(Math.PI*i/40), y]); }
   line(ctx, pts, {color: r > 0.75 ? C.pencil : C.steel, width: 6});
   line(ctx, [[cx, top],[cx, g-4]], {color:C['ink-soft'], width:1, dash:[4,4]});
-  // load arrow
   const len = 12 + r*40;
   arrow(ctx, cx, top-len-6, cx, top-3, {color:C.pencil, width:3, head:10});
-  P.text(ctx, 'P', cx+10, top-len+4, {size:13, weight:'bold', color:C.pencil});
-  P.text(ctx, 'δ = δ₀ / (1 − P/Pe)', cx + 26, (top+g)/2, {size:11, color:C['ink-soft']});
-  // AF plot
+  text(ctx, 'P', cx+10, top-len+4, {size:13, weight:'bold', color:C.pencil});
   const box = {l: w*0.46, r: w-24, t: 40, b: h-34};
   const A = axes(ctx, box, [0,1], [1,6], {xstep:0.2, ystep:1, xlabel:'P / Pe', ylabel:'amplification 1/(1 − P/Pe)'});
   const cpts = []; for (let x=0; x<=0.835; x+=0.005) cpts.push([A.X(x), A.Y(1/(1-x))]);
@@ -257,96 +364,102 @@ P.anim($('hero'), (ctx, w, h, t) => {
   const yy = Math.min(af, 6);
   ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(r), A.Y(yy), 6, 0, 7); ctx.fill();
   ctx.strokeStyle = C.sheet; ctx.lineWidth = 2; ctx.stroke();
-  P.text(ctx, '×' + af.toFixed(2), A.X(r)+10, A.Y(yy)-8, {size:12, weight:'bold', color:C.ink, halo:C.paper});
+  text(ctx, '×' + af.toFixed(2), A.X(r)+10, A.Y(yy)-8, {size:12, weight:'bold', color:C.ink, halo:C.paper});
 });
 
-/* ---------- SHEET 2: column ---------- */
-const pipe = (od, tn) => { const t = 0.93*tn, A = Math.PI*(od - t)*t, r = Math.sqrt((od*od + (od-2*t)*(od-2*t))/16); return {A, rx:r, ry:r}; };
+/* ---------- SHEET 2: compression ---------- */
+const pipe = (od, tn) => { const t = 0.93*tn, A = Math.PI*(od - t)*t, r = Math.sqrt((od*od + (od-2*t)*(od-2*t))/16); return {A, rx:r, ry:r, kind:'pipe', od, t}; };
 const MEMBERS = [
-  ['Pipe 4 STD · A53 Gr B (35 ksi)', 35, pipe(4.5, 0.237)],
-  ['Pipe 6 STD · A53 Gr B (35 ksi)', 35, pipe(6.625, 0.280)],
-  ['Pipe 8 STD · A53 Gr B (35 ksi)', 35, pipe(8.625, 0.322)],
-  ['HSS6×6×3/8 · A500 Gr C (50 ksi)', 50, {A:7.58, rx:2.28, ry:2.28}],
-  ['W8×31 · A992 (50 ksi)', 50, {A:9.13, rx:3.47, ry:2.02}],
-  ['W10×49 · A992 (50 ksi)', 50, {A:14.4, rx:4.35, ry:2.54}]
+  ['Pipe 4 STD · A53 Gr B', 35, pipe(4.5, 0.237)],
+  ['Pipe 6 STD · A53 Gr B', 35, pipe(6.625, 0.280)],
+  ['Pipe 8 STD · A53 Gr B', 35, pipe(8.625, 0.322)],
+  ['HSS6×6×3/8 · A500 Gr C', 50, {A:7.58, rx:2.28, ry:2.28, kind:'hss', bt:14.2}],
+  ['W8×31 · A992', 50, {A:9.13, rx:3.47, ry:2.02, kind:'w', bf2tf:9.19, htw:22.3}],
+  ['W10×49 · A992', 50, {A:14.4, rx:4.35, ry:2.54, kind:'w', bf2tf:8.93, htw:23.1}]
 ];
-$('cMem').innerHTML = MEMBERS.map((m,i)=>`<option value="${i}" ${i===1?'selected':''}>${m[0]}</option>`).join('');
-const KCASES = [
-  ['Fixed–fixed', 0.65, 'ff'], ['Fixed–pinned', 0.80, 'fp'], ['Fixed, top slides', 1.2, 'fs'],
-  ['Pinned–pinned', 1.0, 'pp'], ['Flagpole', 2.1, 'fr'], ['Pinned, top slides', 2.0, 'ps']
-];
+$('cMem').innerHTML = MEMBERS.map((m,i)=>`<option value="${i}" ${i===1?'selected':''}>${m[0]} (${m[1]} ksi)</option>`).join('');
+const KCASES = [['Fixed–fixed', 0.65, 'ff'], ['Fixed–pinned', 0.80, 'fp'], ['Fixed, top slides', 1.2, 'fs'], ['Pinned–pinned', 1.0, 'pp'], ['Flagpole', 2.1, 'fr'], ['Pinned, top slides', 2.0, 'ps']];
 function kSvg(kind){
-  // buckled shapes drawn by hand for each case
   const base = '<line x1="10" y1="86" x2="60" y2="86" stroke="currentColor" stroke-width="1.5"/>';
-  const paths = {
-    ff: 'M35 86 C 35 70, 50 60, 50 46 C 50 32, 35 22, 35 8',
-    fp: 'M35 86 C 35 66, 52 50, 48 34 C 45 22, 38 14, 35 8',
-    fs: 'M35 86 C 35 60, 55 34, 55 8',
-    pp: 'M35 86 C 52 64, 52 30, 35 8',
-    fr: 'M35 86 C 35 60, 42 30, 58 8',
-    ps: 'M35 86 C 40 60, 52 30, 55 8'
-  };
-  const topFix = ['ff','fs'].includes(kind) ? '<line x1="22" y1="8" x2="48" y2="8" stroke="currentColor" stroke-width="3"/>' : '';
+  const paths = {ff:'M35 86 C 35 70, 50 60, 50 46 C 50 32, 35 22, 35 8', fp:'M35 86 C 35 66, 52 50, 48 34 C 45 22, 38 14, 35 8', fs:'M35 86 C 35 60, 55 34, 55 8', pp:'M35 86 C 52 64, 52 30, 35 8', fr:'M35 86 C 35 60, 42 30, 58 8', ps:'M35 86 C 40 60, 52 30, 55 8'};
+  const topFix = kind==='ff' ? '<line x1="22" y1="8" x2="48" y2="8" stroke="currentColor" stroke-width="3"/>' : '';
   const topFix2 = kind==='fs' ? '<line x1="42" y1="8" x2="68" y2="8" stroke="currentColor" stroke-width="3"/>' : '';
   const topPin = ['fp','pp'].includes(kind) ? '<circle cx="35" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>' : kind==='ps' ? '<line x1="44" y1="8" x2="66" y2="8" stroke="currentColor" stroke-width="1.5"/><circle cx="55" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>' : '';
   const botPin = ['pp','ps'].includes(kind) ? '<circle cx="35" cy="83" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>' : '<rect x="27" y="84" width="16" height="4" fill="currentColor"/>';
-  return `<svg viewBox="0 0 70 92" aria-hidden="true"><line x1="35" y1="86" x2="35" y2="8" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1" opacity=".45"/>${base}<path d="${paths[kind]}" fill="none" stroke="var(--pencil)" stroke-width="3"/>${kind==='fs'?'':topFix}${topFix2}${topPin}${botPin}</svg>`;
+  return `<svg viewBox="0 0 70 92" aria-hidden="true"><line x1="35" y1="86" x2="35" y2="8" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1" opacity=".45"/>${base}<path d="${paths[kind]}" fill="none" stroke="var(--pencil)" stroke-width="3"/>${topFix}${topFix2}${topPin}${botPin}</svg>`;
 }
 let K = 1.0;
-$('kgrid').innerHTML = KCASES.map(([n,k,kind],i)=>`<button type="button" class="kcase" data-k="${k}" aria-pressed="${k===1.0?'true':'false'}">${kSvg(kind)}<b>K = ${k}</b><span class="label">${n}</span></button>`).join('');
+$('kgrid').innerHTML = KCASES.map(([nm,k,kind])=>`<button type="button" class="kcase" data-k="${k}" aria-pressed="${k===1.0?'true':'false'}">${kSvg(kind)}<b>K = ${k}</b><span class="label">${nm}</span></button>`).join('');
 $('kgrid').addEventListener('click', e => { const b = e.target.closest('.kcase'); if (!b) return; $('kgrid').querySelectorAll('.kcase').forEach(x=>x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); K = +b.dataset.k; column(); });
 function fcr(Fy, klr){ const Fe = Math.PI*Math.PI*E/(klr*klr); return klr <= 4.71*Math.sqrt(E/Fy) ? Math.pow(0.658, Fy/Fe)*Fy : 0.877*Fe; }
+const cFlow = P.flow('cFlow', [
+  {s:T`Required strength \(P_u\) (LRFD) or \(P_a\) (ASD); \(L_c=KL\) for <em>each</em> axis`, ref:'§B3 · §E2 · Comm. App. 7'},
+  {q:T`Any slender element? \(\lambda>\lambda_r\)`, ref:'Table B4.1a', test:s=>s.slender, yes:{s:T`Effective area method §E7 (reduced \(A_e\))`, end:true}, no:'Nonslender → §E3 flexural buckling', main:'no'},
+  {s:T`\(F_e=\pi^2E/(L_c/r)^2\) with the <strong>largest</strong> \(L_c/r\)`, ref:'Eq. E3-4'},
+  {q:T`\(L_c/r\le4.71\sqrt{E/F_y}\) ?`, ref:'§E3', test:s=>s.inel, yes:T`Inelastic: \(F_{cr}=0.658^{F_y/F_e}F_y\) (E3-2)`, no:T`Elastic: \(F_{cr}=0.877F_e\) (E3-3)`, main:null},
+  {s:T`\(P_n=F_{cr}A_g\) → \(\phi_cP_n\) (0.90) or \(P_n/\Omega_c\) (1.67)`, ref:'Eq. E3-1 · §E1'},
+  {s:T`Check \(P_u\le\phi_cP_n\); singly symmetric or unsymmetric sections → also §E4 torsional`, ref:'§B3.1', end:true}
+]);
 let col = {Fy:35, klr:100, hx:null};
 const cPlot = P.still($('cPlot'), (ctx, w, h) => {
-  const box = {l:46, r:w-14, t:24, b:h-36};
-  const Fy = col.Fy;
-  const A = axes(ctx, box, [0,200], [0, Math.ceil(Fy*1.1/10)*10], {xstep:25, xlabel:'KL/r', ylabel:'stress (ksi)'});
+  const box = {l:46, r:w-14, t:24, b:h-36}, Fy = col.Fy;
+  const A = axes(ctx, box, [0,200], [0, Math.ceil(Fy*1.1/10)*10], {xstep:25, xlabel:'Lc/r', ylabel:'stress (ksi)'});
   const eu = []; for (let x=Math.max(5, Math.PI*Math.sqrt(E/(Fy*1.1))); x<=200; x+=1) eu.push([A.X(x), A.Y(Math.PI*Math.PI*E/(x*x))]);
   line(ctx, eu, {color:C['ink-soft'], width:1.5, dash:[5,4]});
   const fc = []; for (let x=0.5; x<=200; x+=1) fc.push([A.X(x), A.Y(fcr(Fy,x))]);
   line(ctx, fc, {color:C.s1, width:2});
   const tr = 4.71*Math.sqrt(E/Fy);
   line(ctx, [[A.X(tr), box.t],[A.X(tr), box.b]], {color:C.rule, width:1, dash:[2,3]});
-  text(ctx, 'inelastic | elastic', A.X(tr), box.t+10, {size:10, align:'center', color:C['ink-soft'], halo:C.paper});
-  const k = clamp(col.klr, 0, 200);
-  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(k), A.Y(fcr(Fy, Math.max(k,0.5))), 6, 0, 7); ctx.fill(); ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.stroke();
-  if (col.hx != null){
-    const x = clamp(A.inv.x(col.hx), 0.5, 200);
-    line(ctx, [[A.X(x), box.t],[A.X(x), box.b]], {color:C['ink-soft'], width:1});
-    ctx.fillStyle = C.s1; ctx.beginPath(); ctx.arc(A.X(x), A.Y(fcr(Fy,x)), 4, 0, 7); ctx.fill();
-  }
+  text(ctx, 'E3-2 | E3-3', A.X(tr), box.t+10, {size:10, align:'center', color:C['ink-soft'], halo:C.paper});
+  const k = clamp(col.klr, 0.5, 200);
+  ctx.fillStyle = C.pencil; ctx.beginPath(); ctx.arc(A.X(k), A.Y(fcr(Fy, k)), 6, 0, 7); ctx.fill(); ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.stroke();
+  if (col.hx != null){ const x = clamp(A.inv.x(col.hx), 0.5, 200); line(ctx, [[A.X(x), box.t],[A.X(x), box.b]], {color:C['ink-soft'], width:1}); ctx.fillStyle = C.s1; ctx.beginPath(); ctx.arc(A.X(x), A.Y(fcr(Fy,x)), 4, 0, 7); ctx.fill(); }
   col.A = A;
 });
 hover($('cPlot'), $('cTip'), (x) => {
   col.hx = x; cPlot.render();
   if (x == null || !col.A) return null;
   const k = clamp(col.A.inv.x(x), 0.5, 200), f = fcr(col.Fy, k);
-  return `KL/r ${k.toFixed(0)} · F<sub>cr</sub> ${f.toFixed(1)} ksi · φF<sub>cr</sub> ${(0.9*f).toFixed(1)}`;
+  return `Lc/r ${k.toFixed(0)} · Fcr ${f.toFixed(1)} ksi · φFcr ${(0.9*f).toFixed(1)}`;
 });
 function column(){
-  const m = MEMBERS[+$('cMem').value], L = +$('cL').value, Fy = m[1], r = Math.min(m[2].rx, m[2].ry);
-  const klr = K*L*12/r, f = fcr(Fy, klr), Pn = f*m[2].A, Fe = Math.PI*Math.PI*E/(klr*klr);
-  $('cLo').textContent = L+' ft';
-  $('cKLr').textContent = klr.toFixed(0);
-  $('cPhi').textContent = fmt(0.9*Pn, 0); $('cAsd').textContent = fmt(Pn/1.67, 0);
-  $('cEq').innerHTML = `KL/r = ${K} × ${L} × 12 / ${r.toFixed(2)} = <b>${klr.toFixed(0)}</b>${klr>200?' <span class="c">(> 200!)</span>':''}<br>F<sub>e</sub> = π²(29,000)/${klr.toFixed(0)}² = ${Fe.toFixed(1)} ksi · F<sub>y</sub>/F<sub>e</sub> = ${(Fy/Fe).toFixed(2)} ${Fy/Fe<=2.25?'≤':'>'} 2.25<br>F<sub>cr</sub> = <b>${f.toFixed(1)} ksi</b> · A<sub>g</sub> = ${m[2].A.toFixed(2)} in² → P<sub>n</sub> = ${Pn.toFixed(0)} k`;
+  const m = MEMBERS[+$('cMem').value], L = +$('cL').value, Pu = +$('cPu').value, Fy = m[1], s = m[2];
+  const r = Math.min(s.rx, s.ry), Lc = K*L, klr = Lc*12/r, Fe = Math.PI*Math.PI*E/(klr*klr), lim = 4.71*Math.sqrt(E/Fy);
+  const inel = klr <= lim, f = fcr(Fy, klr), Pn = f*s.A, phiPn = 0.9*Pn;
+  $('cLo').textContent = L+' ft'; $('cPuo').textContent = Pu+' k';
+  $('cKLr').textContent = klr.toFixed(0); $('cPhi').textContent = fmt(phiPn, 0); $('cAsd').textContent = fmt(Pn/1.67, 0);
+  let slend, slender;
+  if (s.kind === 'pipe'){ const Dt = s.od/s.t, lr = 0.11*E/Fy; slender = Dt > lr; slend = T`D/t=${n(s.od,3)}/${n(s.t,3)}=${n(Dt,1)}\ ${slender?'>':T`\le`}\ 0.11E/F_y=${n(lr,1)}`; }
+  else if (s.kind === 'hss'){ const lr = 1.40*Math.sqrt(E/Fy); slender = s.bt > lr; slend = T`b/t=${n(s.bt,1)}\ ${slender?'>':T`\le`}\ 1.40\sqrt{E/F_y}=${n(lr,1)}`; }
+  else { const lf = 0.56*Math.sqrt(E/Fy), lw = 1.49*Math.sqrt(E/Fy); slender = s.bf2tf > lf || s.htw > lw; slend = T`\tfrac{b_f}{2t_f}=${n(s.bf2tf,2)}\le${n(lf,1)},\ \ \tfrac{h}{t_w}=${n(s.htw,1)}\le${n(lw,1)}`; }
+  P.sheet('cSheet', [
+    ['h', `AISC 360-16 Ch. E · ${m[0]}`],
+    ['r', '§E2 · Comm. Table C-A-7.1', T`L_c=KL=${n(K,2)}\times${n(L,1)}=${n(Lc,2)}\ \text{ft}`],
+    ['r', '§E2 (governing axis)', T`\frac{L_c}{r}=\frac{${n(Lc*12,1)}}{${n(r,3)}}=${n(klr,1)}\ ${klr<=200?T`\le`:'>'}\ 200`],
+    ['r', 'Table B4.1a', slend + (slender ? T`\Rightarrow\ \text{slender: use §E7}` : T`\Rightarrow\ \text{nonslender}`)],
+    ['r', 'Eq. E3-4', T`F_e=\frac{\pi^2(29{,}000)}{(${n(klr,1)})^2}=${n(Fe,2)}\ \text{ksi}`],
+    ['r', '§E3 limit', T`4.71\sqrt{E/F_y}=${n(lim,1)}\ \Rightarrow\ ${inel?T`\text{inelastic}`:T`\text{elastic}`}`],
+    ['r', inel ? 'Eq. E3-2' : 'Eq. E3-3', inel ? T`F_{cr}=0.658^{${n(Fy,0)}/${n(Fe,2)}}(${n(Fy,0)})=${n(f,2)}\ \text{ksi}` : T`F_{cr}=0.877(${n(Fe,2)})=${n(f,2)}\ \text{ksi}`],
+    ['r', 'Eq. E3-1', T`P_n=F_{cr}A_g=${n(f,2)}\times${n(s.A,2)}=${n(Pn,1)}\ \text{k}`],
+    ['r', '§E1', T`\phi_cP_n=0.90(${n(Pn,1)})=${n(phiPn,1)}\ \text{k}\qquad P_n/\Omega_c=${n(Pn/1.67,1)}\ \text{k}`],
+    ['c', '§B3.1 (LRFD)', T`\frac{P_u}{\phi_cP_n}=\frac{${n(Pu,0)}}{${n(phiPn,1)}}=${n(Pu/phiPn,2)}`, Pu/phiPn]
+  ]);
+  cFlow.update({slender, inel});
   col = {Fy, klr, hx:col.hx}; cPlot.render();
 }
-P.bind(['cMem','cL'], column);
+P.bind(['cMem','cL','cPu'], column);
 
 /* ---------- SHEET 3: LTB ---------- */
 const SHAPES = [
-  ['W12×26', {Sx:33.4, Zx:37.2, ry:1.51, Iy:17.3, J:0.300, Cw:607, ho:11.8}],
-  ['W10×49', {Sx:54.6, Zx:60.4, ry:2.54, Iy:93.4, J:1.39, Cw:2070, ho:9.42}],
-  ['W18×50', {Sx:88.9, Zx:101, ry:1.65, Iy:40.1, J:1.24, Cw:3040, ho:17.4}],
-  ['W24×76', {Sx:176, Zx:200, ry:1.92, Iy:82.5, J:2.68, Cw:11100, ho:23.2}]
+  ['W12×26', {Sx:33.4, Zx:37.2, ry:1.51, Iy:17.3, J:0.300, Cw:607, ho:11.8, bf2tf:8.54, htw:47.2}],
+  ['W10×49', {Sx:54.6, Zx:60.4, ry:2.54, Iy:93.4, J:1.39, Cw:2070, ho:9.42, bf2tf:8.93, htw:23.1}],
+  ['W18×50', {Sx:88.9, Zx:101, ry:1.65, Iy:40.1, J:1.24, Cw:3040, ho:17.4, bf2tf:6.57, htw:45.2}],
+  ['W24×76', {Sx:176, Zx:200, ry:1.92, Iy:82.5, J:2.68, Cw:11100, ho:23.2, bf2tf:6.61, htw:49.0}]
 ];
 $('bShape').innerHTML = SHAPES.map((s,i)=>`<option value="${i}" ${i===2?'selected':''}>${s[0]}</option>`).join('');
 const Fyb = 50;
 function ltbProps(s){
-  const rts = Math.sqrt(Math.sqrt(s.Iy*s.Cw)/s.Sx);
-  const Lp = 1.76*s.ry*Math.sqrt(E/Fyb);
-  const jc = s.J/(s.Sx*s.ho);
+  const rts = Math.sqrt(Math.sqrt(s.Iy*s.Cw)/s.Sx), Lp = 1.76*s.ry*Math.sqrt(E/Fyb), jc = s.J/(s.Sx*s.ho);
   const Lr = 1.95*rts*(E/(0.7*Fyb))*Math.sqrt(jc + Math.sqrt(jc*jc + 6.76*Math.pow(0.7*Fyb/E,2)));
   return {rts, Lp, Lr, jc, Mp: Fyb*s.Zx, Mr: 0.7*Fyb*s.Sx};
 }
@@ -356,6 +469,13 @@ function Mn(s, p, LbIn, Cb){
   const x = LbIn/p.rts, F = Cb*Math.PI*Math.PI*E/(x*x)*Math.sqrt(1 + 0.078*p.jc*x*x);
   return Math.min(p.Mp, F*s.Sx);
 }
+const bFlow = P.flow('bFlow', [
+  {s:T`Doubly symmetric I, major-axis bending. Compact? \(\tfrac{b_f}{2t_f}\le0.38\sqrt{E/F_y}\), \(\tfrac{h}{t_w}\le3.76\sqrt{E/F_y}\)`, ref:'§F2 scope · Table B4.1b (else §F3–F5)'},
+  {s:T`Compute \(L_p\), \(r_{ts}\), \(L_r\); find \(L_b\) between brace points; \(C_b\) from the moment diagram`, ref:'F2-5, F2-7, F2-6, F1-1'},
+  {q:T`\(L_b\le L_p\) ?`, ref:'§F2.2', test:s=>s.z===0, yes:{s:T`Yielding: \(M_n=M_p=F_yZ_x\) (F2-1)`, end:true}, no:'LTB applies', main:'no'},
+  {q:T`\(L_b\le L_r\) ?`, ref:'§F2.2', test:s=>s.z===1, yes:T`Inelastic LTB (F2-2), cap at \(M_p\)`, no:T`Elastic LTB: \(F_{cr}\) (F2-4), \(M_n=F_{cr}S_x\) (F2-3)`, main:null},
+  {s:T`\(\phi_bM_n\) (0.90) or \(M_n/\Omega_b\) (1.67); also check shear §G2`, ref:'§F1 · §G2', end:true}
+]);
 let ltb = {i:2, Lb:20, Cb:1.14, hx:null, util:0.5};
 const bPlot = P.still($('bPlot'), (ctx, w, h) => {
   const s = SHAPES[ltb.i][1], p = ltbProps(s), maxM = 0.9*p.Mp/12;
@@ -375,84 +495,160 @@ hover($('bPlot'), $('bTip'), (x) => {
   ltb.hx = x; bPlot.render();
   if (x == null || !ltb.A) return null;
   const s = SHAPES[ltb.i][1], p = ltbProps(s), L = clamp(ltb.A.inv.x(x), 0, 45);
-  return `L<sub>b</sub> ${L.toFixed(1)} ft · φM<sub>n</sub> ${(0.9*Mn(s,p,L*12,ltb.Cb)/12).toFixed(0)} k-ft`;
+  return `Lb ${L.toFixed(1)} ft · φMn ${(0.9*Mn(s,p,L*12,ltb.Cb)/12).toFixed(0)} k-ft`;
 });
 function beam(){
-  const i = +$('bShape').value, Lb = +$('bLb').value, Cb = +$('bCb').value;
-  const s = SHAPES[i][1], p = ltbProps(s), m = 0.9*Mn(s,p,Lb*12,Cb)/12;
-  $('bLbo').textContent = Lb + ' ft';
+  const i = +$('bShape').value, Lb = +$('bLb').value, Cb = +$('bCb').value, Mu = +$('bMu').value;
+  const s = SHAPES[i][1], p = ltbProps(s), Lbi = Lb*12, mn = Mn(s,p,Lbi,Cb), m = 0.9*mn/12;
+  $('bLbo').textContent = Lb + ' ft'; $('bMuo').textContent = Mu + ' k-ft';
   $('bPhi').textContent = fmt(m, 0);
-  const zone = Lb*12 <= p.Lp ? 'Plastic' : Lb*12 <= p.Lr ? 'Inelastic' : 'Elastic';
-  $('bZone').textContent = zone;
-  $('bEq').innerHTML = `L<sub>p</sub> = 1.76(${s.ry})√(E/F<sub>y</sub>) = ${(p.Lp/12).toFixed(2)} ft · r<sub>ts</sub> = ${p.rts.toFixed(2)} in<br>L<sub>r</sub> = ${(p.Lr/12).toFixed(1)} ft · φM<sub>p</sub> = ${(0.9*p.Mp/12).toFixed(0)} k-ft<br>L<sub>b</sub> = ${Lb} ft, C<sub>b</sub> = ${Cb} → <b>φM<sub>n</sub> = ${m.toFixed(0)} k-ft</b> (${(m/(0.9*p.Mp/12)*100).toFixed(0)}% of φM<sub>p</sub>)`;
+  const z = Lbi <= p.Lp ? 0 : Lbi <= p.Lr ? 1 : 2;
+  $('bZone').textContent = ['Plastic','Inelastic','Elastic'][z];
+  const lf = 0.38*Math.sqrt(E/Fyb), lw = 3.76*Math.sqrt(E/Fyb);
+  const rows = [
+    ['h', `AISC 360-16 §F2 · ${SHAPES[i][0]} · F_y = 50 ksi`],
+    ['r', 'Table B4.1b', T`\tfrac{b_f}{2t_f}=${n(s.bf2tf,2)}\le${n(lf,2)},\ \ \tfrac{h}{t_w}=${n(s.htw,1)}\le${n(lw,1)}\ \Rightarrow\ \text{compact}`],
+    ['r', 'Eq. F2-1', T`M_p=F_yZ_x=50(${n(s.Zx,1)})=${n(p.Mp,0)}\ \text{k-in}=${n(p.Mp/12,1)}\ \text{k-ft}`],
+    ['r', 'Eq. F2-5', T`L_p=1.76(${n(s.ry,2)})\sqrt{29{,}000/50}=${n(p.Lp,1)}\ \text{in}=${n(p.Lp/12,2)}\ \text{ft}`],
+    ['r', 'Eq. F2-7', T`r_{ts}=\sqrt{\sqrt{${n(s.Iy,1)}(${n(s.Cw,0)})}/${n(s.Sx,1)}}=${n(p.rts,3)}\ \text{in}`],
+    ['r', 'Eq. F2-6', T`\frac{Jc}{S_xh_o}=\frac{${n(s.J,3)}}{${n(s.Sx,1)}(${n(s.ho,2)})}=${n(p.jc*1000,3)}\times10^{-3}\ \Rightarrow\ L_r=${n(p.Lr,1)}\ \text{in}=${n(p.Lr/12,2)}\ \text{ft}`],
+    ['r', 'Eq. F1-1 (case)', T`C_b=${n(Cb,2)}`]
+  ];
+  if (z === 0) rows.push(['r', 'Eq. F2-1', T`L_b=${n(Lb,1)}\ \text{ft}\le L_p\ \Rightarrow\ M_n=M_p=${n(p.Mp/12,1)}\ \text{k-ft}`]);
+  else if (z === 1) rows.push(['r', 'Eq. F2-2', T`M_n=${n(Cb,2)}\left[${n(p.Mp,0)}-(${n(p.Mp,0)}-${n(p.Mr,0)})\tfrac{${n(Lbi,0)}-${n(p.Lp,1)}}{${n(p.Lr,1)}-${n(p.Lp,1)}}\right]=${n(Math.min(p.Mp,Cb*(p.Mp-(p.Mp-p.Mr)*(Lbi-p.Lp)/(p.Lr-p.Lp))),0)}\ \text{k-in}\ ${mn>=p.Mp-0.5?T`\to M_p`:''}`]);
+  else { const x = Lbi/p.rts, F = Cb*Math.PI*Math.PI*E/(x*x)*Math.sqrt(1 + 0.078*p.jc*x*x);
+    rows.push(['r', 'Eq. F2-4', T`F_{cr}=\frac{${n(Cb,2)}\pi^2(29{,}000)}{(${n(x,1)})^2}\sqrt{1+0.078(${n(p.jc*1000,3)}\times10^{-3})(${n(x,1)})^2}=${n(F,2)}\ \text{ksi}`]);
+    rows.push(['r', 'Eq. F2-3', T`M_n=F_{cr}S_x=${n(F,2)}(${n(s.Sx,1)})=${n(F*s.Sx,0)}\ \text{k-in}\le M_p`]); }
+  rows.push(['r', '§F1', T`\phi_bM_n=0.90(${n(mn/12,1)})=${n(m,1)}\ \text{k-ft}\quad(${n(m/(0.9*p.Mp/12)*100,0)}\%\ \text{of}\ \phi_bM_p)`]);
+  rows.push(['c', '§B3.1 (LRFD)', T`\frac{M_u}{\phi_bM_n}=\frac{${n(Mu,0)}}{${n(m,1)}}=${n(Mu/m,2)}`, Mu/m]);
+  P.sheet('bSheet', rows);
+  bFlow.update({z});
   ltb = {i, Lb, Cb, hx:ltb.hx, util: 1 - m/(0.9*p.Mp/12)};
   bPlot.render(); if (P.reduce) P.redraw();
 }
-P.bind(['bShape','bLb','bCb'], beam);
+P.bind(['bShape','bLb','bCb','bMu'], beam);
 P.anim($('bPlan'), (ctx, w, h, t) => {
   const L = w - 60, x0 = 30, y = h/2 + 6;
-  const n = Math.max(1, Math.round(45 / Math.max(ltb.Lb, 2)));
-  const segs = Math.min(8, n);
+  const segs = Math.min(8, Math.max(1, Math.round(45 / Math.max(ltb.Lb, 2))));
   const amp = (6 + 26*ltb.util) * (P.reduce ? 1 : (0.65 + 0.35*Math.sin(t*1.6)));
-  const pts = [];
-  for (let i=0;i<=200;i++){ const s = i/200; pts.push([x0 + s*L, y + amp*Math.sin(Math.PI*s*segs)*(ltb.Lb<1?0:1)]); }
+  const pts = []; for (let i=0;i<=200;i++){ const s = i/200; pts.push([x0 + s*L, y + amp*Math.sin(Math.PI*s*segs)*(ltb.Lb<1?0:1)]); }
   line(ctx, [[x0,y],[x0+L,y]], {color:C['ink-soft'], width:1, dash:[4,4]});
   line(ctx, pts, {color:C.steel, width:5});
-  for (let i=0;i<=segs;i++){
-    const x = x0 + i*L/segs;
-    ctx.fillStyle = C.pencil; ctx.fillRect(x-3, y-22, 6, 44);
-  }
+  for (let i=0;i<=segs;i++){ const x = x0 + i*L/segs; ctx.fillStyle = C.pencil; ctx.fillRect(x-3, y-22, 6, 44); }
   text(ctx, `${segs} unbraced segment${segs>1?'s':''} · braces in pencil`, x0, h-10, {size:11, color:C['ink-soft']});
 });
 
 /* ---------- SHEET 4: bracing ---------- */
-let brT = 'cn', brState = {ratio:1};
-P.chips('brType', d => { brT = d.t; const beam = brT[0]==='b'; $('brPWrap').hidden = beam; $('brMWrap').hidden = !beam; $('brHWrap').hidden = !beam; brace(); });
+const BRACES = [
+  {nm:'Pipe 2 STD (A53 B)', Fy:35, ...pipe(2.375,0.154), mode:'tc'},
+  {nm:'Pipe 3 STD (A53 B)', Fy:35, ...pipe(3.5,0.216), mode:'tc'},
+  {nm:'HSS3×3×1/4 (A500 C)', Fy:50, A:2.44, rx:1.08, mode:'tc'},
+  {nm:'HSS4×4×1/4 (A500 C)', Fy:50, A:3.37, rx:1.52, mode:'tc'},
+  {nm:'3/4 in A36 rod (tension only)', Fy:36, Fu:58, A:0.442, rx:0.1875, mode:'t'},
+  {nm:'1 in A36 rod (tension only)', Fy:36, Fu:58, A:0.785, rx:0.25, mode:'t'}
+];
+$('brMem').innerHTML = BRACES.map((b,i) => `<option value="${i}">${b.nm} · A = ${b.A.toFixed(2)} in²</option>`).join('');
+let brT = 'cn', brM = 'lrfd', brState = {ratio:1};
+function brFlowSpec(){
+  const beam = brT[0] === 'b';
+  return [
+    {s:`Identify the braced member, its required ${beam?T`\(M_r\)`:T`\(P_r\)`} and the brace spacing \\(L_{br}\\)`, ref:'App. 6 §6.1'},
+    {q:'Panel bracing (shear panel between adjacent brace points)?', ref:beam?'§6.3.1a vs §6.3.1b':'§6.2.1 vs §6.2.2', test:s=>s.panel,
+      yes: beam ? T`\(V_{br}=0.01\frac{M_rC_d}{h_o}\) (A-6-5), \(\beta_{br}=\frac{1}{\phi}\frac{4M_rC_d}{L_{br}h_o}\) (A-6-6)` : T`\(V_{br}=0.005P_r\) (A-6-1), \(\beta_{br}=\frac{1}{\phi}\frac{2P_r}{L_{br}}\) (A-6-2)`,
+      no: beam ? T`Point: \(P_{br}=0.02\frac{M_rC_d}{h_o}\) (A-6-7), \(\beta_{br}=\frac{1}{\phi}\frac{10M_rC_d}{L_{br}h_o}\) (A-6-8)` : T`Point: \(P_{br}=0.01P_r\) (A-6-3), \(\beta_{br}=\frac{1}{\phi}\frac{8P_r}{L_{br}}\) (A-6-4)`, main:null},
+    {s:T`Pick a brace; provided axial stiffness \(k=\frac{AE}{L}\cos^2\theta\)`, ref:'mechanics · FHWA NHI-15-044 §5.5'},
+    {q:'Flexible connection or support in the load path?', ref:'App. 6 user note §6.2.1', test:s=>s.conn, yes:T`Series: \(\frac{1}{\beta_{sys}}=\frac{1}{k}+\frac{1}{\beta_{conn}}\)`, no:T`\(\beta_{sys}=k\)`, main:null},
+    {q:T`\(\beta_{sys}\ge\beta_{br}\) ?`, ref:'stiffness check', test:s=>s.stiffOK, yes:'Stiffness OK', no:{s:'Increase A, shorten or steepen the brace, or stiffen the connection', end:true}, main:'yes'},
+    {q:T`Brace capacity \(\ge P_{br}/\cos\theta\) ?`, ref:'Ch. D (tension) / Ch. E (compression)', test:s=>s.strOK, yes:'Strength OK', no:{s:'Upsize the brace or its connection', end:true}, main:'yes'},
+    {s:'Detail connections for the brace force. Braces must be in place <strong>before</strong> the member is loaded.', ref:'§6.1', end:true}
+  ];
+}
+let brFlow = null;
+function rebuildBrFlow(){ brFlow = P.flow('brFlow', brFlowSpec()); }
+P.chips('brMeth', d => { brM = d.m; if (brFlow) brace(); });
+P.chips('brType', d => { brT = d.t; const beam = brT[0]==='b'; $('brPWrap').hidden = beam; $('brMWrap').hidden = !beam; $('brHWrap').hidden = !beam; $('brCdWrap').hidden = !beam; rebuildBrFlow(); brace(); });
 function brace(){
-  const Pr=+$('brP').value, Mr=+$('brM').value, Lbr=+$('brL').value, ho=+$('brH').value, kp=+$('brK').value;
-  $('brPo').textContent = Pr+' kips'; $('brMo').textContent = Mr+' k-ft'; $('brLo').textContent = Lbr+' ft'; $('brHo').textContent = ho+' in'; $('brKo').textContent = kp+' k/in';
-  const L = Lbr*12, phi = 0.75, Cd = 1.0;
-  let Pbr, beta, eqs;
-  if (brT === 'cn'){ Pbr = 0.01*Pr; beta = (1/phi)*(8*Pr/L); eqs = `P<sub>br</sub> = 0.01P<sub>r</sub> = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(8P<sub>r</sub>/L<sub>br</sub>) = <b>${fmt(beta,1)} k/in</b>`; }
-  if (brT === 'cr'){ Pbr = 0.005*Pr; beta = (1/phi)*(2*Pr/L); eqs = `P<sub>br</sub> = 0.005P<sub>r</sub> = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(2P<sub>r</sub>/L<sub>br</sub>) = <b>${fmt(beta,1)} k/in</b>`; }
-  if (brT === 'bn'){ const F = Mr*12*Cd/ho; Pbr = 0.02*F; beta = (1/phi)*(10*Mr*12*Cd/(L*ho)); eqs = `flange force M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub> = ${fmt(F,0)} k → P<sub>br</sub> = 2% = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(10M<sub>r</sub>C<sub>d</sub>/(L<sub>br</sub>h<sub>o</sub>)) = <b>${fmt(beta,1)} k/in</b>`; }
-  if (brT === 'br'){ const F = Mr*12*Cd/ho; Pbr = 0.005*F; beta = (1/phi)*(4*Mr*12*Cd/(L*ho)); eqs = `P<sub>br</sub> = 0.005M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub> = ${fmt(Pbr,1)} k<br>β<sub>br</sub> = (1/0.75)(4M<sub>r</sub>C<sub>d</sub>/(L<sub>br</sub>h<sub>o</sub>)) = <b>${fmt(beta,1)} k/in</b>`; }
-  $('brEq').innerHTML = eqs + `<br><span class="c">e.g. a pipe brace: k = AE/L<sub>brace</sub> × cos²θ, and connection slip softens it</span>`;
-  const ratio = kp/beta;
+  if (!brFlow) return;
+  const Pr=+$('brP').value, Mr=+$('brM').value, Lbr=+$('brL').value, ho=+$('brH').value, Cd=+$('brCd').value;
+  const b = BRACES[+$('brMem').value], Lb=+$('brLen').value, th=+$('brAng').value, kc=+$('brKc').value, conn=$('brConn').checked;
+  $('brPo').textContent = Pr+' kips'; $('brMo').textContent = Mr+' k-ft'; $('brLo').textContent = Lbr+' ft'; $('brHo').textContent = ho+' in';
+  $('brLeno').textContent = Lb+' ft'; $('brAngo').textContent = th+'°'; $('brKco').textContent = kc+' k/in';
+  const L = Lbr*12, lrfd = brM === 'lrfd', fac = lrfd ? 1/0.75 : 2.0, facT = lrfd ? T`\frac{1}{\phi}=\frac{1}{0.75}` : T`\Omega=2.00`;
+  const beam = brT[0] === 'b', panel = brT[1] === 'r';
+  const rows = [['h', `Required · AISC 360-16 App. 6 · ${lrfd?'LRFD':'ASD'}`]];
+  let Preq, beta;
+  if (!beam && !panel){ Preq = 0.01*Pr; beta = fac*8*Pr/L;
+    rows.push(['r','Eq. A-6-3', T`P_{br}=0.01P_r=0.01(${n(Pr,0)})=${n(Preq,2)}\ \text{k}`]);
+    rows.push(['r', lrfd?'Eq. A-6-4a':'Eq. A-6-4b', T`\beta_{br}=${facT}\cdot\frac{8P_r}{L_{br}}=${n(fac,3)}\cdot\frac{8(${n(Pr,0)})}{${n(L,0)}}=${n(beta,1)}\ \text{k/in}`]); }
+  if (!beam && panel){ Preq = 0.005*Pr; beta = fac*2*Pr/L;
+    rows.push(['r','Eq. A-6-1', T`V_{br}=0.005P_r=0.005(${n(Pr,0)})=${n(Preq,2)}\ \text{k}`]);
+    rows.push(['r', lrfd?'Eq. A-6-2a':'Eq. A-6-2b', T`\beta_{br}=${facT}\cdot\frac{2P_r}{L_{br}}=${n(fac,3)}\cdot\frac{2(${n(Pr,0)})}{${n(L,0)}}=${n(beta,1)}\ \text{k/in}`]); }
+  if (beam){ const Mi = Mr*12, F = Mi*Cd/ho;
+    rows.push(['r','flange force', T`\frac{M_rC_d}{h_o}=\frac{${n(Mi,0)}(${Cd})}{${n(ho,0)}}=${n(F,1)}\ \text{k}`]);
+    if (panel){ Preq = 0.01*F; beta = fac*4*Mi*Cd/(L*ho);
+      rows.push(['r','Eq. A-6-5', T`V_{br}=0.01\frac{M_rC_d}{h_o}=${n(Preq,2)}\ \text{k}`]);
+      rows.push(['r', lrfd?'Eq. A-6-6a':'Eq. A-6-6b', T`\beta_{br}=${facT}\cdot\frac{4M_rC_d}{L_{br}h_o}=${n(beta,1)}\ \text{k/in}`]); }
+    else { Preq = 0.02*F; beta = fac*10*Mi*Cd/(L*ho);
+      rows.push(['r','Eq. A-6-7', T`P_{br}=0.02\frac{M_rC_d}{h_o}=${n(Preq,2)}\ \text{k}`]);
+      rows.push(['r', lrfd?'Eq. A-6-8a':'Eq. A-6-8b', T`\beta_{br}=${facT}\cdot\frac{10M_rC_d}{L_{br}h_o}=${n(beta,1)}\ \text{k/in}`]); } }
+  const c = Math.cos(th*Math.PI/180), Lin = Lb*12;
+  const kb = b.A*E/Lin*c*c, ksys = conn ? 1/(1/kb + 1/kc) : kb;
+  rows.push(['h', `Provided · ${b.nm}`]);
+  rows.push(['r','axial spring', T`k=\frac{AE}{L}\cos^2\theta=\frac{${n(b.A,3)}(29{,}000)}{${n(Lin,0)}}\cos^2${th}^\circ=${n(kb,1)}\ \text{k/in}`]);
+  if (conn) rows.push(['r','series (App. 6 note)', T`\beta_{sys}=\left(\frac{1}{${n(kb,1)}}+\frac{1}{${n(kc,0)}}\right)^{-1}=${n(ksys,1)}\ \text{k/in}`]);
+  rows.push(['c','stiffness', T`\frac{\beta_{br}}{\beta_{sys}}=\frac{${n(beta,1)}}{${n(ksys,1)}}=${n(beta/ksys,2)}`, beta/ksys]);
+  const Pb = Preq/Math.max(c, 0.05);
+  rows.push(['r','brace force', T`P_{brace}=\frac{P_{br}}{\cos\theta}=\frac{${n(Preq,2)}}{${n(c,3)}}=${n(Pb,2)}\ \text{k}`]);
+  let cap, capRow;
+  if (b.mode === 't'){ const Rn = 0.75*b.Fu*b.A; cap = lrfd ? 0.75*Rn : Rn/2.0;
+    capRow = ['r','Eq. J3-1 (rod, F_nt = 0.75F_u)', T`R_n=0.75F_uA_b=0.75(${b.Fu})(${n(b.A,3)})=${n(Rn,1)}\ \text{k}\ \Rightarrow\ ${lrfd?T`\phi R_n`:T`R_n/\Omega`}=${n(cap,1)}\ \text{k}`];
+    rows.push(['n','Tension-only rods must be paired (one acts in each direction) and pretensioned. Slack rods give no stiffness until they take up.']); }
+  else { const klr = Lin/b.rx, f = fcr(b.Fy, klr), Pn = f*b.A; cap = lrfd ? 0.9*Pn : Pn/1.67;
+    capRow = ['r','Eq. E3-1/E3-2,3 (K = 1)', T`\frac{L_c}{r}=${n(klr,0)},\ F_{cr}=${n(f,2)}\ \text{ksi}\Rightarrow ${lrfd?T`\phi_cP_n`:T`P_n/\Omega_c`}=${n(cap,1)}\ \text{k}`]; }
+  rows.push(capRow);
+  rows.push(['c','strength', T`\frac{P_{brace}}{${lrfd?T`\phi R_n`:T`R_n/\Omega`}}=\frac{${n(Pb,2)}}{${n(cap,1)}}=${n(Pb/cap,2)}`, Pb/cap]);
+  rows.push(['n', T`If \(L_{br}\) is shorter than \(L_q\) (the unbraced length at which the member just carries \(P_r\)), \(L_q\) may be used instead of \(L_{br}\), which lowers \(\beta_{br}\) (App. 6 provisions).`]);
+  P.sheet('brSheet', rows);
+  const ratio = ksys/beta;
   $('brRatio').textContent = fmt(ratio,2);
   const pl = $('brPill');
-  if (ratio >= 1){ pl.className = 'pill ok'; pl.textContent = 'stiff enough · buckles between braces'; }
+  if (ratio >= 1 && Pb <= cap){ pl.className = 'pill ok'; pl.textContent = 'stiff + strong · buckles between braces'; }
+  else if (ratio >= 1){ pl.className = 'pill warn'; pl.textContent = 'stiff, but brace too weak'; }
   else if (ratio >= 0.5){ pl.className = 'pill warn'; pl.textContent = 'too soft · capacity reduced'; }
   else { pl.className = 'pill ng'; pl.textContent = 'brace ineffective'; }
-  brState = {ratio, Pbr};
+  brFlow.update({panel, conn, stiffOK: ratio >= 1, strOK: Pb <= cap});
+  brState = {ratio};
   if (P.reduce) P.redraw();
 }
-P.bind(['brP','brM','brL','brH','brK'], brace);
+P.bind(['brP','brM','brL','brH','brCd','brMem','brLen','brAng','brKc','brConn'], brace);
 P.anim($('brCv'), (ctx, w, h, t) => {
   const cx = w*0.42, top = 30, g = h - 22;
   ground(ctx, cx-70, cx+170, g);
-  const m = clamp(brState.ratio, 0, 1);                   // 0 → one half-wave, 1 → two half-waves
+  const m = clamp(brState.ratio, 0, 1);
   const amp = (P.reduce ? 1 : 0.7 + 0.3*Math.sin(t*1.8)) * 26;
   const pts = [];
-  for (let i=0;i<=60;i++){ const s = i/60; const y = lerp(g-4, top, s);
-    const shape = (1-m)*Math.sin(Math.PI*s) + m*Math.sin(2*Math.PI*s)*0.7;
-    pts.push([cx + amp*shape, y]); }
+  for (let i=0;i<=60;i++){ const s = i/60; const y = lerp(g-4, top, s); const shape = (1-m)*Math.sin(Math.PI*s) + m*Math.sin(2*Math.PI*s)*0.7; pts.push([cx + amp*shape, y]); }
   line(ctx, [[cx, top],[cx, g-4]], {color:C['ink-soft'], width:1, dash:[4,4]});
   line(ctx, pts, {color: m >= 1 ? C.steel : C.pencil, width:6});
-  // brace spring at mid-height
-  const ym = (top + g)/2, xm = cx + amp*((1-m)*1 + m*0);
-  const sx = cx + 150;
+  const ym = (top + g)/2, xm = cx + amp*(1-m), sx = cx + 150;
   ctx.save(); ctx.strokeStyle = C.wind; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(xm, ym);
   const coils = 9, len = sx - xm;
   for (let i=1;i<=coils*2;i++){ ctx.lineTo(xm + len*i/(coils*2+1), ym + (i%2?-8:8)); }
   ctx.lineTo(sx, ym); ctx.stroke(); ctx.restore();
   ctx.fillStyle = C.ink; ctx.fillRect(sx, ym-18, 6, 36);
-  text(ctx, 'brace β', sx-40, ym-14, {size:11, color:C.wind});
+  text(ctx, 'β_sys', sx-40, ym-14, {size:11, color:C.wind});
   arrow(ctx, cx, top-38, cx, top-4, {color:C.pencil, width:3, head:10});
   text(ctx, m >= 1 ? 'mode 2: L_br governs' : 'mode 1 creeping in', cx-60, g-10, {size:11, color:C['ink-soft'], align:'right'});
 });
 
 /* ---------- SHEET 5: interaction ---------- */
+const iFlow = P.flow('iFlow', [
+  {s:'Pick the stability method: Direct Analysis (§C2) with notional loads and 0.8 stiffness, or the effective length method (App. 7.2)', ref:'§C1 · §C2 · App. 7'},
+  {q:'Rigorous second-order analysis already run?', ref:'§C2.1', test:s=>false, yes:'Use analysis forces directly', no:T`Approximate: \(M_r=B_1M_{nt}+B_2M_{lt}\) (A-8-1)`, main:null},
+  {s:T`\(P_c=\phi_cP_n\) (Ch. E with \(L_c\) per method) · \(M_c=\phi_bM_n\) (Ch. F)`, ref:'§H1.1'},
+  {q:T`\(P_r/P_c\ge0.2\) ?`, ref:'§H1.1', test:s=>s.a, yes:'H1-1a', no:'H1-1b', main:null},
+  {s:T`Ratio \(\le1.0\) → OK. Otherwise re-brace or upsize.`, ref:'§H1.1', end:true}
+]);
 let inter = {p:0.35, m:0.4, m2:0.5, hx:null, hy:null};
 const iPlot = P.still($('iPlot'), (ctx, w, h) => {
   const box = {l:44, r:w-14, t:24, b:h-36};
@@ -475,41 +671,74 @@ hover($('iPlot'), $('iTip'), (x, y) => {
   return `P/Pc ${p.toFixed(2)} · M/Mc ${m.toFixed(2)} → ${u.toFixed(2)}`;
 });
 function inter1(){
-  const p=+$('iP').value, m=+$('iM').value, pe=+$('iPe').value, tr=$('iTr').checked;
-  $('iPo').textContent = p.toFixed(2); $('iMo').textContent = m.toFixed(2); $('iPeo').textContent = pe.toFixed(2);
-  const Cm = tr ? 1.0 : 0.6, B1 = Math.max(1, Cm/(1 - pe));
-  const m2 = m*B1, u = p >= 0.2 ? p + 8/9*m2 : p/2 + m2;
-  $('iEq').innerHTML = `B<sub>1</sub> = ${Cm.toFixed(1)}/(1 − ${pe.toFixed(2)}) = <b>${B1.toFixed(2)}</b> ${tr?'':'<span class="c">(C<sub>m</sub> = 0.6 − 0.4M<sub>1</sub>/M<sub>2</sub>, taking M<sub>1</sub> = 0)</span>'}<br>${p>=0.2?`H1-1a: ${p.toFixed(2)} + 8/9(${m2.toFixed(2)})`:`H1-1b: ${p.toFixed(2)}/2 + ${m2.toFixed(2)}`} = <b>${u.toFixed(2)}</b>`;
-  P.pill('iPill', u);
+  const p=+$('iP').value, m=+$('iM').value, pe=+$('iPe').value, tr=$('iTr').checked, r12=+$('iM1').value;
+  $('iPo').textContent = p.toFixed(2); $('iMo').textContent = m.toFixed(2); $('iPeo').textContent = pe.toFixed(2); $('iM1o').textContent = r12.toFixed(2);
+  const Cm = tr ? 1.0 : 0.6 - 0.4*r12, B1raw = Cm/(1 - pe), B1 = Math.max(1, B1raw);
+  const m2 = m*B1, a = p >= 0.2, u = a ? p + 8/9*m2 : p/2 + m2;
+  const rows = [
+    ['h','AISC 360-16 App. 8 + §H1.1'],
+    ['r', tr ? '§A-8.2.1 (transverse load)' : 'Eq. A-8-4', tr ? T`C_m=1.0` : T`C_m=0.6-0.4\frac{M_1}{M_2}=0.6-0.4(${n(r12,2)})=${n(Cm,2)}`],
+    ['r','Eq. A-8-3', T`B_1=\frac{C_m}{1-\alpha P_r/P_{e1}}=\frac{${n(Cm,2)}}{1-${n(pe,2)}}=${n(B1raw,3)}${B1raw<1?T`\to 1.0`:''}`],
+    ['r','Eq. A-8-1', T`\frac{M_r}{M_c}=B_1\frac{M_{nt}}{M_c}=${n(B1,3)}(${n(m,2)})=${n(m2,3)}`],
+    a ? ['c','Eq. H1-1a', T`\frac{P_r}{P_c}+\frac{8}{9}\frac{M_r}{M_c}=${n(p,2)}+\frac{8}{9}(${n(m2,3)})=${n(u,3)}`, u]
+      : ['c','Eq. H1-1b', T`\frac{P_r}{2P_c}+\frac{M_r}{M_c}=\frac{${n(p,2)}}{2}+${n(m2,3)}=${n(u,3)}`, u]
+  ];
+  P.sheet('iSheet', rows);
+  iFlow.update({a});
   inter = {p, m, m2, hx:inter.hx, hy:inter.hy}; iPlot.render();
 }
-P.bind(['iP','iM','iPe','iTr'], inter1);
+P.bind(['iP','iM','iPe','iTr','iM1'], inter1);
 
 /* ---------- SHEET 6: bolts & welds ---------- */
 function bolts(){
-  const g=$('boG').value, th=$('boT').value, d=+$('boD').value, n=+$('boN').value, s=+$('boS').value;
-  $('boNo').textContent = n;
-  const Fnv = g==='A' ? (th==='N'?54:68) : (th==='N'?68:84);
-  const Ab = Math.PI*d*d/4, rn = Fnv*Ab*s;
-  $('boEq').innerHTML = `A<sub>b</sub> = ${Ab.toFixed(3)} in² · F<sub>nv</sub> = ${Fnv} ksi · ${s===2?'double':'single'} shear<br>φr<sub>n</sub> = 0.75 × ${Fnv} × ${Ab.toFixed(3)} × ${s} = <b>${(0.75*rn).toFixed(1)} k/bolt</b> (ASD ${(rn/2).toFixed(1)})<br>${n} bolts → <b>φR<sub>n</sub> = ${(0.75*rn*n).toFixed(0)} k</b> <span class="c">(then check bearing/tear-out, block shear)</span>`;
+  const g=$('boG').value, th=$('boT').value, d=+$('boD').value, nb=+$('boN').value, s=+$('boS').value, t=+$('boTp').value, Le=+$('boLe').value, Vu=+$('boVu').value;
+  $('boNo').textContent = nb; $('boTpo').textContent = t+' in'; $('boLeo').textContent = Le+' in'; $('boVuo').textContent = Vu+' k';
+  const Fnv = g==='A' ? (th==='N'?54:68) : (th==='N'?68:84), Fu = 58;
+  const Ab = Math.PI*d*d/4, rn = Fnv*Ab*s, dh = d < 1 ? d + 1/16 : d + 1/8, lc = Le - dh/2;
+  const br = 2.4*d*t*Fu, to = 1.2*lc*t*Fu, rb = Math.min(br, to);
+  const per = Math.min(0.75*rn, 0.75*rb), tot = per*nb;
+  const minLe = {0.75:1, 0.875:1.125, 1:1.25}[d];
+  P.sheet('boSheet', [
+    ['h', `${g==='A'?'Group A (A325)':'Group B (A490)'}-${th} · ${d} in · ${s===2?'double':'single'} shear`],
+    ['r','Table J3.2', T`F_{nv}=${Fnv}\ \text{ksi},\ \ A_b=\frac{\pi(${d})^2}{4}=${n(Ab,3)}\ \text{in}^2`],
+    ['r','Eq. J3-1', T`r_n=F_{nv}A_bn_s=${Fnv}(${n(Ab,3)})(${s})=${n(rn,1)}\ \text{k}\Rightarrow\phi r_n=0.75(${n(rn,1)})=${n(0.75*rn,1)}\ \text{k}`],
+    ['r','Table J3.3 · J3.4', T`d_h=${n(dh,4)}\ \text{in},\ \ L_e=${n(Le,3)}\ ${Le>=minLe?T`\ge`:'<'}\ L_{e,min}=${n(minLe,3)}\ \text{in}`],
+    ['r','Eq. J3-6a', T`r_n=2.4dtF_u=2.4(${d})(${n(t,3)})(58)=${n(br,1)}\ \text{k}`],
+    ['r','Eq. J3-6c', T`l_c=L_e-\tfrac{d_h}{2}=${n(lc,3)}\ \text{in}\Rightarrow r_n=1.2l_ctF_u=${n(to,1)}\ \text{k}`],
+    ['r','§J3.6 · J3.10', T`\phi r_n=\min(${n(0.75*rn,1)},\ ${n(0.75*rb,1)})=${n(per,1)}\ \text{k/bolt}\Rightarrow\phi R_n=${nb}(${n(per,1)})=${n(tot,0)}\ \text{k}`],
+    ['c','§B3.1', T`\frac{V_u}{\phi R_n}=\frac{${n(Vu,0)}}{${n(tot,0)}}=${n(Vu/tot,2)}`, Vu/tot],
+    ['n','Edge bolt tear-out uses L<sub>e</sub>; interior bolts use l<sub>c</sub> = s − d<sub>h</sub>. Also check block shear (J4-5) and the plate in shear yield/rupture (J4-3/J4-4).']
+  ]);
 }
-P.bind(['boG','boT','boD','boN','boS'], bolts);
+P.bind(['boG','boT','boD','boN','boS','boTp','boLe','boVu'], bolts);
 function weld(){
-  const s=+$('wS').value, L=+$('wL').value, tr=$('wT').checked;
-  $('wSo').textContent = s+'/16 in'; $('wLo').textContent = L+' in';
-  const k = tr ? 1.5 : 1.0, per = 1.392*s*k;
-  $('wEq').innerHTML = `φr<sub>n</sub> = 1.392 × ${s}${tr?' × 1.5':''} = <b>${per.toFixed(2)} k/in</b> (ASD ${(0.928*s*k).toFixed(2)})<br>× ${L} in → <b>φR<sub>n</sub> = ${(per*L).toFixed(0)} k</b> <span class="c">(also check base metal shear)</span>`;
+  const s=+$('wS').value, L=+$('wL').value, tk=+$('wTk').value, ang=+$('wAng').value, Pu=+$('wPu').value;
+  $('wSo').textContent = s+'/16 in'; $('wLo').textContent = L+' in'; $('wTko').textContent = tk+' in'; $('wAngo').textContent = ang+'°'; $('wPuo').textContent = Pu+' k';
+  const w = s/16, th = ang*Math.PI/180, kd = 1 + 0.5*Math.pow(Math.sin(th), 1.5);
+  const Fnw = 0.6*70*kd, Awe = 0.707*w, per = 0.75*Fnw*Awe, tot = per*L;
+  const wmin = tk <= 0.25 ? 1/8 : tk <= 0.5 ? 3/16 : tk <= 0.75 ? 1/4 : 5/16;
+  P.sheet('wSheet', [
+    ['h', `E70XX fillet · ${s}/16 in · θ = ${ang}°`],
+    ['r','Table J2.4', T`w_{min}(t=${n(tk,3)}\ \text{in})=${n(wmin*16,0)}/16\ \text{in}\ \Rightarrow\ ${w>=wmin?T`\text{OK}`:T`\text{too small}`}`],
+    ['r','Eq. J2-5', T`F_{nw}=0.60(70)(1.0+0.50\sin^{1.5}${ang}^\circ)=${n(Fnw,1)}\ \text{ksi}`],
+    ['r','§J2.2a', T`A_{we}=0.707w=0.707(${n(w,4)})=${n(Awe,4)}\ \text{in}^2/\text{in}`],
+    ['r','Eq. J2-4', T`\phi R_n=0.75F_{nw}A_{we}=${n(per,3)}\ \text{k/in}\ \ (=1.392\times${s}${ang?T`\times`+n(kd,3):''})`],
+    ['r','total', T`\phi R_n=${n(per,3)}\times${L}=${n(tot,1)}\ \text{k}\qquad R_n/\Omega=${n(tot/1.5,1)}\ \text{k}`],
+    ['c','§B3.1', T`\frac{P_u}{\phi R_n}=\frac{${n(Pu,0)}}{${n(tot,1)}}=${n(Pu/tot,2)}`, Pu/tot],
+    ['n','Also check base-metal shear at the fusion face and the connected element (§J4). The directional increase needs all welds in the group loaded at the same angle (§J2.4).']
+  ]);
 }
-P.bind(['wS','wL','wT'], weld);
+P.bind(['wS','wL','wTk','wAng','wPu'], weld);
 
 /* ---------- cards ---------- */
 P.cards('cards', [
-  ['A shoring post is braced at the top in one direction only. Which K and r do you use?','Check both axes. Use K and the unbraced length for each axis with that axis\'s r. In the unbraced direction the post may be a flagpole (K ≈ 2.1). The larger KL/r governs.'],
-  ['Why does a brace need stiffness and not just strength?','Without enough stiffness the member buckles in a longer mode and never reaches the capacity you assumed with L<sub>br</sub>. Appendix 6 requires about twice the ideal stiffness (that\'s what 1/φ covers) and a strength based on an L/500 imperfection.'],
-  ['What is the "2% rule" and where did it come from?','The classic brace strength of 2% of the compression force. AISC App. 6 now gives 1% of P<sub>r</sub> for nodal column bracing and 2% of the flange force (M<sub>r</sub>C<sub>d</sub>/h<sub>o</sub>) for nodal beam bracing, each with a stiffness requirement.'],
-  ['A girder is lifted and set with no cross-frames. What governs its flexure?','LTB with L<sub>b</sub> = full length (or between the lifting points and the ends while hanging). Use C<sub>b</sub> conservatively, account for top-flange loading, and check system buckling of girder pairs. Often the answer is a holding crane or temporary bracing until the cross-frames are in.'],
-  ['When would you use slip-critical bolts in temporary works?','When slip would be harmful: load reversal (wind on falsework bracing), fatigue or repeated use (lifting beams, reusable frames), or oversized/slotted holes. Otherwise snug-tight bearing bolts are fine.'],
-  ['Why direct analysis for a temporary tower?',"It's tall and slender, and its legs are often out of plumb. Notional loads (0.002Y<sub>i</sub>) and reduced stiffness capture second-order effects directly, so you can use K = 1.0. That makes it conservative and simple to defend."]
+  [T`A shoring post is braced at the top in one direction only. Which \(K\) and \(r\)?`, T`Check both axes: \(L_{cx}/r_x\) and \(L_{cy}/r_y\). In the unbraced direction it may be a flagpole (K ≈ 2.1). The larger \(L_c/r\) governs (§E2).`],
+  ['How do you check that a brace is stiff enough?', T`Required: \(\beta_{br}=\frac{1}{\phi}\frac{8P_r}{L_{br}}\) (point, A-6-4a). Provided: \(k=\frac{AE}{L}\cos^2\theta\) in series with the connection stiffness. Show \(\beta_{sys}\ge\beta_{br}\), then check strength for \(P_{br}=0.01P_r\) (A-6-3) divided by \(\cos\theta\).`],
+  ['What is the "2% rule" today?', T`Point bracing: columns \(0.01P_r\) (A-6-3), beams \(0.02M_rC_d/h_o\) (A-6-7), which is 2% of the flange force. Panel bracing: \(0.005P_r\) and \(0.01M_rC_d/h_o\) (360-16). Each comes with a stiffness requirement.`],
+  ['Fillet weld strength you should know cold?', T`E70XX: \(\phi R_n=0.75(0.60)(70)(0.707)\frac{1}{16}=1.392\) k/in per sixteenth (ASD 0.928). A 1/4 in fillet = 5.57 k/in.`],
+  ['A girder is set with no cross-frames. What governs its flexure?', T`LTB with \(L_b\) = full length, so \(L_b\gg L_r\): elastic, F2-3/F2-4 with conservative \(C_b\). Top-flange load is destabilizing. Add a holding crane or temporary bracing until the cross-frames are in, and check system buckling.`],
+  ['When do slip-critical bolts make sense in temporary works?', T`Load reversal (wind on bracing), repeated or fatigue use (lifting beams, reusable frames), oversized or slotted holes. \(R_n=\mu D_uh_fT_bn_s\) (J3-4), e.g. 7/8 in A325 Class A: \(0.30(1.13)(1.0)(39)=13.2\) k/plane nominal, φ = 1.00 for standard holes.`],
+  ['Why the direct analysis method for a temporary tower?', T`It's slender and out of plumb. Notional loads \(N_i=0.002\alpha Y_i\) (C2-1) and reduced stiffness (0.8EI, 0.8EA) capture second-order effects directly, so you can use \(L_c=L\) (K = 1).`]
 ]);
 })();
 </script>

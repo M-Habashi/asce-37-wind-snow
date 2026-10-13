@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <link rel="stylesheet" href="assets/prep.css">
 <script src="assets/prep.js"></script>
 <style>
@@ -15,7 +18,6 @@
 .stackbar span{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.75rem;color:#fff;transition:width .5s cubic-bezier(.2,.8,.2,1);white-space:nowrap;overflow:hidden}
 .stackbar .minline{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink)}
 .checks{display:flex;flex-direction:column;gap:6px;min-height:150px}
-.checks li{margin:0}
 </style>
 </head>
 <body>
@@ -24,27 +26,25 @@
 
 <!-- SHEET 1 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>1</b> of 7</div><div>Falsework · formwork · shoring</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="padhead"><div>Sheet <b>1</b> of 8</div><div>Falsework · formwork · shoring</div><div>Chk'd: <b>M.</b></div></div>
   <div class="sheet-body">
-    <div class="kicker"><span class="label">ACI 347R · Caltrans Falsework Manual · AASHTO temp-works guide · NDS</span><span class="hand">wet concrete is a liquid until it isn't →</span></div>
+    <div class="kicker"><span class="label">ACI 347R-14 · Caltrans Std Specs 48-2 + Falsework Manual · AASHTO temp-works guide · NDS 2018</span><span class="hand">wet concrete is a liquid until it isn't →</span></div>
     <h1>Falsework &amp;<br>Formwork</h1>
     <div class="stage">
       <canvas id="hero" role="img" aria-label="Concrete rising inside a wall form; the lateral pressure grows hydrostatically and then caps at the ACI 347 design maximum while the liquid-head line keeps growing"></canvas>
       <div class="readout"><span>pour height <b id="hH">—</b> ft</span><span>liquid head <b id="hL">—</b> psf</span><span>ACI 347 cap <b id="hC">—</b> psf</span></div>
     </div>
-    <p class="lede">Falsework and formwork failures usually happen <em>during the pour</em>. That's when the load is at its maximum, the concrete is still liquid, and the system is at its least stiff. Know the design loads cold, know the load path from soffit to soil, and know the few formulas that set the pressure.</p>
+    <p class="lede">Falsework and formwork fail <em>during the pour</em>: the load is at its maximum, the concrete is still liquid, and the system is at its least stiff. Know the design loads cold, know the load path from soffit to soil, and know the few equations that set the pressure.</p>
   </div>
 </section>
 
 <!-- SHEET 2 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>2</b> of 7</div><div>Lateral pressure · ACI 347R-14 §4.2</div><div>C<sub>C</sub> in ASCE 37</div></div>
+  <div class="padhead"><div>Sheet <b>2</b> of 8</div><div>Lateral pressure · ACI 347R-14 §4.2.2</div><div>C<sub>C</sub> in ASCE 37</div></div>
   <div class="sheet-body">
     <h2>Form pressure</h2>
-    <div class="callout remember"><span class="tag">ACI 347R-14 (inch-pound)</span>
-      <p><strong>Columns</strong>, and walls with R &lt; 7 ft/hr and placement height ≤ 14 ft: CP<sub>max</sub> = C<sub>w</sub>C<sub>c</sub>[150 + 9,000R/T]<br>
-      <strong>Walls</strong> with R &lt; 7 ft/hr and h &gt; 14 ft, or 7 ≤ R ≤ 15 ft/hr: CP<sub>max</sub> = C<sub>w</sub>C<sub>c</sub>[150 + 43,400/T + 2,800R/T]<br>
-      Minimum 600C<sub>w</sub> psf, maximum wh. Use <strong>full liquid head wh</strong> for slump &gt; 7 in, SCC, internal vibration deeper than 4 ft, R &gt; 15 ft/hr on walls, or pumping from the bottom.</p></div>
+    <div class="eqblock">$$CCP=wh\ \ \text{(4.2.2.1a(a))}\qquad CCP_{max}=C_cC_w\left[150+\frac{9000R}{T}\right]\ \ \text{(4.2.2.1a(b))}\qquad CCP_{max}=C_cC_w\left[150+\frac{43{,}400}{T}+\frac{2800R}{T}\right]\ \ \text{(4.2.2.1a(c))}$$
+    $$600\,C_w\ \le\ CCP_{max}\ \le\ wh\qquad R\ \text{in ft/h},\ T\ \text{in °F},\ w\ \text{in lb/ft}^3,\ h\ \text{in ft}$$<span class="fref">ACI 347R-14 §4.2.2.1a · equation selection: Table 4.2.2.1a(a) · C<sub>c</sub>: Table 4.2.2.1a(b) · C<sub>w</sub>: Table 4.2.2.1a(c) · wall = an element with at least one plan dimension &gt; 6.5 ft</span></div>
     <div class="twocol">
       <div class="col">
         <div class="chips" id="elChips" role="group" aria-label="Element">
@@ -59,62 +59,75 @@
           <div class="ctrl"><label class="label" for="pH">Placement height h: <span class="val" id="pHo"></span></label><input id="pH" type="range" min="4" max="40" step="0.5" value="16"></div>
           <div class="ctrl"><label class="label" for="pW">Unit weight w: <span class="val" id="pWo"></span></label><input id="pW" type="range" min="110" max="170" step="1" value="150"></div>
         </div>
-        <div class="ctrl"><label class="label" for="pCc">Chemistry C<sub>c</sub></label><select id="pCc">
-          <option value="1.0" selected>1.0 · Type I/II/III, no retarder</option>
-          <option value="1.2">1.2 · Type I/II/III + retarder, or blends &lt;70% slag / &lt;40% fly ash w/o retarder</option>
-          <option value="1.4">1.4 · blends with retarder, or &gt;70% slag / &gt;40% fly ash</option></select></div>
+        <div class="ctrl"><label class="label" for="pCc">Chemistry C<sub>c</sub> (Table 4.2.2.1a(b))</label><select id="pCc">
+          <option value="1.0" selected>1.0 · Type I/II/III, no slag/fly ash, no retarder</option>
+          <option value="1.2">1.2 · Type I/II/III with retarder</option>
+          <option value="1.21">1.2 · blend (&lt;70% slag, &lt;40% fly ash), no retarder</option>
+          <option value="1.4">1.4 · blend (&lt;70% slag, &lt;40% fly ash) with retarder</option>
+          <option value="1.41">1.4 · ≥70% slag or ≥40% fly ash, no retarder</option>
+          <option value="1.5">1.5 · ≥70% slag or ≥40% fly ash with retarder</option></select></div>
         <div class="ctrl-row">
-          <label class="check"><input type="checkbox" id="pScc"> SCC / slump &gt; 7 in</label>
-          <label class="check"><input type="checkbox" id="pVib"> Vibrating deeper than 4 ft</label>
+          <label class="check"><input type="checkbox" id="pScc"> Slump &gt; 7 in (or SCC)</label>
+          <label class="check"><input type="checkbox" id="pVib"> Internal vibration deeper than 4 ft</label>
         </div>
-        <div class="ctrl"><label class="label" for="pTie">Tie safe working load (manufacturer): <span class="val" id="pTieo"></span></label><input id="pTie" type="range" min="2000" max="40000" step="250" value="18000"></div>
+        <label class="check"><input type="checkbox" id="pPump"> Pumped from the base of the form (§4.2.2.4: wh + 25%)</label>
+        <div class="ctrl"><label class="label" for="pTie">Tie safe working load (manufacturer, SF 2.0 per Table 4.4): <span class="val" id="pTieo"></span></label><input id="pTie" type="range" min="2000" max="40000" step="250" value="18000"></div>
       </div>
       <div class="col">
         <div class="stage tall" style="min-height:0"><canvas id="press" role="img" aria-label="Pressure envelope versus depth with liquid-head line and design cap"></canvas>
-          <div class="readout right"><span>CP<sub>max</sub> = <b id="pOut">—</b> psf</span></div></div>
-        <div class="eq" id="pEq"></div>
+          <div class="readout right"><span>\(CCP_{max}\) = <b id="pOut">—</b> psf</span></div></div>
       </div>
     </div>
-    <div class="callout trap"><span class="tag">Interview angle</span><p>Name the variables: <strong>rate of placement</strong> (the big one), <strong>temperature</strong> (cold concrete sets slowly, so pressure goes up), <strong>unit weight</strong>, <strong>chemistry and retarders</strong>, <strong>slump and SCC</strong>, <strong>vibration depth</strong>, and form geometry. Control the rate in the field: write the maximum pour rate on the drawings and monitor it. Hot-weather retarders can turn a 1,000 psf design into full liquid head.</p></div>
+    <div class="flowwrap">
+      <div class="col"><h3>Calc sheet</h3><div id="pSheet"></div></div>
+      <div class="col"><h3>Which equation? · Table 4.2.2.1a(a)</h3><div id="pFlow"></div></div>
+    </div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>Name the variables: <strong>rate of placement</strong> (the big one), <strong>temperature</strong> (cold concrete sets slowly, so pressure rises), <strong>unit weight</strong>, <strong>chemistry and retarders</strong>, <strong>slump and SCC</strong>, <strong>vibration depth</strong>, and element type. Control the rate in the field: write the maximum pour rate on the drawings and monitor it. A hot-weather retarder can turn a 1,100 psf design into liquid head.</p></div>
   </div>
 </section>
 
 <!-- SHEET 3 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>3</b> of 7</div><div>Bridge falsework loads · Caltrans 48-2 / AASHTO guide</div><div>vertical + 2%</div></div>
+  <div class="padhead"><div>Sheet <b>3</b> of 8</div><div>Bridge falsework loads · Caltrans 48-2.02B(2) / AASHTO guide</div><div>vertical + 2%</div></div>
   <div class="sheet-body">
     <h2>Falsework design loads</h2>
     <div class="ideas four">
-      <div class="idea"><span class="big">160</span><p><strong>pcf</strong> for concrete + rebar + forms in strength design (Caltrans). Use 150 pcf for the deflection calc.</p></div>
-      <div class="idea"><span class="big">20</span><p><strong>psf</strong> live over the area supported, plus <strong>75 plf</strong> at the deck-overhang edge.</p></div>
-      <div class="idea"><span class="big">100</span><p><strong>psf</strong> minimum total (DL + LL) for any member, regardless of slab thickness.</p></div>
-      <div class="idea"><span class="big">2%</span><p>of total DL as the assumed <strong>horizontal</strong> load, any direction, top of posts, loaded <em>and</em> unloaded. Wind is separate.</p></div>
+      <div class="idea"><span class="big">160</span><p><strong>pcf</strong> for concrete + rebar + forms in strength design (Caltrans FW Manual §3-2.01). Use 150 pcf for deflection.</p></div>
+      <div class="idea"><span class="big">20</span><p><strong>psf</strong> live over the area supported, plus <strong>75 plf</strong> at the deck-overhang edge (§3-2.02).</p></div>
+      <div class="idea"><span class="big">100</span><p><strong>psf</strong> minimum total (DL + LL) for any member (§3-2.03; also the AASHTO guide).</p></div>
+      <div class="idea"><span class="big">2%</span><p>of total DL as the assumed <strong>horizontal</strong> load, any direction, top of posts, loaded and unloaded (§3-3.02).</p></div>
     </div>
     <div class="twocol">
       <div class="col">
         <div class="ctrl"><label class="label" for="fT">Equivalent concrete thickness: <span class="val" id="fTo"></span></label><input id="fT" type="range" min="4" max="60" step="1" value="12"></div>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="fBs">Bent spacing: <span class="val" id="fBso"></span></label><input id="fBs" type="range" min="10" max="50" step="1" value="30"></div>
+          <div class="ctrl"><label class="label" for="fBs">Bent spacing (stringer span): <span class="val" id="fBso"></span></label><input id="fBs" type="range" min="10" max="50" step="1" value="30"></div>
           <div class="ctrl"><label class="label" for="fWd">Deck width: <span class="val" id="fWdo"></span></label><input id="fWd" type="range" min="20" max="80" step="1" value="44"></div>
         </div>
-        <div class="ctrl"><label class="label" for="fHt">Falsework height: <span class="val" id="fHto"></span></label><input id="fHt" type="range" min="8" max="80" step="1" value="24"></div>
-      </div>
-      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fHt">Falsework height: <span class="val" id="fHto"></span></label><input id="fHt" type="range" min="8" max="80" step="1" value="24"></div>
+          <div class="ctrl"><label class="label" for="fSs">Stringer spacing: <span class="val" id="fSso"></span></label><input id="fSs" type="range" min="2" max="8" step="0.5" value="4"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="fSh">Stringer (A992, compression flange braced by joists)</label><select id="fSh">
+          <option value="37.2,204">W12×26 · Z = 37.2 in³, I = 204 in⁴</option>
+          <option value="60.4,272">W10×49 · Z = 60.4, I = 272</option>
+          <option value="101,800" selected>W18×50 · Z = 101, I = 800</option>
+          <option value="200,2100">W24×76 · Z = 200, I = 2,100</option></select></div>
         <div class="stack">
           <span class="label">Vertical design load (psf)</span>
           <div class="stackbar" id="fBar"></div>
           <div class="legend"><span><i style="background:var(--s1)"></i>concrete DL @160 pcf</span><span><i style="background:var(--s2)"></i>live 20 psf</span><span><i style="background:var(--s4)"></i>top-up to the 100 psf minimum</span></div>
         </div>
-        <div class="eq" id="fEq"></div>
       </div>
+      <div class="col"><h3>Calc sheet · stringer + horizontal</h3><div id="fSheet"></div></div>
     </div>
-    <div class="callout diff"><span class="tag">Caltrans specifics worth quoting</span><p>Falsework beam deflection from the full concrete weight (treated as one pour) is limited to <strong>L/240</strong>. Earthquake isn't considered for falsework. Wind uses height-zone pressures, with a <strong>2.2 shape factor</strong> on heavy-duty shoring. Wind generally governs once falsework is taller than about 30–40 ft; below that, the 2% load governs. Posts next to traffic need <strong>collision protection</strong> or minimum section and connection requirements. Use the owner's version: TxDOT, WSDOT and others have their own.</p></div>
+    <div class="callout diff"><span class="tag">Caltrans specifics worth quoting</span><p>Beam deflection from the full concrete weight (treated as one pour, falsework self-weight excluded) is limited to <strong>L/240</strong> (48-2.02B(3); FW Manual §4-2.01). Earthquake isn't considered for falsework (§3-1). Heavy-duty shoring gets a wind <strong>shape factor of 2.2</strong> on height-zone pressures (§3-3.03A). Wind generally governs above ~30–40 ft; below that, the 2% load governs (§3-3.01). Timber uses C<sub>D</sub> = 1.25 (§5-2.03). The AASHTO guide adds +30% impact for placement or lifting, and posts next to traffic need a 2,000 lb base / 1,000 lb top connection.</p></div>
   </div>
 </section>
 
 <!-- SHEET 4 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>4</b> of 7</div><div>Load path · soffit to soil</div><div>tap a level</div></div>
+  <div class="padhead"><div>Sheet <b>4</b> of 8</div><div>Load path · soffit to soil · design procedure</div><div>tap a level</div></div>
   <div class="sheet-body">
     <h2>Follow the load down</h2>
     <div class="chips" id="lpChips" role="group" aria-label="Falsework level"></div>
@@ -122,20 +135,24 @@
       <div class="col"><div class="stage tall" style="min-height:0"><canvas id="lp" role="img" aria-label="Falsework elevation; load packets flow from the deck through joists, stringers, cap, posts and sills into the soil; the selected level is highlighted"></canvas></div></div>
       <div class="col"><h3 id="lpTitle">—</h3><ul class="checks" id="lpChecks"></ul><span class="hand" id="lpNote"></span></div>
     </div>
+    <h3>Bridge falsework design procedure</h3>
+    <div id="fwFlow"></div>
   </div>
 </section>
 
 <!-- SHEET 5 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>5</b> of 7</div><div>Timber joist · NDS (ASD)</div><div>F' = F × C<sub>D</sub>C<sub>M</sub>C<sub>F</sub>C<sub>r</sub>…</div></div>
+  <div class="padhead"><div>Sheet <b>5</b> of 8</div><div>Timber joist · NDS 2018 (ASD)</div><div>\(F'=F\,C_DC_MC_FC_r\cdots\)</div></div>
   <div class="sheet-body">
     <h2>Size a joist in a minute</h2>
+    <div class="eqblock">$$F_b'=F_b\,C_DC_MC_tC_LC_FC_{fu}C_iC_r\qquad F_v'=F_v\,C_DC_MC_tC_i\qquad E'=E\,C_MC_tC_i$$
+    $$f_b=\frac{M}{S}\le F_b'\qquad f_v=\frac{3V}{2bd}\le F_v'\ \text{(NDS Eq. 3.4-2)}\qquad \Delta=\frac{5wL^4}{384E'I}\le\frac{L}{240}$$<span class="fref">NDS Table 4.3.1 (applicability) · Table 2.3.2 (C<sub>D</sub>) · Supplement Table 4A (base values, C<sub>F</sub>, C<sub>M</sub>) · §4.3.9 (C<sub>r</sub>)</span></div>
     <div class="twocol">
       <div class="col">
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="jSz">Size (DF-L No. 2)</label><select id="jSz">
             <option value="1.5,5.5,6">2×6</option><option value="1.5,7.25,8">2×8</option><option value="1.5,9.25,10" selected>2×10</option><option value="1.5,11.25,12">2×12</option><option value="3.5,7.25,48">4×8</option><option value="3.5,9.25,410">4×10</option><option value="3.5,11.25,412">4×12</option></select></div>
-          <div class="ctrl"><label class="label" for="jCd">Load duration C<sub>D</sub></label><select id="jCd"><option value="0.9">0.90 · permanent</option><option value="1.0">1.00 · 10 years</option><option value="1.15">1.15 · 2 months (snow)</option><option value="1.25" selected>1.25 · 7 days (construction)</option><option value="1.6">1.60 · 10 min (wind/EQ)</option><option value="2.0">2.00 · impact</option></select></div>
+          <div class="ctrl"><label class="label" for="jCd">Load duration C<sub>D</sub> (Table 2.3.2)</label><select id="jCd"><option value="0.9">0.90 · permanent</option><option value="1.0">1.00 · 10 years</option><option value="1.15">1.15 · 2 months (snow)</option><option value="1.25" selected>1.25 · 7 days (construction)</option><option value="1.6">1.60 · 10 min (wind/EQ)</option><option value="2.0">2.00 · impact</option></select></div>
         </div>
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="jL">Span: <span class="val" id="jLo"></span></label><input id="jL" type="range" min="2" max="16" step="0.5" value="8"></div>
@@ -147,58 +164,93 @@
           <label class="check"><input type="checkbox" id="jRep" checked> Repetitive (C<sub>r</sub> = 1.15)</label>
         </div>
         <div class="ctrl"><label class="label" for="jDl">Deflection limit</label><select id="jDl"><option value="240" selected>L/240 (Caltrans falsework beams)</option><option value="360">L/360</option><option value="270">L/270</option></select></div>
-      </div>
-      <div class="col">
         <div class="meters" id="jMeters"></div>
-        <div class="eq" id="jEq"></div>
       </div>
+      <div class="col"><h3>Calc sheet</h3><div id="jSheet"></div></div>
     </div>
-    <div class="tblwrap"><table class="tbl"><thead><tr><th>Factor</th><th>Remember</th></tr></thead><tbody>
-      <tr><td class="k">C<sub>D</sub></td><td>Construction loads = 7 days = 1.25. Wind/EQ 1.6, impact 2.0. Never applied to E or F<sub>c⊥</sub>.</td></tr>
-      <tr><td class="k">C<sub>M</sub> (sawn, wet)</td><td>F<sub>b</sub> 0.85 (1.0 if F<sub>b</sub>C<sub>F</sub> ≤ 1,150 psi), F<sub>v</sub> 0.97, F<sub>c⊥</sub> 0.67, F<sub>c</sub> 0.8 (1.0 if F<sub>c</sub>C<sub>F</sub> ≤ 750), E 0.9. Falsework is outdoors: assume wet.</td></tr>
-      <tr><td class="k">C<sub>F</sub> (size)</td><td>2× F<sub>b</sub>: 2×6 1.3, 2×8 1.2, 2×10 1.1, 2×12 1.0. 4× members are higher (4×8 1.3, 4×10 1.2, 4×12 1.1).</td></tr>
-      <tr><td class="k">C<sub>r</sub></td><td>1.15 for repetitive members (≥3, ≤24 in o.c., load-sharing sheathing)</td></tr>
-      <tr><td class="k">C<sub>L</sub> / C<sub>P</sub></td><td>Beam stability (deep joists need blocking) and column stability for posts: F<sub>c</sub>' drops fast with l<sub>e</sub>/d</td></tr>
-      <tr><td class="k">DF-L No. 2 base</td><td>F<sub>b</sub> 900 · F<sub>v</sub> 180 · F<sub>c⊥</sub> 625 · F<sub>c</sub> 1,350 · E 1.6×10⁶ · E<sub>min</sub> 0.58×10⁶ psi</td></tr>
-    </tbody></table></div>
   </div>
 </section>
 
 <!-- SHEET 6 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>6</b> of 7</div><div>Formwork practice · ACI 347R · ACI 347.2R · OSHA 1926.703</div><div>shores &amp; reshores</div></div>
+  <div class="padhead"><div>Sheet <b>6</b> of 8</div><div>Formwork practice · ACI 347R-14 · ACI 347.2R · OSHA 1926.703</div><div>shores &amp; reshores</div></div>
   <div class="sheet-body">
     <h2>Building-side formwork</h2>
     <div class="twocol">
       <div class="col">
-        <div class="tblwrap"><table class="tbl"><thead><tr><th>ACI 347R item</th><th>Value</th></tr></thead><tbody>
-          <tr><td>Construction live load</td><td>≥ 50 psf (75 psf with motorized carts)</td></tr>
-          <tr><td>Minimum total vertical load</td><td>100 psf (125 psf with motorized carts)</td></tr>
-          <tr><td>Slab-form lateral bracing</td><td>Greater of 100 plf of slab edge or 2% of total DL</td></tr>
-          <tr><td>Wall-form bracing</td><td>Wind per ASCE 7/37, but not less than 100 plf at the top</td></tr>
-          <tr><td>Form ties, hangers, anchoring inserts used as ties</td><td>SF 2.0</td></tr>
-          <tr><td>Form anchors</td><td>SF 2.0 (form + concrete) · 3.0 (+ live load + impact)</td></tr>
-          <tr><td>Manufactured shoring / scaffold</td><td>Manufacturer's allowables (frame shoring is typically rated at about 2.5:1 per SSFI practice). Scaffolds: 4× intended load (OSHA 1926.451).</td></tr>
+        <div class="tblwrap"><table class="tbl"><thead><tr><th>ACI 347R-14 item</th><th>Value</th><th>§</th></tr></thead><tbody>
+          <tr><td>Construction live load</td><td>≥ 50 psf (75 psf with motorized carts)</td><td>4.2.1</td></tr>
+          <tr><td>Minimum total (unfactored DL + LL)</td><td>100 psf (125 with motorized carts)</td><td>4.2.1</td></tr>
+          <tr><td>Wind on formwork</td><td>ASCE 7 adjusted per ASCE 37, or local code wind ≥ 15 psf</td><td>4.2.3.1</td></tr>
+          <tr><td>Elevated slab forms, horizontal</td><td>max(100 plf of slab edge, 2% of total DL)</td><td>4.2.3.2</td></tr>
+          <tr><td>Wall/column form bracing</td><td>≥ 100 plf of wall length (or column width) at the top</td><td>4.2.3.3</td></tr>
+          <tr><td>Pumped from the base</td><td>wh + 25% pump surge</td><td>4.2.2.4</td></tr>
+          <tr><td>Form ties · form hangers · anchoring inserts as ties</td><td>SF 2.0 on ultimate</td><td>Table 4.4</td></tr>
+          <tr><td>Form anchors</td><td>SF 2.0 (forms + concrete + wind) · 3.0 (+ live + impact)</td><td>Table 4.4</td></tr>
+          <tr><td>Manufactured shoring</td><td>Manufacturer's working capacities, if backed by tests</td><td>4.3</td></tr>
         </tbody></table></div>
-        <div class="callout verify"><span class="tag">Verify</span><p>The SF 2.5 for shoring frames (SSFI practice) and the 100 plf wall-bracing minimum are from memory. Confirm them in ACI 347R and the manufacturer's literature.</p></div>
+        <div class="callout verify"><span class="tag">Verify</span><p>Frame shoring is typically rated at about 2.5:1 (SSFI practice) and scaffolds at 4:1 (OSHA 1926.451(a)(1)). Use the manufacturer's literature.</p></div>
       </div>
       <div class="col">
         <div class="stage tall" style="min-height:0"><canvas id="rs" role="img" aria-label="Multi-story frame with shores under the new pour and reshores below; load arrows distribute to the connected slabs"></canvas>
-          <div class="readout"><span>peak slab load ≈ <b id="rsOut">—</b> × its own DL</span></div></div>
+          <div class="readout"><span>peak slab load ≈ <b id="rsOut">—</b> × own DL</span></div></div>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="rsN">Levels of shores + reshores: <span class="val" id="rsNo"></span></label><input id="rsN" type="range" min="1" max="4" step="1" value="2"></div>
+          <div class="ctrl"><label class="label" for="rsN">Levels of shores + reshores N: <span class="val" id="rsNo"></span></label><input id="rsN" type="range" min="1" max="4" step="1" value="2"></div>
           <div class="ctrl"><label class="label" for="rsL">Construction LL / slab DL: <span class="val" id="rsLo"></span></label><input id="rsL" type="range" min="0.2" max="0.8" step="0.05" value="0.4"></div>
         </div>
-        <p class="small muted">Simplified method (ACI 347.2R idea): the new slab, forms and live load are shared equally by the N connected slabs, so each carries its own weight plus (1 + forms + LL)/N. The detailed Grundy–Kabaila analysis follows the cycle. Compare the result with the <strong>early-age capacity</strong> of the young slabs.</p>
+        <div class="eqblock">$$\frac{w_{slab,max}}{w_{DL}}\approx1+\frac{1+f+\ell}{N}$$<span class="fref">simplified equal-share idea (ACI 347.2R) · f = forms/DL (0.1 used), ℓ = LL/DL · compare with early-age slab capacity</span></div>
       </div>
     </div>
-    <div class="callout remember"><span class="tag">OSHA 1926.703 in one breath</span><p>Formwork drawings (including shoring and reshoring layouts) <strong>at the jobsite</strong>. Shores inspected before and during placement. Don't remove forms or shores until the concrete can carry its load, as shown by tests or specified criteria. Reshore when slabs carry construction loads before reaching design strength. Precast and lift-slab rules sit in the same subpart.</p></div>
+    <div class="callout remember"><span class="tag">OSHA 1926.703 in one breath</span><p>Formwork drawings, including shoring and reshoring layouts, must be <strong>at the jobsite</strong>. Inspect shores before and during placement. Don't remove forms or shores until the concrete can carry its load, per tests or specified criteria. Reshore when slabs carry construction loads before reaching design strength.</p></div>
   </div>
 </section>
 
 <!-- SHEET 7 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>7</b> of 7</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="padhead"><div>Sheet <b>7</b> of 8</div><div>Common values · what you'll actually see</div><div>memorize</div></div>
+  <div class="sheet-body">
+    <h2>What's actually used</h2>
+    <div class="cv">
+      <div><h4>Concrete &amp; weights</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Normal-weight plain / reinforced</td><td>145 / 150 pcf</td></tr>
+        <tr><td>Caltrans falsework design</td><td>160 pcf (incl. rebar + forms) · 150 for deflection</td></tr>
+        <tr><td>Lightweight structural</td><td>110–120 pcf (Caltrans 130 incl. rebar + forms)</td></tr>
+        <tr><td>Forms (INDOT practice)</td><td>≥ 15 psf incl. SIP deck forms</td></tr>
+        <tr><td>3/4 in plywood</td><td>≈ 2.2 psf</td></tr>
+        <tr><td>Rebar #4 · #5 · #6 · #8 · #11</td><td>0.668 · 1.043 · 1.502 · 2.670 · 5.313 plf</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Form pressure quick numbers (C<sub>c</sub> = C<sub>w</sub> = 1)</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th>R (ft/h) @ 70°F</th><th class="num">Eq. (b)</th><th class="num">Eq. (c)</th></tr></thead><tbody>
+        <tr><td>2</td><td class="num">407</td><td class="num">850</td></tr>
+        <tr><td>4</td><td class="num">664</td><td class="num">930</td></tr>
+        <tr><td>5</td><td class="num">793</td><td class="num">970</td></tr>
+        <tr><td>7</td><td class="num">1,050</td><td class="num">1,050</td></tr>
+        <tr><td>10</td><td class="num">1,436</td><td class="num">1,170</td></tr>
+      </tbody></table></div><p class="small muted">Below 600 psf the minimum governs (Eq. (b) at R = 2 gives 600). Columns are often poured fast and reach full liquid head: 150 pcf × h.</p></div>
+      <div><h4>Lumber (actual sizes · DF-L No. 2)</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>2×4 · 2×6 · 2×8</td><td>1.5×3.5 · 1.5×5.5 · 1.5×7.25 in</td></tr>
+        <tr><td>2×10 · 2×12</td><td>1.5×9.25 · 1.5×11.25 in</td></tr>
+        <tr><td>4×4 · 6×6</td><td>3.5×3.5 · 5.5×5.5 in</td></tr>
+        <tr><td>F<sub>b</sub> · F<sub>v</sub> · F<sub>c⊥</sub> · F<sub>c</sub></td><td>900 · 180 · 625 · 1,350 psi</td></tr>
+        <tr><td>E · E<sub>min</sub></td><td>1.6 × 10⁶ · 0.58 × 10⁶ psi</td></tr>
+        <tr><td>C<sub>D</sub></td><td>1.25 construction · 1.6 wind · 2.0 impact</td></tr>
+        <tr><td>Sheathing</td><td>3/4 in Plyform Class I, joists 12–16 in o.c. for slabs</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Rules of thumb</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Typical wall pour rate</td><td>2–6 ft/h (write the max on the drawings)</td></tr>
+        <tr><td>Falsework beam deflection</td><td>L/240 (Caltrans)</td></tr>
+        <tr><td>Minimum horizontal</td><td>2% DL (falsework) · max(100 plf, 2%) (slab forms)</td></tr>
+        <tr><td>Wall-form bracing min</td><td>100 plf at top</td></tr>
+        <tr><td>Ties / anchors</td><td>SF 2.0 / 2.0–3.0 on ultimate (Table 4.4)</td></tr>
+        <tr><td>Wind governs falsework</td><td>above ~30–40 ft tall</td></tr>
+      </tbody></table></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>8</b> of 8</div><div>Rehearsal</div><div>Tap to flip</div></div>
   <div class="sheet-body">
     <h2>Questions they may ask</h2>
     <div class="cards" id="cards"></div>
@@ -206,52 +258,52 @@
 </section>
 
 <footer>
-  <p>Study aid. Caltrans values checked against Falsework Manual Ch. 3 (June 2022). ACI 347R and NDS values are from memory. Use the owner's falsework specification and current manufacturer data for real designs.</p>
-  <p>Sources: <a href="https://dot.ca.gov/programs/engineering-services/manuals/falsework-manual" target="_blank" rel="noopener">Caltrans Falsework Manual</a> · <a href="https://www.in.gov/dot/div/contracts/standards/bridges/2015%20Bridge%20Conference/Latest%20on%20Construction%20Loads.pdf" target="_blank" rel="noopener">INDOT summary of AASHTO temp-works guide loads</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.703" target="_blank" rel="noopener">OSHA 1926.703</a></p>
+  <p>ACI 347R-14 equations and tables were checked against ACI's published excerpt. Caltrans values were checked against Falsework Manual Ch. 3–5 (2022–2023). NDS values come from the 2018 NDS Supplement as I remember them. Use the owner's falsework specification and current manufacturer data for real designs.</p>
+  <p>Sources: <a href="https://www.concrete.org/Portals/0/Files/PDF/CEU-347R-14.pdf" target="_blank" rel="noopener">ACI 347R-14 excerpt (ACI)</a> · <a href="https://dot.ca.gov/programs/engineering-services/manuals/falsework-manual" target="_blank" rel="noopener">Caltrans Falsework Manual</a> · <a href="https://www.in.gov/dot/div/contracts/standards/bridges/2015%20Bridge%20Conference/Latest%20on%20Construction%20Loads.pdf" target="_blank" rel="noopener">INDOT summary of AASHTO guide loads</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.703" target="_blank" rel="noopener">OSHA 1926.703</a></p>
 </footer>
 </div>
 
 <script>
 (function(){
-const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease, axes} = P;
+const {C, $, fmt, n, text, arrow, ground, line, clamp, lerp, ease, axes} = P;
+const T = String.raw;
 
-/* ---------- ACI 347 pressure ---------- */
+/* ---------- ACI 347R-14 pressure ---------- */
 function Cw(w){ return w < 140 ? Math.max(0.8, 0.5*(1 + w/145)) : w <= 150 ? 1.0 : w/145; }
 function cpmax(o){
   const cw = Cw(o.w), liquid = o.w*o.h;
-  if (o.scc || o.vib || (o.el === 'wall' && o.R > 15)) return {cp: liquid, cw, how:'full liquid head (wh)', liquid};
-  let base, how;
-  if (o.el === 'col' || (o.R < 7 && o.h <= 14)){ base = 150 + 9000*o.R/o.T; how = 'C<sub>w</sub>C<sub>c</sub>[150 + 9,000R/T]'; }
-  else { base = 150 + 43400/o.T + 2800*o.R/o.T; how = 'C<sub>w</sub>C<sub>c</sub>[150 + 43,400/T + 2,800R/T]'; }
-  let cp = cw*o.Cc*base, note = '';
-  if (cp < 600*cw){ cp = 600*cw; note = ' → min 600C<sub>w</sub>'; }
-  if (cp > liquid){ cp = liquid; note = ' → capped at wh'; }
-  return {cp, cw, how: how + note, liquid, raw: cw*o.Cc*base};
+  let eq;
+  if (o.scc || o.vib) eq = 'a';
+  else if (o.el === 'col') eq = 'b';
+  else if (o.R < 7 && o.h <= 14) eq = 'b';
+  else if (o.R <= 15) eq = 'c';
+  else eq = 'a';
+  if (o.pump) return {cp: 1.25*liquid, cw, eq:'pump', liquid, raw: liquid};
+  if (eq === 'a') return {cp: liquid, cw, eq, liquid, raw: liquid};
+  const base = eq === 'b' ? 150 + 9000*o.R/o.T : 150 + 43400/o.T + 2800*o.R/o.T;
+  const raw = cw*o.Cc*base;
+  let cp = raw, lim = '';
+  if (cp < 600*cw){ cp = 600*cw; lim = 'min'; }
+  if (cp > liquid){ cp = liquid; lim = 'max'; }
+  return {cp, cw, eq, liquid, raw, base, lim};
 }
 
 /* ---------- SHEET 1: hero pour ---------- */
-const HERO = {el:'wall', R:5, T:60, w:150, Cc:1.0, h:16, scc:false, vib:false};
-const heroCp = cpmax(HERO).cp;
+const heroCp = cpmax({el:'wall', R:5, T:60, w:150, Cc:1.0, h:16, scc:false, vib:false}).cp;
 P.anim($('hero'), (ctx, w, h, t) => {
   const g = h - 14, Hf = 16, top = 24, sc = (g - top)/Hf;
-  const cyc = P.reduce ? 0.85 : (t % 12)/12;
-  const lev = Math.min(Hf, Hf*ease(clamp(cyc/0.85, 0, 1)));
+  const cyc = P.reduce ? 0.85 : (t % 12)/12, lev = Math.min(Hf, Hf*ease(clamp(cyc/0.85, 0, 1)));
   const fx = w*0.18, fw = 46;
   ground(ctx, 0, w, g);
-  // form faces + walers + ties
   ctx.fillStyle = C.timber; ctx.fillRect(fx - 12, top, 12, g - top); ctx.fillRect(fx + fw, top, 12, g - top);
   ctx.fillStyle = C.steel; for (let y = top + 18; y < g; y += 34){ ctx.fillRect(fx - 20, y, 8, 10); ctx.fillRect(fx + fw + 12, y, 8, 10); }
   ctx.strokeStyle = C['ink-soft']; ctx.lineWidth = 1; for (let y = top + 23; y < g; y += 34){ ctx.beginPath(); ctx.moveTo(fx - 20, y); ctx.lineTo(fx + fw + 20, y); ctx.stroke(); }
-  // concrete
   const cy = g - lev*sc;
   ctx.fillStyle = C.concrete; ctx.fillRect(fx, cy, fw, g - cy);
-  // pump hose + falling concrete
   if (cyc < 0.85){ ctx.strokeStyle = C.ink; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(fx + fw/2, 0); ctx.lineTo(fx + fw/2, top - 6); ctx.stroke();
     ctx.fillStyle = C.concrete; for (let i=0;i<5;i++){ const yy = top + ((t*160 + i*30) % Math.max(10, cy - top)); ctx.fillRect(fx + fw/2 - 3, yy, 6, 8); } }
-  // pressure diagram to the right of the form
-  const px = fx + fw + 50, pmaxPx = w - px - 80, psc = pmaxPx/2400;
-  const pts = [[px, cy]];
-  const liq = [[px, cy]];
+  const px = fx + fw + 50, psc = (w - px - 80)/2400;
+  const pts = [[px, cy]], liq = [[px, cy]];
   for (let i=0;i<=40;i++){ const d = lev*i/40, y = cy + d*sc; pts.push([px + Math.min(150*d, heroCp)*psc, y]); liq.push([px + 150*d*psc, y]); }
   pts.push([px, g]);
   line(ctx, liq, {color:C['ink-soft'], width:1.5, dash:[5,4]});
@@ -266,99 +318,128 @@ P.anim($('hero'), (ctx, w, h, t) => {
 
 /* ---------- SHEET 2: calculator ---------- */
 let el = 'wall', PR = {};
+const pFlow = P.flow('pFlow', [
+  {q:'Slump greater than 7 in (or SCC)?', ref:'Table 4.2.2.1a(a) · §4.2.2.2 SCC', test:s=>s.scc, yes:{s:T`Full liquid head \(CCP=wh\) (a)`, end:true}, no:'continue', main:'no'},
+  {q:'Internal vibration deeper than 4 ft?', ref:'Table 4.2.2.1a(a)', test:s=>s.vib, yes:{s:T`\(CCP=wh\) (a)`, end:true}, no:'continue', main:'no'},
+  {q:'Column (no plan dimension > 6.5 ft)?', ref:'Table 4.2.2.1a(a)', test:s=>s.el==='col', yes:{s:T`Eq. (b) at any rate: \(C_cC_w[150+9000R/T]\)`, end:true}, no:'Wall', main:'no'},
+  {q:T`Wall \(h\le14\) ft and \(R<7\) ft/h?`, ref:'Table 4.2.2.1a(a)', test:s=>s.R<7&&s.h<=14, yes:{s:'Eq. (b)', end:true}, no:'continue', main:'no'},
+  {q:T`\(R\le15\) ft/h?`, ref:'Table 4.2.2.1a(a)', test:s=>s.R<=15, yes:T`Eq. (c): \(C_cC_w[150+43{,}400/T+2800R/T]\)`, no:T`\(CCP=wh\) (a)`, main:null},
+  {s:T`Then: \(\ge600C_w\), \(\le wh\). Pumped from the base: \(wh\) + 25% (§4.2.2.4)`, ref:'§4.2.2.1a · §4.2.2.4', end:true}
+]);
 function press(){
-  const o = {el, R:+$('pR').value, T:+$('pT').value, w:+$('pW').value, Cc:+$('pCc').value, h:+$('pH').value, scc:$('pScc').checked, vib:$('pVib').checked};
-  $('pRo').textContent = o.R+' ft/hr'; $('pTo').textContent = o.T+' °F'; $('pHo').textContent = o.h+' ft'; $('pWo').textContent = o.w+' pcf';
+  const ccv = $('pCc').value, Cc = +(+ccv).toFixed(1);
+  const o = {el, R:+$('pR').value, T:+$('pT').value, w:+$('pW').value, Cc, h:+$('pH').value, scc:$('pScc').checked, vib:$('pVib').checked, pump:$('pPump').checked};
+  $('pRo').textContent = o.R+' ft/h'; $('pTo').textContent = o.T+' °F'; $('pHo').textContent = o.h+' ft'; $('pWo').textContent = o.w+' pcf';
   const tie = +$('pTie').value; $('pTieo').textContent = fmt(tie,0)+' lb';
   const r = cpmax(o);
   $('pOut').textContent = fmt(r.cp, 0);
-  const area = tie/r.cp, sp = Math.sqrt(area);
-  const hd = r.cp/o.w;
-  $('pEq').innerHTML = `C<sub>w</sub> = ${r.cw.toFixed(2)} · C<sub>c</sub> = ${o.Cc.toFixed(1)}${o.el==='wall'&&o.R>15?' · R > 15 ft/hr':''}<br>${r.how}${r.raw?` = ${fmt(r.raw,0)}`:''} → <b>CP<sub>max</sub> = ${fmt(r.cp,0)} psf</b><br>Reached at depth wh = CP → ${hd.toFixed(1)} ft below the surface · liquid head = ${fmt(r.liquid,0)} psf<br>Tie tributary area = ${fmt(tie,0)} / ${fmt(r.cp,0)} = <b>${area.toFixed(1)} ft²</b> (≈ ${sp.toFixed(1)} × ${sp.toFixed(1)} ft grid)`;
+  const rows = [['h', `ACI 347R-14 · ${o.el==='wall'?'wall':'column'} · R = ${o.R} ft/h · T = ${o.T}°F · h = ${o.h} ft`]];
+  rows.push(['r', 'Table 4.2.2.1a(c)', o.w < 140 ? T`C_w=0.5\left[1+\frac{${o.w}}{145}\right]=${n(0.5*(1+o.w/145),3)}\ \to\ ${n(r.cw,2)}\ (\ge0.80)` : o.w <= 150 ? T`140\le w=${o.w}\le150\ \Rightarrow\ C_w=1.0` : T`C_w=\frac{${o.w}}{145}=${n(r.cw,3)}`]);
+  rows.push(['r', 'Table 4.2.2.1a(b)', T`C_c=${n(Cc,1)}`]);
+  if (r.eq === 'pump') rows.push(['r', '§4.2.2.4', T`CCP=1.25\,wh=1.25(${o.w})(${n(o.h,1)})=${n(r.cp,0)}\ \text{psf}`]);
+  else if (r.eq === 'a') rows.push(['r', 'Eq. 4.2.2.1a(a)', T`CCP=wh=${o.w}(${n(o.h,1)})=${n(r.cp,0)}\ \text{psf}`]);
+  else if (r.eq === 'b') rows.push(['r', 'Eq. 4.2.2.1a(b)', T`CCP_{max}=${n(Cc,1)}(${n(r.cw,2)})\left[150+\frac{9000(${n(o.R,1)})}{${o.T}}\right]=${n(r.raw,0)}\ \text{psf}`]);
+  else rows.push(['r', 'Eq. 4.2.2.1a(c)', T`CCP_{max}=${n(Cc,1)}(${n(r.cw,2)})\left[150+\frac{43{,}400}{${o.T}}+\frac{2800(${n(o.R,1)})}{${o.T}}\right]=${n(r.raw,0)}\ \text{psf}`]);
+  if (r.eq === 'b' || r.eq === 'c') rows.push(['r', 'limits', T`600C_w=${n(600*r.cw,0)}\le CCP_{max}\le wh=${n(r.liquid,0)}\ \Rightarrow\ ${n(r.cp,0)}\ \text{psf}${r.lim==='min'?T`\ (\text{min governs})`:r.lim==='max'?T`\ (wh\ \text{governs})`:''}`]);
+  rows.push(['r', 'envelope', T`h_{cap}=\frac{CCP}{w}=\frac{${n(r.cp,0)}}{${o.w}}=${n(Math.min(o.h, r.cp/o.w),2)}\ \text{ft below the surface}`]);
+  const area = tie/r.cp;
+  rows.push(['r', 'tie (Table 4.4 SF in SWL)', T`A_{trib}=\frac{SWL}{CCP}=\frac{${n(tie,0)}}{${n(r.cp,0)}}=${n(area,2)}\ \text{ft}^2\ \ (\approx${n(Math.sqrt(area),2)}\times${n(Math.sqrt(area),2)}\ \text{ft})`]);
+  P.sheet('pSheet', rows);
+  pFlow.update({scc:o.scc, vib:o.vib, el:o.el, R:o.R, h:o.h});
   PR = {...o, ...r};
   pChart.render();
 }
 const pChart = P.still($('press'), (ctx, w, h) => {
   if (!PR.h) return;
-  const box = {l:46, r:w-20, t:28, b:h-34};
-  const pmax = Math.max(PR.liquid, 600)*1.05;
-  const A = axes(ctx, box, [0, pmax], [PR.h, 0], {xlabel:'pressure (psf)', ylabel:'depth below top of pour (ft)', yfmt:v=>String(Math.round(v)), xn:4});
+  const box = {l:46, r:w-20, t:28, b:h-34}, pmax = Math.max(PR.cp, PR.liquid, 600)*1.05;
+  const A = axes(ctx, box, [0, pmax], [PR.h, 0], {xlabel:'pressure (psf)', ylabel:'depth below top (ft)', yfmt:v=>String(Math.round(v)), xn:4});
   const liq = [], env = [];
-  for (let i=0;i<=60;i++){ const z = PR.h*i/60; liq.push([A.X(PR.w*z), A.Y(z)]); env.push([A.X(Math.min(PR.w*z, PR.cp)), A.Y(z)]); }
+  for (let i=0;i<=60;i++){ const z = PR.h*i/60; liq.push([A.X(PR.w*z), A.Y(z)]); env.push([A.X(Math.min(PR.eq==='pump' ? 1.25*PR.w*z : PR.w*z, PR.cp)), A.Y(z)]); }
   line(ctx, liq, {color:C['ink-soft'], width:1.5, dash:[5,4]});
   line(ctx, [[A.X(0), A.Y(0)], ...env, [A.X(0), A.Y(PR.h)]], {color:C.pencil, width:2, fill:C.pencil, alpha:0.18, close:true});
   text(ctx, 'wh', A.X(PR.liquid) - 4, A.Y(PR.h) - 6, {size:10, align:'right', color:C['ink-soft'], halo:C.paper});
   text(ctx, `${fmt(PR.cp,0)} psf`, A.X(PR.cp) + 6, A.Y(Math.min(PR.h, PR.cp/PR.w)) + 14, {size:11, weight:'bold', color:C.pencil, halo:C.paper});
 });
-P.bind(['pR','pT','pH','pW','pCc','pScc','pVib','pTie'], press);
+P.bind(['pR','pT','pH','pW','pCc','pScc','pVib','pPump','pTie'], press);
 P.chips('elChips', d => { el = d.e; press(); });
 
-/* ---------- SHEET 3: falsework loads ---------- */
+/* ---------- SHEET 3: falsework loads + stringer ---------- */
 function fwLoads(){
-  const t=+$('fT').value, bs=+$('fBs').value, wd=+$('fWd').value, ht=+$('fHt').value;
-  $('fTo').textContent = t+' in'; $('fBso').textContent = bs+' ft'; $('fWdo').textContent = wd+' ft'; $('fHto').textContent = ht+' ft';
+  const t=+$('fT').value, bs=+$('fBs').value, wd=+$('fWd').value, ht=+$('fHt').value, ss=+$('fSs').value;
+  const [Zx, Ix] = $('fSh').value.split(',').map(Number), shp = $('fSh').selectedOptions[0].textContent.split(' ·')[0];
+  $('fTo').textContent = t+' in'; $('fBso').textContent = bs+' ft'; $('fWdo').textContent = wd+' ft'; $('fHto').textContent = ht+' ft'; $('fSso').textContent = ss+' ft';
   const dl = 160*t/12, ll = 20, tot = Math.max(100, dl + ll), top = tot - dl - ll;
   const scale = Math.max(160*60/12 + 20, 120);
   $('fBar').innerHTML = `<span style="width:${dl/scale*100}%;background:var(--s1)">${dl>=25?dl.toFixed(0):''}</span><span style="width:${ll/scale*100}%;background:var(--s2)">20</span>${top>0?`<span style="width:${top/scale*100}%;background:var(--s4);color:var(--ink)">${top.toFixed(0)}</span>`:''}<span class="minline" style="left:${100/scale*100}%"></span>`;
+  const w = tot*ss/1000, M = w*bs*bs/8, Ma = 50*Zx/1.67/12;
+  const wD = 150*t/12*ss/1000, defl = 5*(wD/12)*Math.pow(bs*12,4)/(384*29000*Ix), dall = bs*12/240;
   const area = bs*wd, DLk = 160*t/12*area/1000, H = 0.02*DLk;
-  const edge = 0.075*bs;
-  $('fEq').innerHTML = `DL = 160 × ${t}/12 = ${dl.toFixed(0)} psf · + 20 psf live = ${(dl+20).toFixed(0)} psf${top>0?` → <b>100 psf minimum governs</b>`:` → <b>${tot.toFixed(0)} psf</b> (above the 100 psf minimum)`}<br>Per bent: ${bs} × ${wd} ft = ${area} ft² → DL ≈ ${DLk.toFixed(0)} k (+ falsework self-weight)<br>Assumed horizontal = 2% × DL = <b>${H.toFixed(1)} k</b> at the top of posts, any direction<br>Overhang edge: 75 plf × ${bs} ft = ${edge.toFixed(2)} k per side${ht>30?`<br><span class="c">${ht} ft tall: run the wind case too. It likely governs above ~30–40 ft.</span>`:''}`;
+  P.sheet('fSheet', [
+    ['h', `Stringer ${shp} @ ${ss} ft, span ${bs} ft · bent ${bs}×${wd} ft`],
+    ['r', '48-2.02B(2) · FW §3-2.01', T`q_D=160\cdot\frac{${t}}{12}=${n(dl,0)}\ \text{psf}`],
+    ['r', 'FW §3-2.02, 3-2.03', T`q=\max(q_D+20,\ 100)=\max(${n(dl+20,0)},\ 100)=${n(tot,0)}\ \text{psf}`],
+    ['r', 'tributary', T`w=q\,s=${n(tot,0)}(${n(ss,1)})=${n(w,3)}\ \text{klf}\ \Rightarrow\ M=\frac{wL^2}{8}=${n(M,1)}\ \text{k-ft}`],
+    ['c', 'AISC F2-1 (ASD, braced)', T`\frac{M}{M_n/\Omega}=\frac{${n(M,1)}}{50(${n(Zx,1)})/(1.67\cdot12)}=\frac{${n(M,1)}}{${n(Ma,1)}}=${n(M/Ma,2)}`, M/Ma],
+    ['r', 'FW §3-2.01 (deflection DL)', T`w_D=150\cdot\frac{${t}}{12}(${n(ss,1)})=${n(wD,3)}\ \text{klf}`],
+    ['c', '48-2.02B(3) · FW §4-2.01', T`\Delta=\frac{5w_DL^4}{384EI}=${n(defl,3)}\ \text{in}\ \text{vs}\ \frac{L}{240}=${n(dall,3)}\ \text{in}`, defl/dall],
+    ['r', 'FW §3-3.02', T`H=0.02\,\Sigma DL=0.02(${n(DLk,0)})=${n(H,2)}\ \text{k per bent, at top of posts}`],
+    ['r', 'FW §3-2.02 edge', T`P_{edge}=75\ \text{plf}\times${bs}=${n(0.075*bs,2)}\ \text{k per side}`],
+    ['n', ht > 30 ? `At ${ht} ft tall, also run the wind case (height-zone pressures, 2.2 shape factor on heavy-duty shoring). It likely governs the bracing.` : 'Under ~30 ft, the 2% assumed horizontal load usually governs the bracing. Check it loaded and unloaded.']
+  ]);
+  if (fwFlow) fwFlow.update({tall: ht > 30});
 }
-P.bind(['fT','fBs','fWd','fHt'], fwLoads);
+let fwFlow = null;
 
-/* ---------- SHEET 4: load path ---------- */
+/* ---------- SHEET 4: load path + procedure ---------- */
 const LEVELS = [
   ['Soffit / plywood', ['Bending and rolling shear (APA Plyform tables)','Deflection between joists (finish tolerance)','Face grain direction across the supports'], 'plyform strength axis ⟂ joists'],
   ['Joists', ['Bending, shear, deflection (NDS, C_D = 1.25, wet)','Bearing on stringer flange (F_c⊥)','Lateral stability: blocking for deep 2× members'], 'repetitive member factor if spaced ≤ 24 in'],
-  ['Stringers', ['Bending, with the compression flange braced by the joists?','Shear, web yielding/crippling at the cap','Deflection L/240 under the full concrete weight','Continuity: uplift at the end supports'], 'pick spans to match the bent layout'],
+  ['Stringers', ['Bending (compression flange braced by joists?)','Shear, web yielding/crippling at the cap (AISC J10)','Deflection L/240 under the full concrete weight','Continuity: uplift at end supports'], 'pick spans to match the bent layout'],
   ['Cap beam', ['Bending and shear between posts','Torsion from eccentric stringer bearing','Wedges / sand jacks for striking'], 'center loading strips on caps (Caltrans 4-4)'],
-  ['Posts / towers', ['Axial + buckling (K, unbraced length)','2% horizontal and wind → bracing design','Manufacturer tower and jack-extension limits','Collision protection next to traffic'], 'the bracing carries the horizontal; posts carry the vertical'],
+  ['Posts / towers', ['Axial + buckling (K, unbraced length)','2% horizontal and wind → bracing design','Manufacturer tower and jack-extension limits','Collision protection next to traffic'], 'bracing carries horizontal; posts carry vertical'],
   ['Sills / pads', ['Bearing perpendicular to grain (F_c⊥, C_M = 0.67 wet)','Sill bending and shear between posts','Level and seated: no point bearing'], 'concrete pads where soil is weak'],
   ['Soil', ['Allowable bearing (geotech) or plate load test','Settlement → camber and grade','Saturation, frost, washout, nearby excavation'], 'the most common unknown on site']
 ];
 let lpSel = 4;
 $('lpChips').innerHTML = LEVELS.map((l,i) => `<button class="chip" data-i="${i}" aria-pressed="${i===lpSel?'true':'false'}">${l[0]}</button>`).join('');
 P.chips('lpChips', d => { lpSel = +d.i; const L = LEVELS[lpSel]; $('lpTitle').textContent = L[0]; $('lpChecks').innerHTML = L[1].map(c => `<li>${c.replace(/_([A-Za-z⊥]+)/g,'<sub>$1</sub>')}</li>`).join(''); $('lpNote').textContent = L[2]; if (P.reduce) P.redraw(); });
+fwFlow = P.flow('fwFlow', [
+  {s:'Owner spec + design loads: 160 pcf, 20 psf + 75 plf edge, min 100 psf', ref:'Caltrans 48-2.02B(2) · FW Manual Ch. 3'},
+  {s:'Deck, joists, stringers: NDS (C<sub>D</sub> 1.25, wet) / AISC; stringer deflection ≤ L/240', ref:'48-2.02B(3) · FW §4-2.01 · Ch. 5'},
+  {s:'Caps and posts/towers: vertical capacity (manufacturer tables, L/r), jack extensions', ref:'FW Ch. 5–6'},
+  {q:'Falsework taller than about 30 ft?', ref:'FW §3-3.01', test:s=>s.tall, yes:'Run the wind case: height-zone pressures, shape factor 2.2 on heavy-duty shoring (§3-3.03)', no:'2% DL assumed horizontal usually governs (§3-3.02)', main:null},
+  {s:'Bracing and connections for the governing horizontal load, loaded and unloaded', ref:'FW §3-3.02'},
+  {s:'Foundations: sills, pads or piles; soil bearing; settlement → camber strips', ref:'FW Ch. 4 · geotech'},
+  {s:'Shop drawings + calcs (stamped) → owner review → pre-pour inspection with the reminder list', ref:'FW Ch. 2 · App. B', end:true}
+]);
+fwFlow.update({tall: false});
+P.bind(['fT','fBs','fWd','fHt','fSs','fSh'], fwLoads);
 const packets = Array.from({length:22}, (_,i) => ({x: Math.random(), p: i/22}));
 P.anim($('lp'), (ctx, w, h, t) => {
   const g = h - 30, top = 22, L = 30, R = w - 30;
-  // y positions of levels
   const Y = [top, top+16, top+34, top+64, top+80, g-12, g];
   const hi = i => i === lpSel ? C.pencil : null;
-  // soil
   ctx.fillStyle = C.soil; ctx.globalAlpha = lpSel===6 ? 0.55 : 0.25; ctx.fillRect(0, g, w, h - g); ctx.globalAlpha = 1;
-  // plywood
   ctx.fillStyle = hi(0) || C.timber; ctx.fillRect(L, Y[0], R-L, 6);
-  // concrete above
   ctx.fillStyle = C.concrete; ctx.globalAlpha = 0.6; ctx.fillRect(L, Y[0]-14, R-L, 14); ctx.globalAlpha = 1;
-  // joists (sections)
   ctx.fillStyle = hi(1) || C.timber; for (let x = L+8; x < R; x += 22) ctx.fillRect(x, Y[0]+6, 8, 14);
-  // stringers (I-shape lines)
   const posts = [L+30, (L+R)/2, R-30];
   ctx.fillStyle = hi(2) || C.steel; ctx.fillRect(L, Y[1]+6, R-L, 4); ctx.fillRect(L, Y[2], R-L, 4);
   for (let x = L; x <= R; x += (R-L)/14) ctx.fillRect(x, Y[1]+8, 2, Y[2]-Y[1]-6);
-  // cap
   posts.forEach(px => { ctx.fillStyle = hi(3) || C.ink; ctx.fillRect(px - 26, Y[2]+4, 52, 12); });
-  // posts + bracing
   posts.forEach(px => { ctx.fillStyle = hi(4) || C.steel; ctx.fillRect(px - 4, Y[3]+16, 8, Y[5] - Y[3] - 16); });
   ctx.strokeStyle = hi(4) || C['ink-soft']; ctx.lineWidth = 1.5;
   for (let i=0;i<posts.length-1;i++){ ctx.beginPath(); ctx.moveTo(posts[i], Y[3]+24); ctx.lineTo(posts[i+1], Y[5]-6); ctx.moveTo(posts[i+1], Y[3]+24); ctx.lineTo(posts[i], Y[5]-6); ctx.stroke(); }
-  // sills
   posts.forEach(px => { ctx.fillStyle = hi(5) || C.timber; ctx.fillRect(px - 22, Y[5], 44, 12); });
-  // load packets flowing: deck → nearest post → soil
-  if (!P.reduce || true){
-    for (const k of packets){
-      const ph = P.reduce ? k.p : (k.p + t*0.12) % 1;
-      const startX = L + k.x*(R-L);
-      const near = posts.reduce((a,b) => Math.abs(b - startX) < Math.abs(a - startX) ? b : a);
-      let x, y;
-      if (ph < 0.4){ const f = ph/0.4; x = startX; y = lerp(Y[0]-8, Y[2]+2, f); }
-      else if (ph < 0.55){ const f = (ph-0.4)/0.15; x = lerp(startX, near, ease(f)); y = Y[2]+8; }
-      else { const f = (ph-0.55)/0.45; x = near; y = lerp(Y[2]+10, g + 18, f); }
-      ctx.fillStyle = C.wind; ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(x, y, 3, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
-    }
+  for (const k of packets){
+    const ph = P.reduce ? k.p : (k.p + t*0.12) % 1, startX = L + k.x*(R-L);
+    const near = posts.reduce((a,b) => Math.abs(b - startX) < Math.abs(a - startX) ? b : a);
+    let x, y;
+    if (ph < 0.4){ x = startX; y = lerp(Y[0]-8, Y[2]+2, ph/0.4); }
+    else if (ph < 0.55){ x = lerp(startX, near, ease((ph-0.4)/0.15)); y = Y[2]+8; }
+    else { x = near; y = lerp(Y[2]+10, g + 18, (ph-0.55)/0.45); }
+    ctx.fillStyle = C.wind; ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(x, y, 3, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
   }
-  // 2% horizontal arrow at top of posts
   arrow(ctx, L - 24, Y[3]+20, L + 10, Y[3]+20, {color:C.storm, width:2.5, head:8});
   text(ctx, '2% DL', L - 26, Y[3]+14, {size:10, color:C.storm});
   text(ctx, LEVELS[lpSel][0], R, h - 8, {size:11, align:'right', weight:'bold', color:C.pencil});
@@ -369,21 +450,28 @@ function joist(){
   const [b, d, tag] = $('jSz').value.split(',').map(Number);
   const CD=+$('jCd').value, L=+$('jL').value, s=+$('jS').value, q=+$('jQ').value, wet=$('jWet').checked, rep=$('jRep').checked, lim=+$('jDl').value;
   $('jLo').textContent = L+' ft'; $('jSo').textContent = s+' in o.c.'; $('jQo').textContent = q+' psf';
-  const CFmap = {6:1.3, 8:1.2, 10:1.1, 12:1.0, 48:1.3, 410:1.2, 412:1.1};
-  const CF = CFmap[tag];
-  const Fb = 900, Fv = 180, Ebase = 1.6e6;
-  const CMb = wet ? (Fb*CF > 1150 ? 0.85 : 1.0) : 1.0, CMv = wet ? 0.97 : 1.0, CME = wet ? 0.9 : 1.0;
-  const Cr = rep && b < 3 ? 1.15 : 1.0;
-  const Fbp = Fb*CD*CMb*CF*Cr, Fvp = Fv*CD*CMv, Ep = Ebase*CME;
-  const wlf = q*s/12;                        // plf
-  const A = b*d, S = b*d*d/6, I = b*d*d*d/12;
-  const M = wlf*L*L/8*12, V = wlf*L/2;       // lb-in, lb
-  const fb = M/S, fv = 1.5*V/A;
+  const CF = {6:1.3, 8:1.2, 10:1.1, 12:1.0, 48:1.3, 410:1.2, 412:1.1}[tag];
+  const Fb = 900, Fv = 180, Eb = 1.6e6;
+  const CMb = wet ? (Fb*CF > 1150 ? 0.85 : 1.0) : 1.0, CMv = wet ? 0.97 : 1.0, CME = wet ? 0.9 : 1.0, Cr = rep && b < 3 ? 1.15 : 1.0;
+  const Fbp = Fb*CD*CMb*CF*Cr, Fvp = Fv*CD*CMv, Ep = Eb*CME;
+  const wlf = q*s/12, A = b*d, S = b*d*d/6, I = b*d*d*d/12;
+  const M = wlf*L*L/8*12, V = wlf*L/2, fb = M/S, fv = 1.5*V/A;
   const defl = 5*(wlf/12)*Math.pow(L*12,4)/(384*Ep*I), dAll = L*12/lim;
-  const rows = [{name:'Bending f<sub>b</sub>/F<sub>b</sub>\'', ratio: fb/Fbp}, {name:'Shear f<sub>v</sub>/F<sub>v</sub>\'', ratio: fv/Fvp}, {name:`Deflection / (L/${lim})`, ratio: defl/dAll}];
+  const rows = [{name:"Bending f<sub>b</sub>/F<sub>b</sub>'", ratio: fb/Fbp}, {name:"Shear f<sub>v</sub>/F<sub>v</sub>'", ratio: fv/Fvp}, {name:`Deflection / (L/${lim})`, ratio: defl/dAll}];
   const gi = rows.reduce((a,r,i) => r.ratio > rows[a].ratio ? i : a, 0); rows[gi].gov = true;
   P.meters('jMeters', rows);
-  $('jEq').innerHTML = `w = ${q} psf × ${s}/12 ft = ${wlf.toFixed(0)} plf<br>F<sub>b</sub>' = 900 × ${CD} × ${CMb} × ${CF} × ${Cr} = <b>${Fbp.toFixed(0)} psi</b> · f<sub>b</sub> = ${fb.toFixed(0)} psi<br>F<sub>v</sub>' = 180 × ${CD} × ${CMv} = ${Fvp.toFixed(0)} psi · f<sub>v</sub> = 1.5V/A = ${fv.toFixed(0)} psi <span class="c">(V at support, conservative)</span><br>E' = ${(Ep/1e6).toFixed(2)}×10⁶ · Δ = ${defl.toFixed(3)} in vs ${dAll.toFixed(3)} in`;
+  P.sheet('jSheet', [
+    ['h', `DF-L No. 2 · ${b}×${d} in actual · ${s} in o.c. · span ${L} ft`],
+    ['r', 'Supp. Table 4A', T`F_b=900,\ F_v=180\ \text{psi},\ E=1.6\times10^6\ \text{psi},\ C_F=${n(CF,1)}`],
+    ['r', 'Table 4A footnote (wet)', wet ? T`F_bC_F=${n(Fb*CF,0)}\ ${Fb*CF>1150?'>':T`\le`}\ 1150\Rightarrow C_M^{F_b}=${n(CMb,2)},\ C_M^{F_v}=0.97,\ C_M^{E}=0.90` : T`\text{dry service: } C_M=1.0`],
+    ['r', 'NDS Table 2.3.2 · §4.3.9', T`C_D=${n(CD,2)},\ \ C_r=${n(Cr,2)}`],
+    ['r', 'NDS Table 4.3.1', T`F_b'=900(${n(CD,2)})(${n(CMb,2)})(${n(CF,1)})(${n(Cr,2)})=${n(Fbp,0)}\ \text{psi},\ \ F_v'=180(${n(CD,2)})(${n(CMv,2)})=${n(Fvp,0)}\ \text{psi}`],
+    ['r', 'load', T`w=${q}\cdot\frac{${s}}{12}=${n(wlf,0)}\ \text{plf},\ \ M=\frac{wL^2}{8}=${n(M/12,0)}\ \text{lb-ft},\ \ V=${n(V,0)}\ \text{lb}`],
+    ['c', 'NDS §3.3', T`f_b=\frac{M}{S}=\frac{${n(M,0)}}{${n(S,2)}}=${n(fb,0)}\ \text{psi}\le F_b'`, fb/Fbp],
+    ['c', 'NDS Eq. 3.4-2', T`f_v=\frac{3V}{2bd}=${n(fv,0)}\ \text{psi}\le F_v'`, fv/Fvp],
+    ['c', 'NDS §3.5', T`\Delta=\frac{5wL^4}{384E'I}=${n(defl,3)}\ \text{in}\ \text{vs}\ \frac{L}{${lim}}=${n(dAll,3)}\ \text{in}`, defl/dAll],
+    ['n', 'Shear at the support face is conservative here (NDS allows the load within d of the support to be neglected). C<sub>D</sub> never applies to E or F<sub>c⊥</sub>.']
+  ]);
 }
 P.bind(['jSz','jCd','jL','jS','jQ','jWet','jRep','jDl'], joist);
 
@@ -392,48 +480,39 @@ let RS = {N:2, l:0.4, k:1};
 function reshore(){
   const N=+$('rsN').value, l=+$('rsL').value;
   $('rsNo').textContent = N; $('rsLo').textContent = l.toFixed(2);
-  const forms = 0.1, k = 1 + (1 + forms + l)/N;
-  $('rsOut').textContent = k.toFixed(2);
-  RS = {N, l, k}; if (P.reduce) P.redraw();
+  RS = {N, l, k: 1 + (1 + 0.1 + l)/N}; $('rsOut').textContent = RS.k.toFixed(2);
+  if (P.reduce) P.redraw();
 }
 P.bind(['rsN','rsL'], reshore);
 P.anim($('rs'), (ctx, w, h, t) => {
   const g = h - 16, floors = RS.N + 1, fh = (g - 40)/(floors + 0.5), L = 40, R = w - 40;
   ground(ctx, 0, w, g);
   const pour = P.reduce ? 1 : ease(clamp(((t % 6)/6)*1.4, 0, 1));
-  for (let i=0;i<=floors;i++){
-    const y = g - i*fh;
-    if (i > 0){
-      const isNew = i === floors;
-      ctx.fillStyle = isNew ? C.pencil : C.concrete; ctx.globalAlpha = isNew ? 0.4 + 0.6*pour : 1;
-      ctx.fillRect(L, y - 8, R - L, 8); ctx.globalAlpha = 1;
-      if (!isNew){ const share = (1 + 0.1 + RS.l)/RS.N*pour; text(ctx, `own + ${share.toFixed(2)}`, R + 2, y - 1, {size:10, color:C['ink-soft'], align:'right', halo:C.paper}); }
-    }
-    // shores/reshores below level i (for i ≥ 1, above ground or slab)
-    if (i >= 1 && i <= floors){
-      const isShore = i === floors, yb = g - (i-1)*fh;
-      if (i - 1 >= floors - RS.N - 0){
-        ctx.strokeStyle = isShore ? C.storm : C.wind; ctx.lineWidth = isShore ? 2.5 : 1.8;
-        for (let x = L + 16; x < R - 8; x += 28){ ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, yb - 8); ctx.stroke(); }
-      }
+  for (let i=1;i<=floors;i++){
+    const y = g - i*fh, isNew = i === floors;
+    ctx.fillStyle = isNew ? C.pencil : C.concrete; ctx.globalAlpha = isNew ? 0.4 + 0.6*pour : 1;
+    ctx.fillRect(L, y - 8, R - L, 8); ctx.globalAlpha = 1;
+    if (!isNew){ const share = (1 + 0.1 + RS.l)/RS.N*pour; text(ctx, `own + ${share.toFixed(2)}`, R + 2, y - 1, {size:10, color:C['ink-soft'], align:'right', halo:C.paper}); }
+    if (i - 1 >= floors - RS.N){
+      const yb = g - (i-1)*fh;
+      ctx.strokeStyle = isNew ? C.storm : C.wind; ctx.lineWidth = isNew ? 2.5 : 1.8;
+      for (let x = L + 16; x < R - 8; x += 28){ ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, yb - 8); ctx.stroke(); }
     }
   }
-  // columns
   ctx.fillStyle = C.ink; for (const x of [L, R - 8]) ctx.fillRect(x, g - floors*fh, 8, floors*fh);
-  // new load arrows
   for (let x = L + 30; x < R - 20; x += 40) arrow(ctx, x, g - floors*fh - 30, x, g - floors*fh - 10, {color:C.pencil, width:1.5, head:6});
   text(ctx, 'shores (amber) · reshores (blue)', L, 16, {size:10, color:C['ink-soft']});
 });
 
 /* ---------- cards ---------- */
 P.cards('cards', [
-  ["What controls lateral pressure on wall forms?", "Rate of placement, concrete temperature, unit weight, chemistry (retarders, slag, fly ash), slump and SCC, vibration depth, and the element type. ACI 347 caps it at C<sub>w</sub>C<sub>c</sub>[150 + 9,000R/T] (or the wall formula for R ≥ 7 or h > 14 ft), with a 600C<sub>w</sub> minimum and wh maximum. SCC, high slump or deep vibration means full liquid head."],
-  ["A 20-ft wall is poured at 6 ft/hr, 50°F, Type I, no retarder. CP<sub>max</sub>?", "Wall, R < 7 but h > 14 ft, so use 150 + 43,400/50 + 2,800×6/50 = 150 + 868 + 336 = 1,354 psf (C<sub>w</sub> = C<sub>c</sub> = 1.0). That's well below the 3,000 psf liquid head."],
-  ["What are the Caltrans falsework design loads?", "160 pcf (concrete, rebar and forms), 20 psf live plus 75 plf at the overhang edge, and a 100 psf minimum total. Horizontal: the greater of actual loads or 2% of total DL at the top of posts, in any direction, loaded and unloaded. Wind is separate (2.2 shape factor on heavy-duty shoring). Beam deflection L/240. No earthquake."],
-  ["Why check falsework in the unloaded condition?", "Before the pour there's little dead load to stabilize the towers, so wind can overturn or uplift them. Bracing and tie-downs have to work with only falsework self-weight."],
-  ["Why is C<sub>D</sub> = 1.25 used for falsework timber?", "NDS load duration factor for 7-day construction loads. Wood carries higher short-term loads. Don't apply it to E or F<sub>c⊥</sub>, and remember the wet-service factors for outdoor falsework."],
-  ["How many levels of reshores?", "Enough that the connected slabs can share the new slab, forms and construction live load without overloading young concrete. Simplified: each carries its own DL plus (1 + forms + LL)/N. Compare with early-age capacity from cylinder or maturity data. More levels lower the peak but tie up more equipment."],
-  ["What's on a falsework inspection checklist before a pour?", "Built per the approved drawings (spacing, sizes, bracing, connections), plumb, jacks within extension limits, sills bearing fully, foundations as designed, wedges and sand jacks set, collision protection at traffic openings, telltales or survey for settlement, pour sequence and rate posted, and a sign-off by the engineer of record for the falsework."]
+  ['What controls lateral pressure on wall forms?', T`Rate of placement, temperature, unit weight, chemistry (retarders, slag, fly ash), slump or SCC, vibration depth, element type. ACI 347R-14: \(C_cC_w[150+9000R/T]\) (4.2.2.1a(b)) or \(C_cC_w[150+43{,}400/T+2800R/T]\) (c), \(\ge600C_w\), \(\le wh\). Selection per Table 4.2.2.1a(a).`],
+  [T`A 20 ft wall at 6 ft/h, 50°F, Type I, no retarder. \(CCP_{max}\)?`, T`Wall, \(R<7\) but \(h>14\) ft → Eq. (c): \(150+\frac{43{,}400}{50}+\frac{2800(6)}{50}=150+868+336=1{,}354\) psf (\(C_c=C_w=1.0\)), well below \(wh=3{,}000\) psf.`],
+  ['What are the Caltrans falsework design loads?', T`160 pcf (concrete, rebar and forms), 20 psf live + 75 plf at the deck edge, min 100 psf total (48-2.02B(2)). Horizontal: max(actual, 2% total DL) at the top of posts, loaded and unloaded (§3-3.02). Deflection \(\le L/240\) (48-2.02B(3)). No earthquake.`],
+  ['Why check falsework unloaded?', 'Before the pour there is little dead load to stabilize the towers, so wind can overturn or uplift them. Bracing and tie-downs must work with only falsework self-weight.'],
+  [T`Why \(C_D=1.25\) for falsework timber?`, T`NDS Table 2.3.2: 7-day construction loads. Don't apply it to \(E\) or \(F_{c\perp}\), and use wet-service \(C_M\) outdoors (Table 4A footnotes).`],
+  ['What if concrete is pumped into the bottom of a wall form?', T`ACI 347R-14 §4.2.2.4: design for full hydrostatic head plus at least 25% for pump surge, \(1.25wh\), and monitor the pressure.`],
+  ['Pre-pour falsework inspection?', 'Built per approved drawings (spacing, sizes, bracing, connections), plumb, jack extensions within limits, sills bearing fully, foundations as designed, wedges set, collision protection at openings, telltales or survey, pour sequence and rate posted, engineer sign-off (Caltrans App. B reminder list).']
 ]);
 })();
 </script>

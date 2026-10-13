@@ -161,7 +161,7 @@ window.P = (function(){
     fn(on.dataset, on);
   }
   function fmt(x, d=1){ return Number.isFinite(x) ? x.toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d}) : '—'; }
-  function set(id, html){ const el = $(id); if (el) el.innerHTML = html; }
+  function set(id, html){ const el = $(id); if (el){ el.innerHTML = html; tex(el); } }
   function pill(el, ratio, words){
     if (typeof el === 'string') el = $(el);
     const w = words || ['OK','Tight','NG'];
@@ -185,7 +185,80 @@ window.P = (function(){
     QA.forEach(([q,a], i) => {
       el.insertAdjacentHTML('beforeend', `<button class="card" type="button" aria-label="Flashcard ${i+1}: ${q.replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')}"><div class="card-in"><div class="face"><span class="label">Q${i+1}</span><span class="q">${q}</span><span class="tap">Tap to flip</span></div><div class="face back"><span class="label">Answer</span><span class="a">${a}</span><span class="tap">Tap to flip back</span></div></div></button>`);
     });
+    tex(el);
     el.addEventListener('click', e => { const c = e.target.closest('.card'); if (c) c.classList.toggle('flip'); });
+  }
+
+
+  /* ---------- LaTeX (KaTeX) ---------- */
+  const hasK = () => typeof window.katex !== 'undefined';
+  function K(t, display){
+    if (!hasK()) return '<code>' + t.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) + '</code>';
+    return katex.renderToString(t, {throwOnError:false, displayMode:!!display, strict:'ignore'});
+  }
+  function tex(el){
+    if (!el || typeof window.renderMathInElement === 'undefined') return;
+    renderMathInElement(el, {delimiters:[{left:'$$', right:'$$', display:true}, {left:'\\(', right:'\\)', display:false}], throwOnError:false, strict:'ignore'});
+  }
+  // number for TeX: thousands separators become {,} so KaTeX keeps them tight
+  function n(x, d=1){ return fmt(x, d).replace(/,/g, '{,}'); }
+
+  /* Calc sheet: rows are
+     ['h', title] · ['r', ref, tex] · ['c', ref, tex, ratio, words?] · ['n', html] */
+  function sheet(el, rows){
+    if (typeof el === 'string') el = $(el);
+    if (!el) return;
+    el.innerHTML = '<table class="calc"><tbody>' + rows.map(r => {
+      if (r[0] === 'h') return `<tr class="head"><td colspan="3">${r[1]}</td></tr>`;
+      if (r[0] === 'n') return `<tr class="note"><td colspan="3">${r[1]}</td></tr>`;
+      const st = r[0] === 'c' ? statusPill(r[3], r[4]) : '';
+      return `<tr class="${r[0]==='c'?'chk':''}"><td class="ref">${r[1]}</td><td class="ex"><div class="exs">${K(r[2])}</div></td><td class="st">${st}</td></tr>`;
+    }).join('') + '</tbody></table>';
+    tex(el);
+  }
+  function statusPill(ratio, words){
+    const w = words || ['OK','Tight','NG'];
+    const k = ratio <= 0.9 ? 'ok' : ratio <= 1.0 ? 'warn' : 'ng';
+    return `<span class="pill ${k}">${k==='ok'?w[0]:k==='warn'?w[1]:w[2]} ${fmt(ratio,2)}</span>`;
+  }
+
+  /* Flowchart. spec items:
+     {s, ref, end}                    process step (end = terminal)
+     {q, ref, test, yes, no, main}    decision; yes/no are html or {s, ref, end}; main = branch that continues ('yes'|'no'|null = both merge) */
+  function flow(el, spec){
+    if (typeof el === 'string') el = $(el);
+    const br = (b, lab) => { const o = typeof b === 'string' ? {s:b} : b; return `<div class="fbranch" data-b="${lab}"><span class="lab">${lab}</span><div>${o.s}</div>${o.ref?`<span class="fref">${o.ref}</span>`:''}${o.end?'<span class="fref">■ stop here</span>':''}</div>`; };
+    el.classList.add('flow');
+    el.innerHTML = spec.map((it, i) => {
+      const conn = i ? '<div class="fconn"></div>' : '';
+      if (it.q) return conn + `<div class="fnode dec" data-i="${i}"><span class="fq">◇</span><div>${it.q}</div>${it.ref?`<span class="fref">${it.ref}</span>`:''}</div><div class="fbranches" data-i="${i}">${br(it.yes,'yes')}${br(it.no,'no')}</div>`;
+      return conn + `<div class="fnode ${it.end?'end':''}" data-i="${i}"><div>${it.s}</div>${it.ref?`<span class="fref">${it.ref}</span>`:''}</div>`;
+    }).join('');
+    tex(el);
+    const nodes = [...el.querySelectorAll('.fnode')], conns = [...el.querySelectorAll('.fconn')];
+    return {update(state){
+      let alive = true, k = 0;
+      spec.forEach((it, i) => {
+        const node = el.querySelector(`.fnode[data-i="${i}"]`);
+        const c = conns[i-1];
+        node.classList.toggle('on', alive); node.classList.toggle('off', !alive);
+        if (c){ c.classList.toggle('on', alive); }
+        if (alive){ node.style.setProperty('--k', k++); }
+        if (it.q){
+          const bs = el.querySelector(`.fbranches[data-i="${i}"]`);
+          const taken = state ? (it.test(state) ? 'yes' : 'no') : null;
+          bs.querySelectorAll('.fbranch').forEach(b => {
+            const on = alive && taken === b.dataset.b;
+            b.classList.toggle('on', on); b.classList.toggle('off', alive && taken && !on);
+            if (on) b.style.setProperty('--k', k++);
+          });
+          if (alive && taken){
+            const t = typeof it[taken] === 'string' ? {} : it[taken];
+            if (t.end || (it.main && it.main !== taken)) alive = false;
+          }
+        }
+      });
+    }};
   }
 
   const PAGES = [
@@ -208,19 +281,20 @@ window.P = (function(){
       const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodes = [];
       while (w.nextNode()) nodes.push(w.currentNode);
       nodes.forEach(n => {
-        if (!/[α-ω]/.test(n.nodeValue) || n.parentElement.closest('.nc')) return;
+        if (!/[α-ω]/.test(n.nodeValue) || n.parentElement.closest('.nc,.katex')) return;
         const tmp = document.createElement('span');
         tmp.innerHTML = n.nodeValue.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/([α-ω]+)/g, '<span class="nc">$1</span>');
         n.replaceWith(...tmp.childNodes);
       });
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => fixCase()); else fixCase();
+  const boot = () => { tex(document.body); fixCase(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 
   const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
   const lerp = (a,b,t) => a + (b-a)*t;
   const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
 
   return {reduce, STILL_T, C, $, fit, anim, still, redraw, onTheme:f=>themeFns.push(f), text, arrow, ground, line, axes, hover, niceStep,
-    bind, chips, fmt, set, pill, meters, cards, nav, clamp, lerp, ease, font, fixCase};
+    bind, chips, fmt, set, pill, meters, cards, nav, clamp, lerp, ease, font, fixCase, K, tex, n, sheet, flow, statusPill};
 })();

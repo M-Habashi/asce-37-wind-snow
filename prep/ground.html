@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <link rel="stylesheet" href="assets/prep.css">
 <script src="assets/prep.js"></script>
 </head>
@@ -16,63 +19,73 @@
 
 <!-- SHEET 1 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>1</b> of 8</div><div>Excavation · earth retention · cofferdams · barges</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="padhead"><div>Sheet <b>1</b> of 9</div><div>Excavation · earth retention · cofferdams · barges</div><div>Chk'd: <b>M.</b></div></div>
   <div class="sheet-body">
-    <div class="kicker"><span class="label">OSHA 1926 Subpart P · Caltrans Trenching &amp; Shoring · NAVFAC DM-7</span><span class="hand">soil and water are loads too →</span></div>
+    <div class="kicker"><span class="label">OSHA 1926 Subpart P · Caltrans Trenching &amp; Shoring Manual · AASHTO 3.11</span><span class="hand">soil and water are loads too →</span></div>
     <h1>Ground &amp;<br>Water</h1>
     <div class="stage">
       <canvas id="hero" role="img" aria-label="Trench cross-section whose side slopes morph between OSHA soil types A, B and C, with spoil pile setback and ladder"></canvas>
-      <div class="readout"><span>Type <b id="hT">A</b></span><span>q<sub>u</sub> <b id="hQ">≥ 1.5</b> tsf</span><span>max slope <b id="hS">¾ : 1</b></span></div>
+      <div class="readout"><span>Type <b id="hT">A</b></span><span>\(q_u\) <b id="hQ">≥ 1.5</b> tsf</span><span>max slope <b id="hS">¾ : 1</b></span></div>
     </div>
-    <p class="lede">Temporary works engineers own the hole as well as the steel. That means shoring for excavations, the surcharge a crane puts behind that shoring, cofferdams that hold back a river, and the pressure a mat puts on a soft layer six feet down. Most of it is Rankine, Boussinesq and buoyancy done carefully.</p>
+    <p class="lede">Temporary works engineers own the hole too: shoring for excavations, the surcharge a crane puts behind that shoring, cofferdams that hold back a river, and the pressure a mat puts on a soft layer six feet down. Most of it is Rankine, Boussinesq and buoyancy done carefully.</p>
   </div>
 </section>
 
 <!-- SHEET 2 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>2</b> of 8</div><div>OSHA 1926 Subpart P</div><div>protective systems</div></div>
+  <div class="padhead"><div>Sheet <b>2</b> of 9</div><div>OSHA 1926.651 / .652 · Appendices A &amp; B</div><div>protective systems</div></div>
   <div class="sheet-body">
     <h2>The trench rules</h2>
     <div class="twocol">
       <div class="col">
         <div class="chips" id="soilChips" role="group" aria-label="Soil type">
           <button class="chip" data-t="R" aria-pressed="false">Stable rock<small>vertical</small></button>
-          <button class="chip" data-t="A" aria-pressed="false">Type A<small>q<sub>u</sub> ≥ 1.5 tsf</small></button>
+          <button class="chip" data-t="A" aria-pressed="false">Type A<small>\(q_u\) ≥ 1.5 tsf</small></button>
           <button class="chip" data-t="B" aria-pressed="true">Type B<small>0.5–1.5 tsf</small></button>
           <button class="chip" data-t="C" aria-pressed="false">Type C<small>≤ 0.5 tsf</small></button>
         </div>
         <div class="ctrl"><label class="label" for="tD">Trench depth: <span class="val" id="tDo"></span></label><input id="tD" type="range" min="2" max="26" step="0.5" value="10"></div>
         <div class="ctrl"><label class="label" for="tB">Bottom width: <span class="val" id="tBo"></span></label><input id="tB" type="range" min="2" max="12" step="0.5" value="4"></div>
-        <div class="callout trap" id="tVerdict"></div>
+        <div id="tSheet"></div>
       </div>
-      <div class="col"><div class="stage tall" style="min-height:0"><canvas id="trench" role="img" aria-label="Trench cross-section sized to the selected depth and soil type, showing top width, spoil setback, ladder and the 20 ft engineered-design limit"></canvas>
+      <div class="col"><div class="stage tall" style="min-height:0"><canvas id="trench" role="img" aria-label="Trench cross-section sized to the selected depth and soil type"></canvas>
         <div class="readout"><span>top width <b id="tTop">—</b> ft</span></div></div></div>
     </div>
-    <div class="ideas four">
-      <div class="idea"><h3>5 ft</h3><p>A protective system is required at 5 ft or deeper, unless it's entirely in stable rock. Shallower trenches need one too if a competent person sees signs of cave-in.</p></div>
-      <div class="idea"><h3>20 ft</h3><p>Deeper than 20 ft, sloping and shoring must be <strong>designed by a registered PE</strong>.</p></div>
-      <div class="idea"><h3>4 ft · 25 ft</h3><p>Trenches 4 ft or deeper need a ladder or ramp within 25 ft of lateral travel.</p></div>
-      <div class="idea"><h3>2 ft</h3><p>Keep spoil and equipment at least 2 ft back from the edge. A crane farther back is still a <strong>surcharge</strong>.</p></div>
+    <div class="flowwrap">
+      <div class="col">
+        <div class="tblwrap"><table class="tbl"><thead><tr><th>Rule</th><th>OSHA cite</th></tr></thead><tbody>
+          <tr><td>Protective system at ≥ 5 ft (unless stable rock or a competent person finds no cave-in potential below 5 ft)</td><td>1926.652(a)(1)</td></tr>
+          <tr><td>Sloping: 1½H:1V default, or App. A/B, tabulated data, or a PE design</td><td>1926.652(b)(1)–(4)</td></tr>
+          <tr><td>Support systems: App. A + C/D timber/aluminum, manufacturer data, tabulated data, or PE</td><td>1926.652(c)(1)–(4)</td></tr>
+          <tr><td>App. B slopes limited to &lt; 20 ft deep; deeper → PE design</td><td>App. B · 652(b)(4)</td></tr>
+          <tr><td>Ladder/ramp in trenches ≥ 4 ft, ≤ 25 ft lateral travel</td><td>1926.651(c)(2)</td></tr>
+          <tr><td>Spoil and equipment ≥ 2 ft from the edge</td><td>1926.651(j)(2)</td></tr>
+          <tr><td>Test the atmosphere before entry, &gt; 4 ft</td><td>1926.651(g)(1)(i)</td></tr>
+          <tr><td>Daily inspection by a competent person</td><td>1926.651(k)(1)</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="col"><h3>Protective system selection</h3><div id="tFlow"></div></div>
     </div>
   </div>
 </section>
 
 <!-- SHEET 3 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>3</b> of 8</div><div>Earth pressure + surcharge · Rankine · Boussinesq</div><div>crane behind shoring</div></div>
+  <div class="padhead"><div>Sheet <b>3</b> of 9</div><div>Earth pressure + surcharge · Rankine · Boussinesq (Caltrans T&amp;S Ch. 5 · AASHTO 3.11.6.2)</div><div>crane behind shoring</div></div>
   <div class="sheet-body">
     <h2>A crane next to the shoring</h2>
-    <p>Active Rankine pressure plus a uniform surcharge, plus a <strong>point load</strong> such as an outrigger pad, using the modified Boussinesq solution for a rigid wall (NAVFAC / Caltrans T&amp;S). Slide the outrigger toward the wall and watch the pressure bulb climb the shoring.</p>
+    <div class="eqblock">$$K_a=\tan^2\!\left(45^\circ-\frac{\phi}{2}\right)\quad K_p=\tan^2\!\left(45^\circ+\frac{\phi}{2}\right)\quad K_0=1-\sin\phi\qquad P_a=\tfrac12K_a\gamma H^2\qquad P_q=K_aqH$$
+    $$\sigma_h=\frac{Q}{H^2}\cdot\begin{cases}\dfrac{0.28\,n^2}{(0.16+n^2)^3} & m\le0.4\\[8pt] \dfrac{1.77\,m^2n^2}{(m^2+n^2)^3} & m>0.4\end{cases}\qquad m=\frac{x}{H},\ n=\frac{z}{H}\qquad \sigma_h'=\sigma_h\cos^2(1.1\theta)$$<span class="fref">point surcharge on an unyielding wall (modified Boussinesq, Terzaghi/NAVFAC form) · Caltrans T&amp;S §5-1.03 · Caltrans min lateral construction surcharge 72 psf over the top 10 ft (§5-1.01)</span></div>
     <div class="stage tall"><canvas id="ep" role="img" aria-label="Shoring wall with active earth pressure, uniform surcharge and a point-load pressure bulb from a crane outrigger at adjustable distance"></canvas>
-      <div class="readout right bottom"><span>P<sub>a</sub> <b id="eA">—</b></span><span>P<sub>q</sub> <b id="eQ">—</b></span><span>P<sub>outrigger</sub> <b id="eO">—</b> k/ft</span></div></div>
+      <div class="readout right bottom"><span>\(P_a\) <b id="eA">—</b></span><span>\(P_q\) <b id="eQ">—</b></span><span>\(P_{out}\) <b id="eO">—</b> k/ft</span></div></div>
     <div class="twocol">
       <div class="col">
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="eH">Excavation H: <span class="val" id="eHo"></span></label><input id="eH" type="range" min="6" max="30" step="0.5" value="15"></div>
-          <div class="ctrl"><label class="label" for="ePhi">φ: <span class="val" id="ePhio"></span></label><input id="ePhi" type="range" min="20" max="40" step="1" value="32"></div>
+          <div class="ctrl"><label class="label" for="ePhi">\(\phi\): <span class="val" id="ePhio"></span></label><input id="ePhi" type="range" min="20" max="40" step="1" value="32"></div>
         </div>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="eG">γ: <span class="val" id="eGo"></span></label><input id="eG" type="range" min="100" max="135" step="1" value="120"></div>
+          <div class="ctrl"><label class="label" for="eG">\(\gamma\): <span class="val" id="eGo"></span></label><input id="eG" type="range" min="100" max="135" step="1" value="120"></div>
           <div class="ctrl"><label class="label" for="eS">Uniform vertical surcharge q: <span class="val" id="eSo"></span></label><input id="eS" type="range" min="0" max="600" step="10" value="240"></div>
         </div>
         <div class="ctrl-row">
@@ -81,22 +94,22 @@
         </div>
         <label class="check"><input type="checkbox" id="eAuto" checked> Auto-move outrigger</label>
       </div>
-      <div class="col">
-        <div class="eq" id="eEq"></div>
-        <p class="small muted">Point load on an unyielding wall, directly in line with the load: m = x/H, n = z/H. If m ≤ 0.4, σ<sub>h</sub> = (Q/H²)·0.28n²/(0.16 + n²)³. If m &gt; 0.4, σ<sub>h</sub> = (Q/H²)·1.77m²n²/(m² + n²)³. Away from that plane it falls off as cos²(1.1θ). The result is per foot of wall at the peak; spreading it along the wall is a judgment call, so state what you assumed.</p>
-      </div>
+      <div class="col"><h3>Calc sheet</h3><div id="eSheet"></div></div>
     </div>
-    <div class="callout remember"><span class="tag">Remember</span><p>K<sub>a</sub> = tan²(45° − φ/2), K<sub>0</sub> = 1 − sin φ (at-rest, for stiff braced systems next to footings), K<sub>p</sub> = tan²(45° + φ/2), reduced by a factor of safety for embedment. Add water pressure below the water table, using buoyant γ' for the soil plus full hydrostatic. Caltrans T&amp;S requires a <strong>minimum lateral construction surcharge of 72 psf</strong> over the top 10 ft of any shoring, about 2 ft of soil at K<sub>a</sub> = 0.33. It's a lateral pressure, not a vertical q. Use your owner's value.</p></div>
+    <h3>Shoring design flow</h3>
+    <div id="eFlow"></div>
   </div>
 </section>
 
 <!-- SHEET 4 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>4</b> of 8</div><div>Braced excavations · Terzaghi–Peck apparent pressure</div><div>strut loads</div></div>
+  <div class="padhead"><div>Sheet <b>4</b> of 9</div><div>Braced excavations · Terzaghi–Peck apparent pressure</div><div>strut loads</div></div>
   <div class="sheet-body">
     <h2>Apparent pressure &amp; struts</h2>
+    <div class="eqblock">$$\text{sand: } p=0.65K_a\gamma H\qquad \text{soft–medium clay } (\gamma H/c>4)\!: p=\max\!\left(\gamma H\Big[1-\frac{4c}{\gamma H}\Big],\ 0.3\gamma H\right)\qquad \text{stiff clay } (\gamma H/c\le4)\!: p=0.2\text{–}0.4\,\gamma H$$
+    $$FS_{heave}\approx\frac{N_c\,c_u}{\gamma H+q},\ \ N_c\approx5.7\ \text{(wide cut, Terzaghi)}$$<span class="fref">Terzaghi &amp; Peck envelopes (Terzaghi, Peck &amp; Mesri 1996) · strut loads by tributary area (hinge method)</span></div>
     <div class="chips" id="pkChips" role="group" aria-label="Soil">
-      <button class="chip" data-s="sand" aria-pressed="true">Sand<small>0.65K<sub>a</sub>γH</small></button>
+      <button class="chip" data-s="sand" aria-pressed="true">Sand<small>\(0.65K_a\gamma H\)</small></button>
       <button class="chip" data-s="soft" aria-pressed="false">Soft–medium clay<small>γH/c &gt; 4</small></button>
       <button class="chip" data-s="stiff" aria-pressed="false">Stiff fissured clay<small>γH/c ≤ 4</small></button>
     </div>
@@ -107,28 +120,28 @@
           <div class="ctrl"><label class="label" for="bN">Strut levels: <span class="val" id="bNo"></span></label><input id="bN" type="range" min="1" max="5" step="1" value="3"></div>
         </div>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="bPhi">φ (sand): <span class="val" id="bPhio"></span></label><input id="bPhi" type="range" min="25" max="40" step="1" value="32"></div>
-          <div class="ctrl"><label class="label" for="bC">c<sub>u</sub> (clay): <span class="val" id="bCo"></span></label><input id="bC" type="range" min="200" max="3000" step="50" value="600"></div>
+          <div class="ctrl"><label class="label" for="bPhi">\(\phi\) (sand): <span class="val" id="bPhio"></span></label><input id="bPhi" type="range" min="25" max="40" step="1" value="32"></div>
+          <div class="ctrl"><label class="label" for="bC">\(c_u\) (clay): <span class="val" id="bCo"></span></label><input id="bC" type="range" min="200" max="3000" step="50" value="600"></div>
         </div>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="bG">γ: <span class="val" id="bGo"></span></label><input id="bG" type="range" min="100" max="130" step="1" value="120"></div>
+          <div class="ctrl"><label class="label" for="bG">\(\gamma\): <span class="val" id="bGo"></span></label><input id="bG" type="range" min="100" max="130" step="1" value="120"></div>
           <div class="ctrl"><label class="label" for="bSp">Strut spacing (plan): <span class="val" id="bSpo"></span></label><input id="bSp" type="range" min="6" max="25" step="1" value="12"></div>
         </div>
-        <div class="eq" id="bEq"></div>
+        <div id="bSheet"></div>
       </div>
       <div class="col"><div class="stage tall" style="min-height:0"><canvas id="peck" role="img" aria-label="Apparent pressure diagram with strut levels and tributary zones; strut loads labeled"></canvas></div></div>
     </div>
-    <div class="callout trap"><span class="tag">Interview angle</span><p>Apparent pressure diagrams are <strong>envelopes</strong> back-calculated from measured strut loads, not real pressure distributions. Use them for struts and wales, not for the embedment of the wall. In soft clay, also check <strong>basal heave</strong> (FS = N<sub>c</sub>c<sub>u</sub>/(γH + q)) and the stiffness and sequence of the system. Settlement behind the wall can matter more than strength.</p></div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>Apparent pressure diagrams are <strong>envelopes</strong> back-calculated from measured strut loads, not real pressure distributions. Use them for struts and wales, not for wall embedment. In soft clay, check basal heave and the stiffness and sequence of the system too. Settlement behind the wall can matter more than strength.</p></div>
   </div>
 </section>
 
 <!-- SHEET 5 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>5</b> of 8</div><div>Cofferdams · tremie seal · piping</div><div>buoyancy</div></div>
+  <div class="padhead"><div>Sheet <b>5</b> of 9</div><div>Cofferdams · tremie seal · piping</div><div>buoyancy</div></div>
   <div class="sheet-body">
     <h2>Keep the river out</h2>
-    <p>A sheet-pile cofferdam with a tremie seal is a bathtub you pump dry. Once it's dewatered, the full outside head pushes up on the bottom of the seal. The seal's own weight, plus any bond to the foundation piles, has to hold it down.</p>
-    <div class="stage tall"><canvas id="cof" role="img" aria-label="Cofferdam section with river level outside, dewatered inside, tremie seal at the bottom and uplift arrows; the seal lifts when uplift exceeds resistance"></canvas>
+    <div class="eqblock">$$U=\gamma_w(h+t)\qquad FS=\frac{\gamma_c\,t+\tau_{bond}\,p\,t\,n_p}{\gamma_w(h+t)}\ \ \text{(per ft}^2\text{ of seal)}\qquad t_{req}=\frac{FS\,\gamma_wh}{\gamma_c-FS\,\gamma_w}\qquad i_c=\frac{\gamma'}{\gamma_w}\approx1.0$$<span class="fref">statics / buoyancy · seal flexure between piles (unreinforced) is a separate check · piping FS 1.5–2 on exit gradient</span></div>
+    <div class="stage tall"><canvas id="cof" role="img" aria-label="Cofferdam section with river level outside, dewatered inside, tremie seal at the bottom and uplift arrows"></canvas>
       <div class="readout"><span>FS uplift = <b id="cFS">—</b></span></div>
       <div class="readout right bottom"><span class="pill" id="cPill">—</span></div></div>
     <div class="twocol">
@@ -138,33 +151,30 @@
           <div class="ctrl"><label class="label" for="cT">Seal thickness t: <span class="val" id="cTo"></span></label><input id="cT" type="range" min="2" max="25" step="0.5" value="12"></div>
         </div>
         <div class="ctrl-row">
-          <div class="ctrl"><label class="label" for="cBond">Pile bond: <span class="val" id="cBondo"></span></label><input id="cBond" type="range" min="0" max="60" step="1" value="10"></div>
+          <div class="ctrl"><label class="label" for="cBond">Pile bond τ: <span class="val" id="cBondo"></span></label><input id="cBond" type="range" min="0" max="60" step="1" value="10"></div>
           <div class="ctrl"><label class="label" for="cPiles">Piles per 100 ft² of seal: <span class="val" id="cPileso"></span></label><input id="cPiles" type="range" min="0" max="4" step="0.25" value="1"></div>
         </div>
-        <div class="ctrl"><label class="label" for="cPer">Pile perimeter: <span class="val" id="cPero"></span></label><input id="cPer" type="range" min="3" max="12" step="0.25" value="5.5"></div>
+        <div class="ctrl"><label class="label" for="cPer">Pile perimeter p: <span class="val" id="cPero"></span></label><input id="cPer" type="range" min="3" max="12" step="0.25" value="5.5"></div>
         <label class="check"><input type="checkbox" id="cFlood" checked> Animate river rise</label>
+        <div id="cSheet"></div>
       </div>
-      <div class="col">
-        <div class="eq" id="cEq"></div>
-        <div class="callout remember"><span class="tag">Also check</span><p><strong>Seal flexure</strong> between piles (unreinforced concrete, low allowable tension). <strong>Wale and strut rings</strong> against hydrostatic + soil. <strong>Piping or boiling</strong> at the toe: critical gradient i<sub>c</sub> = γ'/γ<sub>w</sub> ≈ 1.0, so aim for FS 1.5–2 with longer sheets or relief wells. The <strong>dewatering sequence</strong>: brace each level before pumping down past it. Plan to <strong>flood the cofferdam</strong> when the river overtops it.</p></div>
-      </div>
+      <div class="col"><h3>Cofferdam sequence</h3><div id="cFlow"></div></div>
     </div>
   </div>
 </section>
 
 <!-- SHEET 6 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>6</b> of 8</div><div>Bearing under mats &amp; pads · 2:1 method</div><div>weak layer check</div></div>
+  <div class="padhead"><div>Sheet <b>6</b> of 9</div><div>Bearing under mats &amp; pads · 2:1 method</div><div>weak layer check</div></div>
   <div class="sheet-body">
     <h2>How deep does a mat reach?</h2>
+    <div class="eqblock">$$q_z=\frac{P}{(B+z)(L+z)}\qquad q_{ult}=cN_cs_c+qN_qs_q+\tfrac12\gamma BN_\gamma s_\gamma\qquad q_{ult}\approx5.14c_u\ (\text{strip}),\ \ 6.2c_u\ (\text{square})$$<span class="fref">2V:1H approximation of Boussinesq · bearing capacity per Terzaghi/Vesic · IBC Table 1806.2 presumptive values when no geotech</span></div>
     <div class="twocol">
-      <div class="col">
-        <div class="stage tall" style="min-height:0"><canvas id="spread" role="img" aria-label="A pad load spreading at 2 vertical to 1 horizontal down to a weak clay layer; pressure at depth decreases as the area grows"></canvas></div>
-      </div>
+      <div class="col"><div class="stage tall" style="min-height:0"><canvas id="spread" role="img" aria-label="A pad load spreading at 2 vertical to 1 horizontal down to a weak clay layer"></canvas></div></div>
       <div class="col">
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="sP">Pad load P: <span class="val" id="sPo"></span></label><input id="sP" type="range" min="20" max="400" step="5" value="150"></div>
-          <div class="ctrl"><label class="label" for="sB">Mat B × L: <span class="val" id="sBo"></span></label><input id="sB" type="range" min="2" max="20" step="0.5" value="8"></div>
+          <div class="ctrl"><label class="label" for="sB">Mat B × L (square): <span class="val" id="sBo"></span></label><input id="sB" type="range" min="2" max="20" step="0.5" value="8"></div>
         </div>
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="sZ">Weak layer depth z: <span class="val" id="sZo"></span></label><input id="sZ" type="range" min="1" max="20" step="0.5" value="6"></div>
@@ -172,20 +182,19 @@
         </div>
         <div class="ctrl"><label class="label" for="sQs">Surface allowable: <span class="val" id="sQso"></span></label><input id="sQs" type="range" min="1" max="10" step="0.25" value="4"></div>
         <div class="meters" id="sMeters"></div>
-        <div class="eq" id="sEq"></div>
+        <div id="sSheet"></div>
       </div>
     </div>
-    <div class="callout remember"><span class="tag">Bearing capacity in one line</span><p>q<sub>ult</sub> = cN<sub>c</sub>s<sub>c</sub> + qN<sub>q</sub> + ½γBN<sub>γ</sub>s<sub>γ</sub>. Use FS ≈ 2–3 for temporary pads, or the geotech's allowable. For saturated clay under fast crane loading, the undrained case governs: q<sub>ult</sub> ≈ 5.14c<sub>u</sub> (strip) to 6.2c<sub>u</sub> (square). If you can't get a geotech value, a plate load test or proof roll gives you something real. Don't forget voids, utilities and recent backfill.</p></div>
   </div>
 </section>
 
 <!-- SHEET 7 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>7</b> of 8</div><div>Crane on a barge · stability</div><div>GM · list</div></div>
+  <div class="padhead"><div>Sheet <b>7</b> of 9</div><div>Crane on a barge · stability</div><div>GM · list</div></div>
   <div class="sheet-body">
     <h2>The suspended load lives at the boom tip</h2>
-    <p>For marine work the barge is the foundation. Its stability is GM = KB + BM − KG, with BM = I<sub>wp</sub>/∇. The suspended load acts at the <strong>point of suspension</strong> (the boom tip), not where it hangs. That raises KG. Swinging the load out lists the barge: tan θ ≈ w·y/(Δ·GM).</p>
-    <div class="stage tall"><canvas id="barge" role="img" aria-label="Barge section heeling as a crane swings a load outboard; waterline, metacenter and center of gravity marked"></canvas>
+    <div class="eqblock">$$GM=KB+BM-KG\qquad BM=\frac{I_{wp}}{\nabla}=\frac{B^2}{12T}\ \text{(box)}\qquad KG=\frac{\Delta_0KG_0+w\,z_{tip}}{\Delta_0+w}\qquad \tan\theta\approx\frac{w\,y}{\Delta\,GM}$$<span class="fref">small-angle naval architecture · the suspended load acts at the point of suspension (boom tip) · compare θ with the crane's barge-chart list limit and deck-edge immersion</span></div>
+    <div class="stage tall"><canvas id="barge" role="img" aria-label="Barge section heeling as a crane swings a load outboard"></canvas>
       <div class="readout"><span>list <b id="bgL">—</b>°</span><span>GM <b id="bgGM">—</b> ft</span><span>freeboard <b id="bgF">—</b> ft</span></div>
       <div class="readout right bottom"><span class="pill" id="bgPill">—</span></div></div>
     <div class="twocol">
@@ -199,23 +208,59 @@
           <div class="ctrl"><label class="label" for="gW">Barge + crane weight: <span class="val" id="gWo"></span></label><input id="gW" type="range" min="300" max="3000" step="20" value="900"></div>
         </div>
         <div class="ctrl"><label class="label" for="gKG">KG of barge + crane: <span class="val" id="gKGo"></span></label><input id="gKG" type="range" min="4" max="25" step="0.5" value="12"></div>
-      </div>
-      <div class="col">
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="gwl">Load: <span class="val" id="gwlo"></span></label><input id="gwl" type="range" min="0" max="200" step="2" value="60"></div>
           <div class="ctrl"><label class="label" for="gy">Outreach from centerline: <span class="val" id="gyo"></span></label><input id="gy" type="range" min="0" max="100" step="1" value="60"></div>
         </div>
         <div class="ctrl"><label class="label" for="gTip">Boom tip height above keel: <span class="val" id="gTipo"></span></label><input id="gTip" type="range" min="30" max="180" step="5" value="90"></div>
-        <div class="eq" id="gEq"></div>
       </div>
+      <div class="col"><h3>Calc sheet</h3><div id="gSheet"></div></div>
     </div>
-    <span class="hand">barge-mounted crane charts come with a list limit (often just a few degrees). ballast or counterballast to stay inside it.</span>
   </div>
 </section>
 
 <!-- SHEET 8 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>8</b> of 8</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="padhead"><div>Sheet <b>8</b> of 9</div><div>Common values · soils, water, shoring</div><div>memorize</div></div>
+  <div class="sheet-body">
+    <h2>What's actually used</h2>
+    <div class="cv">
+      <div><h4>Soil properties (typical ranges)</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Soil</th><th class="num">γ (pcf)</th><th>φ or c<sub>u</sub></th></tr></thead><tbody>
+        <tr><td>Loose sand</td><td class="num">100–115</td><td>φ 28–30°</td></tr>
+        <tr><td>Medium–dense sand</td><td class="num">115–130</td><td>φ 32–38°</td></tr>
+        <tr><td>Gravel</td><td class="num">120–135</td><td>φ 35–42°</td></tr>
+        <tr><td>Soft clay</td><td class="num">100–115</td><td>c<sub>u</sub> 250–500 psf</td></tr>
+        <tr><td>Stiff clay</td><td class="num">115–130</td><td>c<sub>u</sub> 1,000–2,000 psf</td></tr>
+        <tr><td>Water · seawater</td><td class="num">62.4 · 64</td><td>buoyant γ' ≈ γ − 62.4</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Earth pressure coefficients</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th class="num">φ</th><th class="num">K<sub>a</sub></th><th class="num">K<sub>0</sub></th><th class="num">K<sub>p</sub></th></tr></thead><tbody>
+        <tr><td class="num">25°</td><td class="num">0.406</td><td class="num">0.577</td><td class="num">2.46</td></tr>
+        <tr><td class="num">30°</td><td class="num">0.333</td><td class="num">0.500</td><td class="num">3.00</td></tr>
+        <tr><td class="num">35°</td><td class="num">0.271</td><td class="num">0.426</td><td class="num">3.69</td></tr>
+        <tr><td class="num">40°</td><td class="num">0.217</td><td class="num">0.357</td><td class="num">4.60</td></tr>
+      </tbody></table></div><p class="small muted">Rankine, level backfill, smooth wall. Reduce K<sub>p</sub> (FS 1.5–2) for embedment.</p></div>
+      <div><h4>OSHA soil types (App. A / B)</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Stable rock</td><td>vertical (90°)</td></tr>
+        <tr><td>Type A · q<sub>u</sub> ≥ 1.5 tsf</td><td>¾:1 (53°) · ½:1 short-term ≤ 12 ft</td></tr>
+        <tr><td>Type B · 0.5–1.5 tsf</td><td>1:1 (45°)</td></tr>
+        <tr><td>Type C · ≤ 0.5 tsf</td><td>1½:1 (34°)</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Surcharges &amp; bearing</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Caltrans min lateral construction surcharge</td><td>72 psf, top 10 ft (§5-1.01)</td></tr>
+        <tr><td>IBC 1806.2 presumptive</td><td>clay 1,500 · sand 2,000 · gravel 3,000 · sed. rock 4,000 · crystalline 12,000 psf</td></tr>
+        <tr><td>Tremie seal (weight only)</td><td>t ≈ 0.75h at FS 1.0 · 0.9h at FS 1.1</td></tr>
+        <tr><td>Sheet piles</td><td>hot-rolled Z (PZ / AZ series), A572 Gr 50 or A690 for marine</td></tr>
+        <tr><td>Barge crane list</td><td>chart limits are often only a few degrees</td></tr>
+      </tbody></table></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 9 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>9</b> of 9</div><div>Rehearsal</div><div>Tap to flip</div></div>
   <div class="sheet-body">
     <h2>Questions they may ask</h2>
     <div class="cards" id="cards"></div>
@@ -223,67 +268,67 @@
 </section>
 
 <footer>
-  <p>Study aid. OSHA values from 29 CFR 1926 Subpart P. Boussinesq coefficients follow the NAVFAC / Caltrans modified forms as I remember them. Peck envelopes are classic textbook (Terzaghi, Peck &amp; Mesri). Verify for design, and use the geotechnical report.</p>
-  <p>Sources: <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926SubpartP" target="_blank" rel="noopener">OSHA 1926 Subpart P</a> · <a href="https://dot.ca.gov/-/media/dot-media/programs/engineering/documents/structureconstruction/ts/sc-ts-a11y.pdf" target="_blank" rel="noopener">Caltrans Trenching &amp; Shoring Manual</a> · <a href="https://dot.ca.gov/-/media/dot-media/programs/engineering/documents/structureconstruction/ts/ts-chpt-5-a11y.pdf" target="_blank" rel="noopener">T&amp;S Ch. 5 Surcharges</a></p>
+  <p>OSHA paragraph numbers were checked against osha.gov. The Caltrans 72 psf minimum was checked against T&amp;S Manual Ch. 5 (2025). The Boussinesq and Peck forms are classic textbook (NAVFAC/Caltrans, Terzaghi–Peck–Mesri). Use the geotechnical report for design.</p>
+  <p>Sources: <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.652" target="_blank" rel="noopener">OSHA 1926.652</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.651" target="_blank" rel="noopener">OSHA 1926.651</a> · <a href="https://dot.ca.gov/-/media/dot-media/programs/engineering/documents/structureconstruction/ts/ts-chpt-5-a11y.pdf" target="_blank" rel="noopener">Caltrans T&amp;S Ch. 5</a> · <a href="https://dot.ca.gov/-/media/dot-media/programs/engineering/documents/structureconstruction/ts/sc-ts-a11y.pdf" target="_blank" rel="noopener">Caltrans T&amp;S Manual</a></p>
 </footer>
 </div>
 
 <script>
 (function(){
-const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease, axes} = P;
+const {C, $, fmt, n, text, arrow, ground, line, clamp, lerp, ease, axes} = P;
+const T = String.raw;
 const SOIL = {R:{name:'Stable rock', ratio:0, ang:90, q:'—', s:'vertical'}, A:{name:'Type A', ratio:0.75, ang:53, q:'≥ 1.5', s:'¾ : 1'}, B:{name:'Type B', ratio:1.0, ang:45, q:'0.5–1.5', s:'1 : 1'}, C:{name:'Type C', ratio:1.5, ang:34, q:'≤ 0.5', s:'1½ : 1'}};
 
 /* ---------- hero ---------- */
 function soilFill(ctx, pts){ line(ctx, pts, {color:C.soil, width:1, fill:C.soil, alpha:0.35, close:true}); }
 function worker(ctx, x, y){ ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.arc(x, y-17, 3.4, 0, 7); ctx.moveTo(x, y-13); ctx.lineTo(x, y-6); ctx.lineTo(x+3, y); ctx.moveTo(x, y-6); ctx.lineTo(x-3, y); ctx.moveTo(x, y-11); ctx.lineTo(x+5, y-14); ctx.stroke(); ctx.fillStyle = C.storm; ctx.fillRect(x-4, y-22, 8, 2.5); ctx.restore(); }
 P.anim($('hero'), (ctx, w, h, t) => {
-  const order = ['A','B','C'];
-  const cyc = P.reduce ? 1.2 : (t/3.5) % 3;
-  const i = Math.floor(cyc), f = ease(clamp((cyc - i)*2.2, 0, 1));
-  const a = SOIL[order[i]], b = SOIL[order[(i+1)%3]];
-  const ratio = lerp(a.ratio, b.ratio, f >= 1 ? 1 : f);
-  const cur = f > 0.5 ? b : a;
+  const order = ['A','B','C'], cyc = P.reduce ? 1.2 : (t/3.5) % 3, i = Math.floor(cyc), f = ease(clamp((cyc - i)*2.2, 0, 1));
+  const a = SOIL[order[i]], b = SOIL[order[(i+1)%3]], ratio = lerp(a.ratio, b.ratio, f), cur = f > 0.5 ? b : a;
   $('hT').textContent = cur.name.replace('Type ',''); $('hQ').textContent = cur.q; $('hS').textContent = cur.s;
-  const g = h*0.22, depth = h*0.66, bot = g + depth, cx = w*0.5, bw = 40;
-  const run = depth*ratio;
+  const g = h*0.22, depth = h*0.66, bot = g + depth, cx = w*0.5, bw = 40, run = depth*ratio;
   soilFill(ctx, [[0, g],[cx - bw/2 - run, g],[cx - bw/2, bot],[cx + bw/2, bot],[cx + bw/2 + run, g],[w, g],[w, h],[0, h]]);
   line(ctx, [[0, g],[cx - bw/2 - run, g],[cx - bw/2, bot],[cx + bw/2, bot],[cx + bw/2 + run, g],[w, g]], {color:C.ink, width:2});
-  // spoil pile ≥ 2 ft back on the right
   const sx = cx + bw/2 + run + 22;
   line(ctx, [[sx, g],[sx + 40, g - 30],[sx + 90, g]], {color:C.soil, width:1, fill:C.soil, alpha:0.7, close:true});
   line(ctx, [[cx + bw/2 + run, g + 8],[sx, g + 8]], {color:C.pencil, width:1, dash:[3,3]});
   text(ctx, '≥ 2 ft', (cx + bw/2 + run + sx)/2, g + 20, {size:10, align:'center', color:C.pencil});
-  // ladder
   ctx.strokeStyle = C.storm; ctx.lineWidth = 2; const lx = cx - bw/2 + 6;
   ctx.beginPath(); ctx.moveTo(lx, bot); ctx.lineTo(lx - run*0.95 - 6, g - 20); ctx.moveTo(lx + 8, bot); ctx.lineTo(lx - run*0.95 + 2, g - 20); ctx.stroke();
   worker(ctx, cx + 6, bot);
-  // angle label
   text(ctx, `${Math.round(Math.atan2(depth, Math.max(run, 0.01))*180/Math.PI)}°`, cx + bw/2 + run*0.5 + 10, g + depth*0.5, {size:13, weight:'bold', color:C.pencil, halo:C.paper});
 });
 
 /* ---------- SHEET 2: trench ---------- */
 let soil = 'B';
+const tFlow = P.flow('tFlow', [
+  {q:'Depth ≥ 5 ft, or signs of potential cave-in?', ref:'1926.652(a)(1)(ii)', test:s=>s.D>=5, yes:'Protective system needed', no:{s:'No system required (competent person examination)', end:true}, main:'yes'},
+  {q:'Entirely in stable rock?', ref:'1926.652(a)(1)(i)', test:s=>s.soil==='R', yes:{s:'No system required', end:true}, no:'Classify soil per App. A', main:'no'},
+  {q:'Depth ≤ 20 ft?', ref:'App. B · 1926.652(b)(4), (c)(4)', test:s=>s.D<=20, yes:'Options 1–3: App. B slopes/benching, App. C/D timber/aluminum, manufacturer or tabulated data', no:'Option 4: designed by a registered PE (that is the temporary works engineer)', main:null},
+  {s:'Plus: ladder within 25 ft (651(c)(2)), spoil ≥ 2 ft back (651(j)(2)), atmosphere testing (651(g)), daily competent-person inspection (651(k))', ref:'1926.651', end:true}
+]);
 P.chips('soilChips', d => { soil = d.t; trench(); });
 function trench(){
   const D = +$('tD').value, Bw = +$('tB').value, s = SOIL[soil];
   $('tDo').textContent = D+' ft'; $('tBo').textContent = Bw+' ft';
   const top = Bw + 2*D*s.ratio;
   $('tTop').textContent = top.toFixed(1);
-  let v = '';
-  if (D < 5) v = `<span class="tag">Under 5 ft</span><p>No protective system is required unless a competent person sees signs of a potential cave-in.${D >= 4 ? ' It is 4 ft or deeper, so provide a ladder within 25 ft.' : ''}</p>`;
-  else if (D <= 20) v = `<span class="tag">5–20 ft · ${s.name}</span><p>Slope at ${s.s} (${s.ang}°)${soil==='A'&&D<=12?', or ½:1 short-term in Type A up to 12 ft':''}. Alternatives: benching (not in Type C), tabulated timber or aluminum shoring (App. C/D), trench boxes per tabulated data, or an engineered design. A ladder is required.</p>`;
-  else v = `<span class="tag">Over 20 ft</span><p>Sloping or benching and the protective system must be <strong>designed by a registered professional engineer</strong>. That's the temporary works engineer's job.</p>`;
-  $('tVerdict').innerHTML = v;
+  P.sheet('tSheet', [
+    ['h', `${s.name} · depth ${D} ft · bottom ${Bw} ft`],
+    ['r', 'App. B Table B-1', soil === 'R' ? T`\text{vertical (90°)}` : T`H{:}V=${n(s.ratio,2)}{:}1\ \ (${s.ang}^\circ)`],
+    ['r', 'geometry', T`W_{top}=W_{bot}+2D\cdot\tfrac{H}{V}=${n(Bw,1)}+2(${n(D,1)})(${n(s.ratio,2)})=${n(top,1)}\ \text{ft}`],
+    ['r', '1926.652', D < 5 ? T`D<5\ \text{ft: competent-person call}` : D <= 20 ? T`5\le D\le20\ \text{ft: Options 1–3 or PE}` : T`D>20\ \text{ft: PE design required}`],
+    ['r', '1926.651(c)(2)', D >= 4 ? T`D\ge4\ \text{ft}\Rightarrow\text{ladder within 25 ft}` : T`D<4\ \text{ft: no ladder rule}`]
+  ]);
+  tFlow.update({D, soil});
   if (P.reduce) P.redraw();
 }
 P.bind(['tD','tB'], trench);
-P.anim($('trench'), (ctx, w, h, t) => {
+P.anim($('trench'), (ctx, w, h) => {
   const D = +$('tD').value, Bw = +$('tB').value, s = SOIL[soil];
-  const maxW = Bw + 2*26*1.5, sc = Math.min((w - 40)/maxW, (h - 60)/27);
-  const g = 34, cx = w/2, bot = g + D*sc, bw = Bw*sc, run = D*s.ratio*sc;
+  const maxW = Bw + 2*26*1.5, sc = Math.min((w - 40)/maxW, (h - 60)/27), g = 34, cx = w/2, bot = g + D*sc, bw = Bw*sc, run = D*s.ratio*sc;
   soilFill(ctx, [[0, g],[cx - bw/2 - run, g],[cx - bw/2, bot],[cx + bw/2, bot],[cx + bw/2 + run, g],[w, g],[w, h],[0, h]]);
   line(ctx, [[0, g],[cx - bw/2 - run, g],[cx - bw/2, bot],[cx + bw/2, bot],[cx + bw/2 + run, g],[w, g]], {color:C.ink, width:2});
-  // 5 ft and 20 ft lines
   [[5,'5 ft: protection required'],[20,'20 ft: PE design']].forEach(([d, l]) => { const y = g + d*sc; line(ctx, [[0, y],[w, y]], {color: d===20 ? C.bad : C.storm, width:1, dash:[4,4]}); text(ctx, l, 6, y - 4, {size:10, color: d===20 ? C.bad : C.storm, halo:C.paper}); });
   worker(ctx, cx, bot);
   if (D >= 4){ ctx.strokeStyle = C.storm; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - bw/2 + 4, bot); ctx.lineTo(cx - bw/2 - run*0.9 - 4, g - 12); ctx.moveTo(cx - bw/2 + 11, bot); ctx.lineTo(cx - bw/2 - run*0.9 + 3, g - 12); ctx.stroke(); }
@@ -291,60 +336,67 @@ P.anim($('trench'), (ctx, w, h, t) => {
   text(ctx, `${(Bw + 2*D*s.ratio).toFixed(1)} ft`, cx, g - 18, {size:11, align:'center', color:C.pencil, weight:'bold'});
 });
 
-/* ---------- SHEET 3: earth pressure + surcharge ---------- */
+/* ---------- SHEET 3: earth pressure ---------- */
 let EP = {};
-function bous(Q, H, x, z){ const m = x/H, n = z/H; return m <= 0.4 ? (Q/(H*H))*0.28*n*n/Math.pow(0.16 + n*n, 3) : (Q/(H*H))*1.77*m*m*n*n/Math.pow(m*m + n*n, 3); }
+function bous(Q, H, x, z){ const m = x/H, nn = z/H; return m <= 0.4 ? (Q/(H*H))*0.28*nn*nn/Math.pow(0.16 + nn*nn, 3) : (Q/(H*H))*1.77*m*m*nn*nn/Math.pow(m*m + nn*nn, 3); }
+const eFlow = P.flow('eFlow', [
+  {s:T`Soil parameters (\(\gamma,\phi,c\)), groundwater, adjacent structures, utilities`, ref:'geotech report'},
+  {s:T`Earth pressure: active \(K_a\) (flexible) or at-rest \(K_0\) (stiff, near footings)`, ref:'Caltrans T&S Ch. 4'},
+  {s:'Surcharges: min 72 psf (top 10 ft), traffic, equipment and outriggers (Boussinesq), stockpiles', ref:'T&S §5-1.01 … 5-1.03 · AASHTO 3.11.6'},
+  {q:'Braced (struts, rakers, tiebacks)?', ref:'system choice', test:s=>s.braced, yes:'Apparent pressure envelope for struts/wales (sheet 4)', no:'Cantilever: embedment from moment equilibrium, FS on K<sub>p</sub>', main:null},
+  {s:'Water: hydrostatic + seepage; piping and basal heave checks', ref:'sheet 5'},
+  {s:'Members: sheets/soldier piles + lagging, wales, struts (AISC, NDS); deflection and settlement; sequence and monitoring', ref:'AISC · NDS', end:true}
+]);
 function earth(){
-  const H=+$('eH').value, phi=+$('ePhi').value, g=+$('eG').value, q=+$('eS').value, Q=+$('eP').value*1000;
-  let x = +$('eX').value;
+  const H=+$('eH').value, phi=+$('ePhi').value, g=+$('eG').value, q=+$('eS').value, Q=+$('eP').value*1000, x=+$('eX').value;
   $('eHo').textContent = H+' ft'; $('ePhio').textContent = phi+'°'; $('eGo').textContent = g+' pcf'; $('eSo').textContent = q+' psf'; $('ePo').textContent = (Q/1000)+' k';
   if (!$('eAuto').checked || P.reduce || EP.x == null) EP.x = x;
-  $('eXo').textContent = (EP.x ?? x).toFixed(1)+' ft';
+  $('eXo').textContent = EP.x.toFixed(1)+' ft';
   const Ka = Math.pow(Math.tan((45 - phi/2)*Math.PI/180), 2), K0 = 1 - Math.sin(phi*Math.PI/180), Kp = Math.pow(Math.tan((45 + phi/2)*Math.PI/180), 2);
   Object.assign(EP, {H, phi, g, q, Q, Ka, K0, Kp});
-  calcEP();
-  if (P.reduce) P.redraw();
+  calcEP(); if (P.reduce) P.redraw();
 }
 function calcEP(){
   const {H, g, q, Q, Ka} = EP, x = EP.x;
   const Pa = 0.5*Ka*g*H*H/1000, Pq = Ka*q*H/1000;
-  let Po = 0, Mo = 0, pk = 0, zpk = 0;
-  for (let i=0;i<200;i++){ const z = H*(i+0.5)/200, s = bous(Q, H, x, z); Po += s*H/200; Mo += s*H/200*(H - z); if (s > pk){ pk = s; zpk = z; } }
-  EP.Pa = Pa; EP.Pq = Pq; EP.Po = Po/1000; EP.pk = pk; EP.zpk = zpk;
+  let Po = 0, pk = 0, zpk = 0;
+  for (let i=0;i<200;i++){ const z = H*(i+0.5)/200, s = bous(Q, H, x, z); Po += s*H/200; if (s > pk){ pk = s; zpk = z; } }
+  Object.assign(EP, {Pa, Pq, Po: Po/1000, pk, zpk});
   $('eA').textContent = Pa.toFixed(2); $('eQ').textContent = Pq.toFixed(2); $('eO').textContent = (Po/1000).toFixed(2);
-  $('eEq').innerHTML = `K<sub>a</sub> = tan²(45 − ${EP.phi}/2) = ${Ka.toFixed(3)} · K<sub>0</sub> = ${EP.K0.toFixed(3)} · K<sub>p</sub> = ${EP.Kp.toFixed(2)}<br>Active: ½K<sub>a</sub>γH² = <b>${Pa.toFixed(2)} k/ft</b> at H/3 · Surcharge: K<sub>a</sub>qH = <b>${Pq.toFixed(2)} k/ft</b> at H/2${Ka*q < 72 ? ' <span class="c">(K<sub>a</sub>q = ' + (Ka*q).toFixed(0) + ' psf < Caltrans 72 psf lateral minimum over the top 10 ft)</span>' : ''}<br>Outrigger ${(Q/1000)} k at x = ${x.toFixed(1)} ft (m = ${(x/H).toFixed(2)}): ΣP = <b>${(Po/1000).toFixed(2)} k/ft</b> at peak plane · σ<sub>max</sub> = ${pk.toFixed(0)} psf at z = ${zpk.toFixed(1)} ft<br><span class="c">Outrigger adds ${((Po/1000)/(Pa+Pq)*100).toFixed(0)}% to the active + surcharge thrust</span>`;
+  const m = x/H;
+  P.sheet('eSheet', [
+    ['h', `H = ${H} ft · φ = ${EP.phi}° · γ = ${g} pcf · q = ${q} psf · Q = ${Q/1000} k at x = ${x.toFixed(1)} ft`],
+    ['r', 'Rankine', T`K_a=\tan^2(45-${EP.phi}/2)=${n(Ka,3)},\ \ K_0=${n(EP.K0,3)},\ \ K_p=${n(EP.Kp,2)}`],
+    ['r', 'active', T`P_a=\tfrac12(${n(Ka,3)})(${g})(${n(H,1)})^2=${n(Pa,2)}\ \text{k/ft at}\ H/3`],
+    ['r', 'uniform surcharge', T`P_q=K_aqH=${n(Ka,3)}(${q})(${n(H,1)})=${n(Pq,2)}\ \text{k/ft}\ \ (K_aq=${n(Ka*q,0)}\ \text{psf}${Ka*q<72?T`<72\ \text{Caltrans min}`:''})`],
+    ['r', 'point load', T`m=\frac{${n(x,1)}}{${n(H,1)}}=${n(m,2)}\ ${m<=0.4?T`\le`:'>'}\ 0.4\ \Rightarrow\ \sigma_{h,max}=${n(pk,0)}\ \text{psf at}\ z=${n(zpk,1)}\ \text{ft}`],
+    ['r', 'integrate', T`P_{out}=\int_0^H\sigma_h\,dz=${n(Po/1000,2)}\ \text{k/ft (peak plane)}\ \Rightarrow\ +${n((Po/1000)/(Pa+Pq)*100,0)}\%`],
+    ['n', 'Spreading the point-load thrust along the wall (cos²(1.1θ)) is a judgment call, so state your assumption. Put the outrigger on mats and keep it back to reduce m·n effects.']
+  ]);
+  eFlow.update({braced: true});
 }
 $('eX').addEventListener('input', () => { $('eAuto').checked = false; });
 P.bind(['eH','ePhi','eG','eS','eP','eX','eAuto'], earth);
 let epLast = 0;
 P.anim($('ep'), (ctx, w, h, t) => {
-  if ($('eAuto').checked && !P.reduce){ EP.x = 3 + 22*(0.5 + 0.5*Math.cos(t*0.4)); if (t - epLast > 0.15){ epLast = t; calcEP(); $('eXo').textContent = EP.x.toFixed(1)+' ft'; $('eX').value = EP.x.toFixed(1); } }
+  if ($('eAuto').checked && !P.reduce){ EP.x = 3 + 22*(0.5 + 0.5*Math.cos(t*0.4)); if (t - epLast > 0.4){ epLast = t; calcEP(); $('eXo').textContent = EP.x.toFixed(1)+' ft'; $('eX').value = EP.x.toFixed(1); } }
   if (!EP.H) return;
   const H = EP.H, g0 = 70, sc = (h - g0 - 20)/H, wallX = w*0.36;
-  const exc = [[0, g0],[wallX, g0],[wallX, g0 + H*sc],[0, g0 + H*sc]];
-  // retained soil on right
   line(ctx, [[wallX, g0],[w, g0],[w, h],[0, h],[0, g0 + H*sc],[wallX, g0 + H*sc]], {color:C.soil, width:1, fill:C.soil, alpha:0.3, close:true});
   line(ctx, [[0, g0 + H*sc],[wallX, g0 + H*sc]], {color:C.ink, width:2});
   line(ctx, [[wallX, g0],[w, g0]], {color:C.ink, width:2});
-  // sheet / soldier pile wall
   ctx.fillStyle = C.steel; ctx.fillRect(wallX - 5, g0 - 8, 10, H*sc + 28);
-  // struts
   for (const f of [0.2, 0.6]){ ctx.fillStyle = C.ink; ctx.fillRect(14, g0 + f*H*sc - 3, wallX - 19, 6); }
-  // crane outrigger
   const ox = wallX + EP.x*sc;
   if (ox < w - 10){
     ctx.fillStyle = C.timber; ctx.fillRect(ox - 12, g0 - 6, 24, 6);
     ctx.fillStyle = C.storm; ctx.fillRect(ox - 4, g0 - 36, 8, 30); ctx.fillRect(ox - 4, g0 - 40, 70, 8);
     arrow(ctx, ox, g0 - 60, ox, g0 - 8, {color:C.pencil, width:2.5, head:8});
     text(ctx, `${EP.Q/1000} k`, ox + 8, g0 - 48, {size:11, color:C.pencil, weight:'bold'});
-    // pressure bulb (2:1-ish visual)
     ctx.save(); ctx.globalAlpha = 0.16; ctx.fillStyle = C.pencil; for (const k of [1, 0.66, 0.33]){ ctx.beginPath(); ctx.ellipse(ox, g0 + 3*sc*k, 5*sc*k + 6, 6*sc*k + 6, 0, 0, 7); ctx.fill(); } ctx.restore();
   }
-  // pressure diagram drawn on the excavation side (left of wall)
   const pmax = Math.max(EP.Ka*EP.g*H + EP.Ka*EP.q + EP.pk, 1), psc = (wallX - 40)/pmax;
-  const pts = [[wallX - 8, g0]];
-  for (let i=0;i<=60;i++){ const z = H*i/60, p = EP.Ka*EP.g*z + EP.Ka*EP.q + bous(EP.Q, H, EP.x, z); pts.push([wallX - 8 - p*psc, g0 + z*sc]); }
-  pts.push([wallX - 8, g0 + H*sc]);
+  const pts = [[wallX - 8, g0]]; for (let i=0;i<=60;i++){ const z = H*i/60, p = EP.Ka*EP.g*z + EP.Ka*EP.q + bous(EP.Q, H, EP.x, z); pts.push([wallX - 8 - p*psc, g0 + z*sc]); } pts.push([wallX - 8, g0 + H*sc]);
   const act = [[wallX - 8, g0]]; for (let i=0;i<=60;i++){ const z = H*i/60; act.push([wallX - 8 - (EP.Ka*EP.g*z + EP.Ka*EP.q)*psc, g0 + z*sc]); } act.push([wallX - 8, g0 + H*sc]);
   line(ctx, pts, {color:C.pencil, width:2, fill:C.pencil, alpha:0.25, close:true});
   line(ctx, act, {color:C.s1, width:1.5, fill:C.s1, alpha:0.18, close:true});
@@ -354,38 +406,33 @@ P.anim($('ep'), (ctx, w, h, t) => {
 
 /* ---------- SHEET 4: Peck ---------- */
 let pk = 'sand', PK = {};
-P.chips('pkChips', d => { pk = d.s; peck(); });
 function peck(){
   const H=+$('bH').value, N=+$('bN').value, phi=+$('bPhi').value, c=+$('bC').value, g=+$('bG').value, sp=+$('bSp').value;
   $('bHo').textContent = H+' ft'; $('bNo').textContent = N; $('bPhio').textContent = phi+'°'; $('bCo').textContent = c+' psf'; $('bGo').textContent = g+' pcf'; $('bSpo').textContent = sp+' ft';
-  const Ka = Math.pow(Math.tan((45 - phi/2)*Math.PI/180), 2);
-  let p, shape, note;
-  const Nst = g*H/c;
-  if (pk === 'sand'){ p = 0.65*Ka*g*H; shape = 'rect'; note = `p = 0.65K<sub>a</sub>γH = 0.65 × ${Ka.toFixed(3)} × ${g} × ${H} = <b>${p.toFixed(0)} psf</b> (uniform)`; }
-  else if (pk === 'soft'){ const Kc = 1 - 4*c/(g*H); p = Math.max(Kc*g*H, 0.3*g*H); shape = 'soft'; note = `γH/c = ${Nst.toFixed(1)}${Nst<=4?' <span class="c">(≤ 4: stiff-clay envelope fits better)</span>':''}<br>K<sub>a</sub> = 1 − 4c/γH = ${Kc.toFixed(2)} → p = max(K<sub>a</sub>γH, 0.3γH) = <b>${p.toFixed(0)} psf</b>`; }
-  else { p = 0.3*g*H; shape = 'stiff'; note = `γH/c = ${Nst.toFixed(1)}${Nst>4?' <span class="c">(> 4: soft-clay envelope fits better)</span>':''}<br>p = 0.2–0.4γH → use 0.3γH = <b>${p.toFixed(0)} psf</b>, tapered over the top and bottom 0.25H`; }
+  const Ka = Math.pow(Math.tan((45 - phi/2)*Math.PI/180), 2), Nst = g*H/c;
+  let p, shape, rowP;
+  if (pk === 'sand'){ p = 0.65*Ka*g*H; shape = 'rect'; rowP = ['r', 'sand envelope', T`p=0.65K_a\gamma H=0.65(${n(Ka,3)})(${g})(${H})=${n(p,0)}\ \text{psf (uniform)}`]; }
+  else if (pk === 'soft'){ const Kc = 1 - 4*c/(g*H); p = Math.max(Kc*g*H, 0.3*g*H); shape = 'soft'; rowP = ['r', 'soft–medium clay', T`\frac{\gamma H}{c}=${n(Nst,1)};\ \ p=\max\big(${n(Kc,2)}\gamma H,\ 0.3\gamma H\big)=${n(p,0)}\ \text{psf}`]; }
+  else { p = 0.3*g*H; shape = 'stiff'; rowP = ['r', 'stiff clay', T`\frac{\gamma H}{c}=${n(Nst,1)};\ \ p=0.3\gamma H=${n(p,0)}\ \text{psf, tapered top/bottom }0.25H`]; }
   const pz = z => shape === 'rect' ? p : shape === 'soft' ? (z < 0.25*H ? p*z/(0.25*H) : p) : (z < 0.25*H ? p*z/(0.25*H) : z > 0.75*H ? p*(H - z)/(0.25*H) : p);
-  // strut levels evenly: first at 0.15H then spread to 0.85H
   const lv = Array.from({length:N}, (_,i) => N === 1 ? 0.4*H : lerp(0.15*H, 0.85*H, i/(N-1)));
   const bounds = lv.map((z,i) => [i === 0 ? 0 : (lv[i-1] + z)/2, i === N-1 ? H : (z + lv[i+1])/2]);
-  const loads = bounds.map(([a,b]) => { let s = 0; const n = 100; for (let k=0;k<n;k++){ const z = a + (b-a)*(k+0.5)/n; s += pz(z)*(b-a)/n; } return s; });
-  let heave = '';
-  if (pk !== 'sand'){ const FS = 5.7*c/(g*H); heave = `<br>Basal heave (Terzaghi, wide cut): FS ≈ 5.7c/γH = <b>${FS.toFixed(2)}</b>${FS < 1.5 ? ' <span class="c">(low: deeper wall, lower H or improve the soil)</span>' : ''}`; }
-  $('bEq').innerHTML = note + `<br>Strut loads (tributary, × ${sp} ft spacing): ${loads.map((L,i) => `S${i+1} = <b>${(L*sp/1000).toFixed(1)} k</b>`).join(' · ')}` + heave;
-  PK = {H, p, pz, lv, bounds, loads, sp};
-  if (P.reduce) P.redraw();
+  const loads = bounds.map(([a,b]) => { let s = 0; const nn = 100; for (let k=0;k<nn;k++){ const z = a + (b-a)*(k+0.5)/nn; s += pz(z)*(b-a)/nn; } return s; });
+  const rows = [['h', `Braced cut H = ${H} ft · ${N} strut levels @ ${sp} ft`], rowP,
+    ['r', 'tributary (hinge)', T`S_i=\int_{z_a}^{z_b}p\,dz\times s:\ \ ${loads.map((L,i)=>`S_${i+1}=${n(L*sp/1000,1)}`).join(',\ ')}\ \text{k}`]];
+  if (pk !== 'sand'){ const FS = 5.7*c/(g*H); rows.push(['c', 'basal heave', T`FS=\frac{5.7c_u}{\gamma H}=\frac{5.7(${c})}{${g}(${H})}=${n(FS,2)}\ \ (\text{target}\ge1.5)`, 1.5/FS, ['OK','Low','Heave']]); }
+  P.sheet('bSheet', rows);
+  PK = {H, p, pz, lv, bounds, loads, sp}; if (P.reduce) P.redraw();
 }
 P.bind(['bH','bN','bPhi','bC','bG','bSp'], peck);
+P.chips('pkChips', d => { pk = d.s; peck(); });
 P.anim($('peck'), (ctx, w, h, t) => {
   if (!PK.H) return;
   const g0 = 24, sc = (h - g0 - 24)/PK.H, wallX = w*0.55, psc = (w - wallX - 30)/Math.max(PK.p, 1)*0.9;
-  // wall + excavation
   ctx.fillStyle = C.soil; ctx.globalAlpha = 0.3; ctx.fillRect(wallX, g0, w - wallX, h - g0); ctx.fillRect(0, g0 + PK.H*sc, wallX, h); ctx.globalAlpha = 1;
   ctx.fillStyle = C.steel; ctx.fillRect(wallX - 5, g0 - 6, 10, PK.H*sc + 22);
-  // diagram on soil side
   const pts = [[wallX + 6, g0]]; for (let i=0;i<=80;i++){ const z = PK.H*i/80; pts.push([wallX + 6 + PK.pz(z)*psc, g0 + z*sc]); } pts.push([wallX + 6, g0 + PK.H*sc]);
   line(ctx, pts, {color:C.pencil, width:2, fill:C.pencil, alpha:0.2, close:true});
-  // tributary bands (alternating) + struts with pulsing loads
   PK.bounds.forEach(([a,b], i) => {
     ctx.fillStyle = i % 2 ? C.s1 : C.s3; ctx.globalAlpha = 0.12; ctx.fillRect(wallX + 6, g0 + a*sc, (w - wallX - 36), (b - a)*sc); ctx.globalAlpha = 1;
     const y = g0 + PK.lv[i]*sc;
@@ -399,69 +446,74 @@ P.anim($('peck'), (ctx, w, h, t) => {
 
 /* ---------- SHEET 5: cofferdam ---------- */
 let CF = {};
+const cFlow = P.flow('cFlow', [
+  {s:'Drive sheets (template); install the bracing frame (often pre-assembled and lowered) as you excavate in the wet', ref:'means & methods'},
+  {s:'Excavate in the wet to grade; drive foundation piles; clean the pile surfaces', ref:'—'},
+  {s:'Place the tremie seal continuously (pipe kept embedded); cure', ref:'tremie practice'},
+  {q:'Seal FS against uplift at the design river stage ≥ 1.1?', ref:'buoyancy (sheet calc)', test:s=>s.FS>=1.1, yes:'Dewater in stages, adding or checking bracing each level', no:{s:'Thicker seal, rely on pile bond, or keep it flooded', end:true}, main:'yes'},
+  {s:'Build the footing and pier; backfill; flood before removing bracing; pull sheets', ref:'removal is a designed stage', end:true}
+]);
 function cof(){
   const hw=+$('cH').value, t=+$('cT').value, bond=+$('cBond').value, np=+$('cPiles').value, per=+$('cPer').value;
   $('cHo').textContent = hw+' ft'; $('cTo').textContent = t+' ft'; $('cBondo').textContent = bond+' psi'; $('cPileso').textContent = np; $('cPero').textContent = per+' ft';
-  CF = {hw, t, bond, np, per};
-  cofCalc(hw);
-  if (P.reduce) P.redraw();
+  CF = {hw, t, bond, np, per}; cofCalc(hw, true); if (P.reduce) P.redraw();
 }
-function cofCalc(hNow){
+function cofCalc(hNow, full){
   const {t, bond, np, per} = CF;
-  const U = 62.4*(hNow + t), Wt = 145*t, B = bond*144*per*t*np/100;   // psf over seal area
-  const FS = (Wt + B)/U, FSw = Wt/U;
+  const U = 62.4*(hNow + t), Wt = 145*t, B = bond*144*per*t*np/100, FS = (Wt + B)/U, FSw = Wt/U;
   CF.FS = FS; CF.hNow = hNow;
   $('cFS').textContent = FS.toFixed(2);
   const pl = $('cPill');
   if (FS < 1.0){ pl.className = 'pill ng'; pl.textContent = 'seal floats'; }
   else if (FS < 1.1){ pl.className = 'pill warn'; pl.textContent = 'marginal'; }
   else { pl.className = 'pill ok'; pl.textContent = 'holds'; }
-  const tReq = 62.4*hNow*1.1/(145 - 62.4*1.1);
-  $('cEq').innerHTML = `Uplift at seal bottom = γ<sub>w</sub>(h + t) = 62.4 × (${hNow.toFixed(1)} + ${t}) = <b>${U.toFixed(0)} psf</b><br>Seal weight = 145 × ${t} = ${Wt.toFixed(0)} psf · pile bond ≈ ${B.toFixed(0)} psf<br>FS = (W + bond)/U = <b>${FS.toFixed(2)}</b> (weight alone ${FSw.toFixed(2)})<br><span class="c">Weight alone at FS 1.1 needs t ≈ ${tReq.toFixed(1)} ft for h = ${hNow.toFixed(1)} ft</span>`;
+  if (!full) return;
+  const tReq = 1.1*62.4*hNow/(145 - 1.1*62.4);
+  P.sheet('cSheet', [
+    ['h', `River ${hNow.toFixed(1)} ft above seal · seal ${t} ft`],
+    ['r', 'uplift', T`U=\gamma_w(h+t)=62.4(${n(hNow,1)}+${n(t,1)})=${n(U,0)}\ \text{psf}`],
+    ['r', 'resisting', T`W=145(${n(t,1)})=${n(Wt,0)}\ \text{psf};\ \ \text{bond}=\tau p t n_p=${n(bond*144,0)}(${n(per,2)})(${n(t,1)})(${n(np/100,4)})=${n(B,0)}\ \text{psf}`],
+    ['c', 'FS ≥ 1.1', T`FS=\frac{${n(Wt,0)}+${n(B,0)}}{${n(U,0)}}=${n(FS,2)}\ \ (\text{weight only } ${n(FSw,2)})`, 1.1/FS, ['OK','Marginal','Floats']],
+    ['r', 'weight-only thickness', T`t_{req}=\frac{1.1(62.4)(${n(hNow,1)})}{145-1.1(62.4)}=${n(tReq,1)}\ \text{ft}`]
+  ]);
+  cFlow.update({FS});
 }
 P.bind(['cH','cT','cBond','cPiles','cPer','cFlood'], cof);
 let cLast = 0;
 P.anim($('cof'), (ctx, w, h, t) => {
   if (!CF.t) return;
-  const animate = $('cFlood').checked && !P.reduce;
-  const hNow = animate ? CF.hw*(0.55 + 0.45*(0.5 - 0.5*Math.cos(t*0.5))) : CF.hw;
-  if (animate && t - cLast > 0.2){ cLast = t; cofCalc(hNow); }
-  const tot = CF.hw + CF.t + 8, sc = (h - 30)/tot, mud = h - 14 - 4*sc;
-  const sealTop = mud - CF.t*sc, wl = sealTop - hNow*sc;
-  const L = w*0.3, R = w*0.7;
-  // river outside
+  const animate = $('cFlood').checked && !P.reduce, hNow = animate ? CF.hw*(0.55 + 0.45*(0.5 - 0.5*Math.cos(t*0.5))) : CF.hw;
+  if (animate && t - cLast > 0.2){ cLast = t; cofCalc(hNow, false); }
+  const tot = CF.hw + CF.t + 8, sc = (h - 30)/tot, mud = h - 14 - 4*sc, sealTop = mud - CF.t*sc, wl = sealTop - hNow*sc, L = w*0.3, R = w*0.7;
   ctx.fillStyle = C.water; ctx.globalAlpha = 0.25; ctx.fillRect(0, wl, L, mud - wl); ctx.fillRect(R, wl, w - R, mud - wl); ctx.globalAlpha = 1;
   ctx.strokeStyle = C.water; ctx.lineWidth = 1.5; ctx.beginPath(); for (let x=0;x<=L;x+=6) ctx.lineTo(x, wl + Math.sin(x*0.08 + t*2)*1.5); ctx.stroke();
   ctx.beginPath(); for (let x=R;x<=w;x+=6) ctx.lineTo(x, wl + Math.sin(x*0.08 + t*2)*1.5); ctx.stroke();
-  // riverbed / soil
   ctx.fillStyle = C.soil; ctx.globalAlpha = 0.35; ctx.fillRect(0, mud, w, h - mud); ctx.globalAlpha = 1;
-  // seal (lifts if FS < 1)
   const lift = CF.FS < 1 && !P.reduce ? Math.min(14, (1 - CF.FS)*80)*(0.5 + 0.5*Math.sin(t*3)) : 0;
   ctx.fillStyle = C.concrete; ctx.fillRect(L, sealTop - lift, R - L, CF.t*sc);
-  // piles through seal
   ctx.fillStyle = C.steel; for (let x = L + 30; x < R - 10; x += 50) ctx.fillRect(x - 3, sealTop - lift - 6, 6, (CF.t + 4)*sc + 6);
-  // sheets
   ctx.fillStyle = C.ink; ctx.fillRect(L - 6, Math.min(wl, sealTop) - 20, 6, h - Math.min(wl, sealTop) + 20); ctx.fillRect(R, Math.min(wl, sealTop) - 20, 6, h - Math.min(wl, sealTop) + 20);
-  // wales/struts
   for (let y = sealTop - 30; y > Math.min(wl, sealTop) - 10; y -= 50){ ctx.fillStyle = C.storm; ctx.fillRect(L, y, R - L, 5); }
-  // uplift arrows under seal
-  const n = 6, len = clamp((62.4*(hNow + CF.t))/40, 8, 60);
-  for (let i=0;i<n;i++){ const x = L + (i+0.5)*(R - L)/n; arrow(ctx, x, sealTop - lift + CF.t*sc + len + 4, x, sealTop - lift + CF.t*sc + 2, {color:C.pencil, width:2, head:7}); }
+  const nA = 6, len = clamp((62.4*(hNow + CF.t))/40, 8, 60);
+  for (let i=0;i<nA;i++){ const x = L + (i+0.5)*(R - L)/nA; arrow(ctx, x, sealTop - lift + CF.t*sc + len + 4, x, sealTop - lift + CF.t*sc + 2, {color:C.pencil, width:2, head:7}); }
   text(ctx, 'dewatered', (L+R)/2, sealTop - 40, {size:11, align:'center', color:C['ink-soft']});
   text(ctx, `h = ${hNow.toFixed(1)} ft`, 8, wl - 6, {size:11, color:C.water, weight:'bold'});
 });
 
-/* ---------- SHEET 6: 2:1 spread ---------- */
+/* ---------- SHEET 6: 2:1 ---------- */
 let SP = {};
 function spread(){
   const P0=+$('sP').value, B=+$('sB').value, z=+$('sZ').value, qa=+$('sQa').value, qs=+$('sQs').value;
   $('sPo').textContent = P0+' k'; $('sBo').textContent = B+' × '+B+' ft'; $('sZo').textContent = z+' ft'; $('sQao').textContent = qa+' ksf'; $('sQso').textContent = qs+' ksf';
-  const q0 = P0/(B*B), qz = P0/((B+z)*(B+z));
-  P.meters('sMeters', [{name:'Surface: q₀ / q<sub>allow</sub>', ratio: q0/qs, gov: q0/qs >= qz/qa}, {name:'Weak layer: q<sub>z</sub> / q<sub>allow</sub>', ratio: qz/qa, gov: qz/qa > q0/qs}]);
-  const Bneed = Math.max(Math.sqrt(P0/qs), Math.sqrt(P0/qa) - z);
-  $('sEq').innerHTML = `q₀ = P/B² = ${P0}/${(B*B).toFixed(1)} = <b>${q0.toFixed(2)} ksf</b><br>q<sub>z</sub> = P/(B+z)² = ${P0}/${((B+z)*(B+z)).toFixed(1)} = <b>${qz.toFixed(2)} ksf</b> at ${z} ft<br>Mat width needed ≈ <b>${Math.max(0,Bneed).toFixed(1)} ft</b> square <span class="c">(if the mat is stiff enough to spread)</span>`;
-  SP = {P0, B, z, q0, qz, qa, qs};
-  if (P.reduce) P.redraw();
+  const q0 = P0/(B*B), qz = P0/((B+z)*(B+z)), Bneed = Math.max(Math.sqrt(P0/qs), Math.sqrt(P0/qa) - z);
+  P.meters('sMeters', [{name:'Surface q₀/q<sub>allow</sub>', ratio: q0/qs, gov: q0/qs >= qz/qa}, {name:'Weak layer q<sub>z</sub>/q<sub>allow</sub>', ratio: qz/qa, gov: qz/qa > q0/qs}]);
+  P.sheet('sSheet', [
+    ['h', `P = ${P0} k on ${B}×${B} ft mat · weak layer at ${z} ft`],
+    ['c', 'surface', T`q_0=\frac{${P0}}{${n(B,1)}^2}=${n(q0,2)}\ \text{ksf}\ \text{vs}\ ${n(qs,2)}`, q0/qs],
+    ['c', '2:1 at depth z', T`q_z=\frac{${P0}}{(${n(B,1)}+${n(z,1)})^2}=${n(qz,2)}\ \text{ksf}\ \text{vs}\ ${n(qa,2)}`, qz/qa],
+    ['r', 'size for both', T`B_{req}=\max\left(\sqrt{\tfrac{P}{q_s}},\ \sqrt{\tfrac{P}{q_z}}-z\right)=${n(Math.max(0,Bneed),1)}\ \text{ft (if the mat is stiff enough)}`]
+  ]);
+  SP = {P0, B, z, q0, qz, qa, qs}; if (P.reduce) P.redraw();
 }
 P.bind(['sP','sB','sZ','sQa','sQs'], spread);
 P.anim($('spread'), (ctx, w, h, t) => {
@@ -472,18 +524,14 @@ P.anim($('spread'), (ctx, w, h, t) => {
   ctx.fillStyle = C.water; ctx.globalAlpha = 0.18; ctx.fillRect(0, yz, w, 18); ctx.globalAlpha = 1;
   text(ctx, 'weak clay', 8, yz + 13, {size:10, color:C['ink-soft']});
   line(ctx, [[0, g],[w, g]], {color:C.ink, width:2});
-  // mat + load
   ctx.fillStyle = C.timber; ctx.fillRect(cx - SP.B/2*sc, g - 8, SP.B*sc, 8);
   arrow(ctx, cx, g - 54, cx, g - 10, {color:C.pencil, width:3, head:10});
   text(ctx, SP.P0 + ' k', cx + 8, g - 40, {size:12, weight:'bold', color:C.pencil});
-  // spreading cone animated pulses
   const zmax = SP.z;
   line(ctx, [[cx - SP.B/2*sc, g],[cx - (SP.B/2 + zmax/2)*sc, yz],[cx + (SP.B/2 + zmax/2)*sc, yz],[cx + SP.B/2*sc, g]], {color:C.pencil, width:1.5, fill:C.pencil, alpha:0.12, close:true});
   const ph = P.reduce ? 0.6 : (t*0.5) % 1;
-  for (const k of [0, 0.33, 0.66]){
-    const f = (ph + k) % 1, z = f*zmax, half = (SP.B/2 + z/2)*sc, y = g + z*sc;
-    ctx.strokeStyle = C.pencil; ctx.globalAlpha = 1 - f; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - half, y); ctx.lineTo(cx + half, y); ctx.stroke(); ctx.globalAlpha = 1;
-  }
+  for (const k of [0, 0.33, 0.66]){ const f = (ph + k) % 1, z = f*zmax, half = (SP.B/2 + z/2)*sc, y = g + z*sc;
+    ctx.strokeStyle = C.pencil; ctx.globalAlpha = 1 - f; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx - half, y); ctx.lineTo(cx + half, y); ctx.stroke(); ctx.globalAlpha = 1; }
   text(ctx, '2V : 1H', cx + (SP.B/2 + zmax/4)*sc + 8, g + zmax*sc/2, {size:10, color:C.pencil, halo:C.paper});
   text(ctx, `${SP.qz.toFixed(2)} ksf`, cx, yz + 32, {size:12, align:'center', weight:'bold', color: SP.qz > SP.qa ? C.bad : C.ink, halo:C.paper});
 });
@@ -494,42 +542,41 @@ function barge(){
   const L=+$('gL').value, B=+$('gB').value, D=+$('gD').value, W=+$('gW').value, KG=+$('gKG').value, wl=+$('gwl').value, y=+$('gy').value, tip=+$('gTip').value;
   $('gLo').textContent = L+' ft'; $('gBo').textContent = B+' ft'; $('gDo').textContent = D+' ft'; $('gWo').textContent = W+' k'; $('gKGo').textContent = KG+' ft';
   $('gwlo').textContent = wl+' k'; $('gyo').textContent = y+' ft'; $('gTipo').textContent = tip+' ft';
-  const Dt = W + wl, T = Dt/(0.064*L*B), KB = T/2, BM = B*B/(12*T), KGt = (W*KG + wl*tip)/Dt, GM = KB + BM - KGt;
-  const list = GM > 0 ? Math.atan(wl*y/(Dt*GM))*180/Math.PI : 90;
-  const fb = D - T, immerse = Math.atan(fb/(B/2))*180/Math.PI;
+  const Dt = W + wl, Tt = Dt/(0.064*L*B), KB = Tt/2, BM = B*B/(12*Tt), KGt = (W*KG + wl*tip)/Dt, GM = KB + BM - KGt;
+  const list = GM > 0 ? Math.atan(wl*y/(Dt*GM))*180/Math.PI : 90, fb = D - Tt, immerse = Math.atan(fb/(B/2))*180/Math.PI;
   $('bgL').textContent = list.toFixed(1); $('bgGM').textContent = GM.toFixed(1); $('bgF').textContent = fb.toFixed(1);
   const pl = $('bgPill');
   if (GM <= 0 || list >= immerse){ pl.className = 'pill ng'; pl.textContent = GM <= 0 ? 'unstable (GM ≤ 0)' : 'deck edge immerses'; }
   else if (list > 3){ pl.className = 'pill warn'; pl.textContent = 'list > typical crane limit'; }
   else { pl.className = 'pill ok'; pl.textContent = 'within a few degrees'; }
-  $('gEq').innerHTML = `Δ = ${Dt} k → draft T = Δ/(64 pcf × L × B) = <b>${T.toFixed(2)} ft</b> · freeboard ${fb.toFixed(2)} ft<br>KB = T/2 = ${KB.toFixed(2)} · BM = B²/12T = ${BM.toFixed(1)} · KG (load at tip) = ${KGt.toFixed(2)} ft<br>GM = <b>${GM.toFixed(1)} ft</b> · list = atan(w·y/(Δ·GM)) = <b>${list.toFixed(1)}°</b><br><span class="c">Deck edge immerses at ≈ ${immerse.toFixed(1)}°. Seawater 64 pcf; small-angle box-barge model.</span>`;
-  BG = {L, B, D, T, list, GM, y, tip, wl, KGt, KB, BM};
-  if (P.reduce) P.redraw();
+  P.sheet('gSheet', [
+    ['h', `Box barge ${L}×${B}×${D} ft · seawater 64 pcf`],
+    ['r', 'draft', T`T=\frac{\Delta}{\gamma LB}=\frac{${n(Dt,0)}}{0.064(${L})(${B})}=${n(Tt,2)}\ \text{ft}\ \ (\text{freeboard } ${n(fb,2)})`],
+    ['r', 'KB, BM', T`KB=\tfrac{T}{2}=${n(KB,2)},\ \ BM=\frac{B^2}{12T}=\frac{${B}^2}{12(${n(Tt,2)})}=${n(BM,1)}\ \text{ft}`],
+    ['r', 'KG (load at tip)', T`KG=\frac{${n(W,0)}(${n(KG,1)})+${n(wl,0)}(${n(tip,0)})}{${n(Dt,0)}}=${n(KGt,2)}\ \text{ft}`],
+    ['r', 'GM', T`GM=${n(KB,2)}+${n(BM,1)}-${n(KGt,2)}=${n(GM,1)}\ \text{ft}`],
+    ['c', 'list vs 3° (typical)', T`\theta=\tan^{-1}\frac{${n(wl,0)}(${n(y,0)})}{${n(Dt,0)}(${n(GM,1)})}=${n(list,1)}^\circ\ \ (\text{deck edge at } ${n(immerse,1)}^\circ)`, list/3, ['OK','Tight','Over']]
+  ]);
+  BG = {L, B, D, T:Tt, list, GM, y, tip, wl}; if (P.reduce) P.redraw();
 }
 P.bind(['gL','gB','gD','gW','gKG','gwl','gy','gTip'], barge);
 let bgAng = 0;
 P.anim($('barge'), (ctx, w, h, t, dt) => {
   if (!BG.B) return;
-  const target = clamp(BG.list, 0, 25)*Math.PI/180;
-  bgAng += (target - bgAng)*Math.min(1, P.reduce ? 1 : dt*2);
-  const bob = P.reduce ? 0 : Math.sin(t*1.3)*0.008;
-  const sc = Math.min((w*0.6)/BG.B, (h*0.35)/BG.D), cx = w*0.4, wlY = h*0.62;
-  // water
+  bgAng += (clamp(BG.list, 0, 25)*Math.PI/180 - bgAng)*Math.min(1, P.reduce ? 1 : dt*2);
+  const bob = P.reduce ? 0 : Math.sin(t*1.3)*0.008, sc = Math.min((w*0.6)/BG.B, (h*0.35)/BG.D), cx = w*0.4, wlY = h*0.62;
   ctx.fillStyle = C.water; ctx.globalAlpha = 0.25; ctx.fillRect(0, wlY, w, h - wlY); ctx.globalAlpha = 1;
   ctx.strokeStyle = C.water; ctx.lineWidth = 1.5; ctx.beginPath(); for (let x=0;x<=w;x+=6) ctx.lineTo(x, wlY + Math.sin(x*0.05 + t*1.5)*2); ctx.stroke();
   ctx.save(); ctx.translate(cx, wlY); ctx.rotate(bgAng + bob);
-  // hull: keel at T below waterline
   const hw = BG.B/2*sc, keel = BG.T*sc, deck = (BG.D - BG.T)*sc;
   ctx.fillStyle = C.steel; ctx.fillRect(-hw, -deck, 2*hw, deck + keel);
   ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(-hw, -deck, 2*hw, deck + keel);
-  // crane on deck at center, boom out to +y
   ctx.fillStyle = C.storm; ctx.fillRect(-14, -deck - 22, 28, 22);
-  const ty = -keel - BG.tip*sc*0.35, tx = Math.min(BG.y*sc, w*0.55);
-  ctx.strokeStyle = C.storm; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(6, -deck - 18); ctx.lineTo(tx, ty); ctx.stroke();
+  const ty = -keel - BG.tip*sc*0.35, txx = Math.min(BG.y*sc, w*0.55);
+  ctx.strokeStyle = C.storm; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(6, -deck - 18); ctx.lineTo(txx, ty); ctx.stroke();
   ctx.restore();
-  // load hangs plumb from tip (in world coords)
   const c = Math.cos(bgAng + bob), s = Math.sin(bgAng + bob);
-  const tipX = cx + (Math.min(BG.y*sc, w*0.55))*c - (-BG.T*sc - BG.tip*sc*0.35)*s, tipY = wlY + (Math.min(BG.y*sc, w*0.55))*s + (-BG.T*sc - BG.tip*sc*0.35)*c;
+  const tipX = cx + txx*c - ty*s, tipY = wlY + txx*s + ty*c;
   ctx.strokeStyle = C.ink; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(tipX, tipY); ctx.lineTo(tipX, Math.min(wlY - 10, tipY + 70)); ctx.stroke();
   ctx.fillStyle = C.concrete; ctx.fillRect(tipX - 10, Math.min(wlY - 10, tipY + 70), 20, 12);
   text(ctx, `${BG.list.toFixed(1)}°`, cx - BG.B/2*sc - 10, wlY - 10, {size:13, weight:'bold', align:'right', color:C.pencil, halo:C.paper});
@@ -537,13 +584,13 @@ P.anim($('barge'), (ctx, w, h, t, dt) => {
 
 /* ---------- cards ---------- */
 P.cards('cards', [
-  ["A 12-ft trench in Type B soil. What are your options?", "Slope at 1:1 (45°), so the top width is the bottom width + 24 ft. Or bench (allowed in Type B cohesive). Or use tabulated shoring or a trench box per the manufacturer's data. Add a ladder within 25 ft, spoil 2 ft back, and daily competent-person inspection. Deeper than 20 ft needs a PE design."],
-  ["A crane outrigger with 120 k sits 8 ft behind 15 ft of shoring. How do you account for it?", "As a point-load surcharge with the modified Boussinesq solution for a rigid wall (m = x/H = 0.53, so use the m > 0.4 formula). Integrate the lateral pressure over depth, add it to active plus uniform surcharge, and check sheets or lagging, wales and struts. Or move the crane or add mats to reduce it. Coordinate the crane position with the shoring design."],
-  ["Why are Peck's apparent pressure diagrams trapezoidal or rectangular?", "They're envelopes of measured strut loads in braced cuts, not true pressure distributions. They account for arching and the construction sequence. Use them for struts and wales, and check embedment and basal heave separately."],
-  ["How thick does a tremie seal need to be if it relies on weight alone?", "Uplift γ<sub>w</sub>(h + t) must be resisted by γ<sub>c</sub>t × FS, which gives roughly t ≈ 0.75h at FS 1.0 and about 0.9h at FS 1.1 (145 pcf concrete). Bond to foundation piles allows thinner seals. Then check seal flexure between piles."],
-  ["What is piping/boiling and how do you prevent it?", "Upward seepage at the excavation bottom reduces effective stress. When the exit gradient approaches γ'/γ<sub>w</sub> ≈ 1, the soil boils. Prevent it with deeper sheet penetration, relief wells or dewatering, a tremie seal, or by keeping the inside flooded until the seal cures."],
-  ["A crane on a barge picks a load and swings it out. Where do you put the load's weight in the stability calc?", "At the boom tip (the point of suspension), not at the hook. That raises KG and reduces GM. Then list ≈ atan(w·y/(Δ·GM)). Compare it with the crane's barge-chart list limit and with deck-edge immersion, and counterballast if needed."],
-  ["How do you check a crane mat on a soft clay layer 6 ft down?", "Check bearing at the surface, then spread at 2V:1H: q<sub>z</sub> = P/((B+z)(L+z)). Compare that with the clay's allowable (≈ 5–6c<sub>u</sub>/FS undrained). Confirm the mat is stiff enough to actually spread the load (NDS bending and shear), or use steel mats or a load-spreading pad."]
+  ['A 12 ft trench in Type B soil: options?', T`Slope 1:1 (45°), so the top width is bottom + 24 ft (App. B). Or bench (Type B cohesive). Or tabulated shoring or a trench box per the manufacturer (652(c)(2)). Ladder within 25 ft (651(c)(2)), spoil 2 ft back (651(j)(2)), daily inspection. Over 20 ft requires a PE design.`],
+  ['A 120 k outrigger sits 8 ft behind 15 ft of shoring. How do you account for it?', T`Point surcharge, modified Boussinesq: \(m=8/15=0.53>0.4\Rightarrow\sigma_h=\frac{Q}{H^2}\frac{1.77m^2n^2}{(m^2+n^2)^3}\). Integrate over depth and add to active and uniform surcharge (\(\ge\) Caltrans 72 psf). Check sheets, wales and struts. Or move or mat the crane.`],
+  ['Why are Peck diagrams trapezoidal or rectangular?', 'They are envelopes of measured strut loads in braced cuts, not true pressures. They capture arching and sequence. Use them for struts and wales. Check embedment and basal heave separately.'],
+  ['How thick must a tremie seal be on weight alone?', T`\(\gamma_c t\ge FS\,\gamma_w(h+t)\Rightarrow t=\frac{FS\,\gamma_wh}{\gamma_c-FS\,\gamma_w}\): about \(0.75h\) at FS 1.0 and \(0.9h\) at FS 1.1 (145 pcf). Pile bond allows thinner seals. Then check seal flexure between piles.`],
+  ['What is piping/boiling and how do you prevent it?', T`Upward seepage at the excavation bottom; failure when the exit gradient \(\to i_c=\gamma'/\gamma_w\approx1\). Use deeper sheets, relief wells or dewatering, a tremie seal, or keep the cofferdam flooded until the seal cures.`],
+  ['Where do you put a suspended load in barge stability?', T`At the boom tip. \(KG\) rises and \(GM=KB+BM-KG\) drops. List \(\approx\tan^{-1}\frac{wy}{\Delta GM}\). Compare with the barge-chart limit and deck-edge immersion, and counterballast.`],
+  ['Crane mat on soft clay 6 ft down?', T`Surface bearing, then \(q_z=\frac{P}{(B+z)(L+z)}\) vs the clay allowable (\(\approx5\)–\(6c_u\)/FS). Confirm the mat is stiff enough to spread the load (NDS bending/shear), or use steel mats.`]
 ]);
 })();
 </script>

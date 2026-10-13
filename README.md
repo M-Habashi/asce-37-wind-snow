@@ -12,6 +12,8 @@ Interactive study pages for a temporary-structures engineering interview.
   - `prep/falsework.html`: ACI 347 form pressure, Caltrans falsework loads, the load path, an NDS joist check, and reshoring.
   - `prep/ground.html`: OSHA trench rules, Rankine + Boussinesq surcharge, Peck envelopes, a tremie seal, 2:1 spread, and barge stability.
 
+Every module renders its equations in LaTeX (KaTeX), shows calculations as calc sheets with code section and equation references, includes flowcharts that highlight the path your inputs take, and ends with a common-values sheet.
+
 Open the pages in a browser. Google Fonts load when a network connection is available; otherwise the pages fall back to system fonts.
 
 This is an educational aid. Values marked "verify" come from memory or secondary sources. Check every provision against the current licensed standards, the project specification, and the authority having jurisdiction before using it in design.

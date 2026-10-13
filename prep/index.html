@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <link rel="stylesheet" href="assets/prep.css">
 <script src="assets/prep.js"></script>
 <style>
@@ -196,7 +199,7 @@ const MODS = [
   ['loads.html','Loads 7 → 37','ASCE 7 combos, ASCE 37 C-loads, personnel classes, the 2% family, wall form in wind',['C_FML vs C_VML','C_H not with W','RC II, V × 0.75–0.90']],
   ['steel.html','AISC for temp works','Column curve, K, LTB and C<sub>b</sub>, App. 6 bracing stiffness, B<sub>1</sub>, bolts and welds, Subpart R',['flagpole K = 2.1','brace: strength + stiffness','1:500 plumb']],
   ['lifting.html','Lifting & rigging','Sling CG equilibrium, spreader vs beam, BTH-1 padeye, % of chart, track pressure, 0.207L, power lines',['T = W/(n sin θ)','N_d 2 / 3','critical lift > 75%']],
-  ['bridges.html','AASHTO & temp bridges','Limit states, Art. 3.4.2, HL-93, crane on a trestle, stream flow, twin-girder system buckling',['γ ≥ 1.5 on construction loads','HL-93 1,525 k-ft @100 ft','M_gs ∝ s']],
+  ['bridges.html','AASHTO & temp bridges','Limit states, Art. 3.4.2, HL-93, crane on a trestle, stream flow, twin-girder system buckling',['γ ≥ 1.5 on construction loads (3.4.2.1)','HL-93 1,525 k-ft @100 ft','ΣM_u ≤ 0.5 M_gs (6.10.3.4.2)']],
   ['falsework.html','Falsework & formwork','ACI 347 pressure, Caltrans loads, load path, NDS joist, reshoring, OSHA 1926.703',['150 + 9000R/T','160 pcf · 20 psf · 100 psf','L/240']],
   ['ground.html','Ground & water','OSHA trench rules, Rankine + Boussinesq, Peck envelopes, tremie seal, 2:1 spread, barge GM',['5 ft / 20 ft','seal ≈ 0.75h','load at boom tip']],
   ['../index.html','Wind & snow (ASCE 37)','Your first sheet set: construction-period wind factors, hurricane option, snow',['0.75² = 0.56','115 mph rules','0.8 p_g']]
@@ -244,34 +247,37 @@ let stepAuto = !P.reduce; step(0);
 setInterval(() => { if (stepAuto) step((stepI + 1) % STEPS.length); }, 5000);
 
 /* ---------- drill ---------- */
+const T = String.raw;
 const DRILL = [
-  ['loads','What does ASCE 37 do to the design wind speed for a 5-week falsework condition, and why?','Multiplies V by 0.75, so pressure drops to 0.56 of permanent. The aim is the same exceedance probability over the short exposure as a permanent structure over its design life.'],
-  ['loads','Why is C<sub>VML</sub> factored higher than C<sub>FML</sub>?','Stockpiles and wet concrete vary and get overloaded. Installed formwork is fixed and known. Higher uncertainty means a higher load factor.'],
-  ['loads','Minimum horizontal load on falsework?','The larger of actual horizontal loads or 2% of total dead load (Caltrans / AASHTO guide), at the top of posts, any direction, loaded and unloaded. Wind is a separate check.'],
-  ['steel','K for an unbraced post fixed at the base?','Flagpole: theoretical 2.0, recommended design value 2.1.'],
-  ['steel','What two things does a stability brace need?','Strength (e.g. 1% P<sub>r</sub> nodal for columns) and stiffness (≈ 2× ideal: (1/φ)(8P<sub>r</sub>/L<sub>br</sub>) nodal).'],
-  ['steel','E70 fillet weld strength per inch per sixteenth?','1.392 k/in LRFD (0.928 ASD).'],
-  ['lift','Sling tension at 45° in a 2-leg bridle carrying 40 k?','40/(2 × sin 45°) = 28.3 k per leg (factor 1.414).'],
-  ['lift','BTH-1 design categories?','A: N<sub>d</sub> = 2.00 (predictable loads, defined conditions). B: N<sub>d</sub> = 3.00 (unknown or severe conditions; the usual default). Service classes 0–4 by cycles.'],
-  ['lift','Three failure modes of a padeye per BTH-1?','Tension through the pinhole (C<sub>r</sub>, b<sub>eff</sub>), double-plane shear beyond the hole, and bearing. Plus the welds and the base metal.'],
-  ['lift','Why does the load tilt when the CG isn\'t centered?','The rigid sling–load triangle hangs from the hook. Equilibrium needs the CG directly under the hook, so it rotates until it is.'],
-  ['lift','Personnel platform capacity limit?','50% of the crane\'s rated capacity (OSHA 1926.1431).'],
-  ['lift','Power-line clearance for a 115 kV line?','15 ft minimum (Table A: 50–200 kV). Or use the 20 ft rule for lines up to 350 kV.'],
-  ['bridge','AASHTO construction load factor?','At least 1.5 for construction loads in Strength I. DC and DW at least 1.25 in Strength I, III and V during construction. Service I for construction deflection.'],
-  ['bridge','HL-93 components?','Design truck (8-32-32 k, 14 ft + 14–30 ft) or tandem (2 × 25 k at 4 ft), plus 0.64 klf lane. IM 33% on truck or tandem only.'],
-  ['bridge','Twin-girder system buckling depends on what?','Girder spacing s, span L, and I<sub>x</sub>, I<sub>y</sub> of one girder: M<sub>gs</sub> = C<sub>b</sub>π²sE√(I<sub>y</sub>I<sub>x</sub>)/L². Not on cross-frame spacing.'],
-  ['bridge','Stream pressure on a round pile?','p = C<sub>D</sub>V²/1000 ksf with C<sub>D</sub> = 0.7 (1.4 for square or debris).'],
-  ['fw','ACI 347 column pressure formula?','CP<sub>max</sub> = C<sub>w</sub>C<sub>c</sub>[150 + 9,000R/T], at least 600C<sub>w</sub>, at most wh.'],
-  ['fw','When do you design for full liquid head?','SCC, slump > 7 in, vibration deeper than 4 ft, wall placement faster than 15 ft/hr, or pumping from the bottom.'],
-  ['fw','Caltrans falsework vertical loads?','160 pcf (concrete, rebar and forms), 20 psf live, 75 plf at the deck edge, 100 psf minimum total.'],
-  ['fw','NDS C<sub>D</sub> for construction loads?','1.25 (7-day duration). Not applied to E or F<sub>c⊥</sub>.'],
-  ['ground','When does OSHA require a PE-designed protective system?','For excavations deeper than 20 ft (and for any system outside the tabulated options).'],
-  ['ground','Max allowable slope in Type C soil?','1½H : 1V (34°).'],
-  ['ground','Where does a suspended load act for barge stability?','At the boom tip (point of suspension). That raises KG and cuts GM.'],
-  ['ground','2:1 pressure at depth z under a B × L pad?','q<sub>z</sub> = P/((B + z)(L + z)).'],
-  ['soft','"Tell me about a time you made a mistake in a design."','STAR: the situation, how you or a checker found it, what you did immediately (told people, stopped work if needed), the fix, and the process change. Own it, keep it short, and end on the system improvement.'],
-  ['soft','"Why temporary structures?"','Engineering that gets built next week: stability, judgment, field contact, and variety (lifts, falsework, marine, erection). Connect it to your ASCE 7, AISC and construction-manual coursework and this preparation.'],
-  ['soft','"How do you handle a superintendent who wants to skip a brace?"','Understand why (access? schedule?), explain the load path and the risk in field terms, offer an alternative that works for both, and never sign off something you don\'t believe in. Escalate if needed.']
+  ['loads', T`ASCE 37 wind for a 5-week falsework condition, and why?`, T`\(V_c=0.75V\) (§6.2.1), so pressure \(\propto V^2\) is \(0.56\times\) permanent. The idea is the same exceedance probability over the short exposure as the permanent structure has over its design life.`],
+  ['loads', T`Why is \(C_{VML}\) factored higher than \(C_{FML}\)?`, 'Stockpiles and wet concrete vary and get overloaded. Installed formwork is fixed and known. More uncertainty means a higher factor (37-02: 1.4 vs 1.2).'],
+  ['loads', 'Minimum horizontal load on falsework?', T`\(\max(\text{actual},\ 0.02\sum DL)\) at the top of posts, any direction, loaded and unloaded (Caltrans FW §3-3.02). Wind is a separate check.`],
+  ['loads', T`Combination for overturning a temporary tower?`, T`\(0.9D+1.0W\) (7-10 §2.3.2 combo 6; 7-16 combo 5) or ASD \(0.6D+0.6W\), with only the dead load in place at that stage.`],
+  ['steel', 'K for an unbraced post fixed at the base?', T`Flagpole: theoretical 2.0, recommended 2.1 (Comm. Table C-A-7.1).`],
+  ['steel', 'Two things a stability brace needs?', T`Strength \(P_{br}=0.01P_r\) (A-6-3) and stiffness \(\beta_{br}=\frac{1}{\phi}\frac{8P_r}{L_{br}}\) (A-6-4a), checked against \(\beta_{sys}\) with \(k=\frac{AE}{L}\cos^2\theta\) in series with the connections.`],
+  ['steel', 'E70 fillet weld per inch per sixteenth?', T`\(\phi R_n=0.75(0.60)(70)(0.707)/16=1.392\) k/in (ASD 0.928) (J2-4, Table J2.5).`],
+  ['steel', T`Column curve break point for \(F_y=50\)?`, T`\(L_c/r=4.71\sqrt{E/F_y}=113.4\): E3-2 below, E3-3 above.`],
+  ['lift', 'Sling tension, 2 legs at 45°, 40 k?', T`\(T=\frac{W}{n\sin\theta}=\frac{40}{2(0.707)}=28.3\) k per leg.`],
+  ['lift', 'BTH-1 design categories?', T`A: \(N_d=2.00\) (predictable). B: \(N_d=3.00\) (default for site work). Service class 0 below 20,000 cycles.`],
+  ['lift', 'Padeye failure modes in BTH-1?', T`Tension across the hole \(P_t\) (3-45), single-plane fracture \(P_b\) (3-49), double-plane shear \(P_v\) (3-50), bearing \(1.25F_y/N_d\) (3-53), plus welds \(0.60F_{EXX}/(1.20N_d)\) (3-55).`],
+  ['lift', "Why does the load tilt when the CG isn't centered?", 'The rigid sling-and-load triangle hangs from the hook pin. Equilibrium requires the CG directly under the hook, so the load rotates until it is.'],
+  ['lift', 'Personnel platform capacity limit?', T`Total \(\le50\%\) of rated capacity (OSHA 1926.1431(d)(1)); proof test 125% (j)(1).`],
+  ['lift', 'Clearance to a 115 kV line?', '15 ft (1926.1408 Table A, 50–200 kV), or 20 ft if the voltage is unconfirmed and ≤ 350 kV.'],
+  ['bridge', 'AASHTO construction load factor?', T`\(\gamma\ge1.5\) on construction loads in Strength I; \(\gamma_{DC},\gamma_{DW}\ge1.25\) in Strength I/III/V during construction (Art. 3.4.2.1); Service I for deflection.`],
+  ['bridge', 'HL-93 in one line?', T`\(m[(1+0.33)\max(M_{truck},M_{tandem})+M_{lane}]\); truck 8-32-32 k, tandem 2×25 k, lane 0.64 klf (no IM).`],
+  ['bridge', 'Twin-girder system buckling?', T`\(M_{gs}=C_b\frac{\pi^2sE}{L_g^2}\sqrt{I_{eff}I_x}\) (FHWA Eq. 5-12; AASHTO 6.10.3.4.2-1). During the deck pour \(\Sigma M_u\le0.5M_{gs}\). Insensitive to cross-frame spacing.`],
+  ['bridge', 'Stream pressure on a round pile?', T`\(p=C_DV^2/1000\) ksf (Eq. 3.7.3.1-1), \(C_D=0.7\) round, 1.4 square or debris.`],
+  ['fw', 'ACI 347 column pressure?', T`\(CCP_{max}=C_cC_w[150+9000R/T]\) (4.2.2.1a(b)), \(\ge600C_w\), \(\le wh\).`],
+  ['fw', 'When do you use full liquid head?', T`Slump > 7 in / SCC, vibration deeper than 4 ft, walls above 15 ft/h (Table 4.2.2.1a(a)); pumped from the base: \(wh\) + 25% (§4.2.2.4).`],
+  ['fw', 'Caltrans falsework vertical loads?', T`160 pcf, 20 psf + 75 plf edge, min 100 psf (48-2.02B(2)); deflection \(\le L/240\) (48-2.02B(3)).`],
+  ['fw', T`NDS \(C_D\) for construction loads?`, T`1.25 (Table 2.3.2, 7-day), not applied to \(E\) or \(F_{c\perp}\).`],
+  ['ground', 'When does OSHA require a PE-designed protective system?', 'Excavations deeper than 20 ft, or any system outside Options 1–3 (1926.652(b)(4), (c)(4)).'],
+  ['ground', 'Max slope in Type C soil?', T`1½H:1V (34°), App. B Table B-1.`],
+  ['ground', 'Where does a suspended load act for barge stability?', T`At the boom tip: it raises \(KG\), so \(GM=KB+BM-KG\) drops.`],
+  ['ground', '2:1 pressure under a pad?', T`\(q_z=\frac{P}{(B+z)(L+z)}\).`],
+  ['soft', '"Tell me about a time you made a mistake in a design."', 'STAR: the situation, how you or a checker found it, what you did right away (told people, stopped work if needed), the fix, and the process change. Own it, keep it short, end on the improvement.'],
+  ['soft', '"Why temporary structures?"', 'Engineering that gets built next week: stability, judgment, field contact, variety (lifts, falsework, marine, erection). Connect it to your ASCE 7, AISC and construction-manual coursework and this preparation.'],
+  ['soft', '"A superintendent wants to skip a brace."', "Understand why (access? schedule?), explain the load path and risk in field terms, offer an alternative that works for both, never sign off on what you don't believe in, and escalate if needed."]
 ];
 let filt = 'all', deck = [], cur = null;
 const stats = JSON.parse(localStorage.getItem('tw-drill') || '{"got":0,"again":0}');
@@ -281,7 +287,7 @@ function next(){
   const i = Math.floor(Math.random()*deck.length); cur = deck.splice(i, 1)[0];
   $('dCard').classList.remove('flip');
   const names = {loads:'Loads', steel:'AISC', lift:'Lifting', bridge:'Bridges', fw:'Falsework', ground:'Ground', soft:'Behavioral'};
-  setTimeout(() => { $('dTag').textContent = names[cur[0]]; $('dQ').innerHTML = cur[1]; $('dA').innerHTML = cur[2]; }, 200);
+  setTimeout(() => { $('dTag').textContent = names[cur[0]]; $('dQ').innerHTML = cur[1]; $('dA').innerHTML = cur[2]; P.tex($('dCard')); }, 200);
   $('dStats').textContent = `${stats.got} got · ${stats.again} again · ${deck.length} left in this round`;
 }
 P.chips('drillChips', d => { filt = d.t; build(); next(); });

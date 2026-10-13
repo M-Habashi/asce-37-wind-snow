@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <link rel="stylesheet" href="assets/prep.css">
 <script src="assets/prep.js"></script>
 <style>
@@ -31,7 +34,7 @@
 
 <!-- SHEET 1 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>1</b> of 8</div><div>Loads · ASCE 7 → ASCE/SEI 37-14</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="padhead"><div>Sheet <b>1</b> of 10</div><div>Loads · ASCE 7 → ASCE/SEI 37-14</div><div>Chk'd: <b>M.</b></div></div>
   <div class="sheet-body">
     <div class="kicker"><span class="label">What changes while it's being built</span><span class="hand">same physics, new load names →</span></div>
     <h1>Loads During<br>Construction</h1>
@@ -55,53 +58,51 @@
 
 <!-- SHEET 2 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>2</b> of 8</div><div>ASCE 7 refresher · Sec. 2.3 / 2.4</div><div>LRFD · ASD</div></div>
+  <div class="padhead"><div>Sheet <b>2</b> of 10</div><div>ASCE 7 refresher · 7-16 §2.3.1 / §2.4.1 (7-10 §2.3.2 / §2.4.1)</div><div>LRFD · ASD</div></div>
   <div class="sheet-body">
     <h2>Combinations you already know</h2>
+    <div class="eqblock">$$\begin{aligned}&\text{LRFD (7-16 §2.3.1)}: &&(1)\ 1.4D &&(2)\ 1.2D+1.6L+0.5(L_r\,\text{or}\,S\,\text{or}\,R)\\ & &&(3)\ 1.2D+1.6(L_r\,\text{or}\,S\,\text{or}\,R)+(L\ \text{or}\ 0.5W) &&(4)\ 1.2D+1.0W+L+0.5(L_r\,\text{or}\,S\,\text{or}\,R)\\ & &&(5)\ 0.9D+1.0W\ \ \text{[7-10: combo 6]} && \\ &\text{ASD (§2.4.1)}: &&(5)\ D+0.6W\quad(6)\ D+0.75L+0.75(0.6W)+0.75(L_r\,\text{or}\,S) &&(7)\ 0.6D+0.6W\end{aligned}$$<span class="fref">W is strength-level since 7-10 (factor 1.0, ASD 0.6). Seismic moved to §2.3.6/§2.4.5 in 7-16. ASCE 37-14 references ASCE 7-10.</span></div>
     <div class="callout remember"><span class="tag">From your ASCE 7 course</span>
-      <p>The basic combinations are unchanged from ASCE 7-10 to 7-16 (W is already strength-level, so the factor is 1.0, or 0.6 in ASD). For temporary work, two of them do most of the work: the <strong>gravity</strong> case (1.2D + 1.6L…) sizes members, and the <strong>counteracting-dead-load</strong> case (0.9D + 1.0W, ASD 0.6D + 0.6W) checks overturning, uplift and sliding of towers, forms and mats.</p></div>
+      <p>Two combinations do most of the work for temporary structures. The <strong>gravity</strong> combination (2) sizes members. The <strong>counteracting-dead-load</strong> combination \(0.9D+1.0W\) (ASD \(0.6D+0.6W\)) checks overturning, uplift and sliding of towers, forms and mats.</p></div>
     <div class="twocol">
       <div class="col">
         <div class="chips" id="methodChips" role="group" aria-label="Design method">
-          <button class="chip" data-m="lrfd" aria-pressed="true">LRFD<small>Sec. 2.3</small></button>
-          <button class="chip" data-m="asd" aria-pressed="false">ASD<small>Sec. 2.4</small></button>
+          <button class="chip" data-m="lrfd" aria-pressed="true">LRFD<small>§2.3.1</small></button>
+          <button class="chip" data-m="asd" aria-pressed="false">ASD<small>§2.4.1</small></button>
         </div>
         <div class="ctrl"><label class="label" for="cD">Dead load effect D: <span class="val" id="cDo"></span></label><input id="cD" type="range" min="0" max="100" step="1" value="40"></div>
         <div class="ctrl"><label class="label" for="cL">Live / construction live L: <span class="val" id="cLo"></span></label><input id="cL" type="range" min="0" max="100" step="1" value="30"></div>
-        <div class="ctrl"><label class="label" for="cS">Roof live or snow (Lr / S): <span class="val" id="cSo"></span></label><input id="cS" type="range" min="0" max="60" step="1" value="10"></div>
+        <div class="ctrl"><label class="label" for="cS">Roof live or snow (\(L_r\) / S): <span class="val" id="cSo"></span></label><input id="cS" type="range" min="0" max="60" step="1" value="10"></div>
         <div class="ctrl"><label class="label" for="cW">Wind effect W (negative = uplift): <span class="val" id="cWo"></span></label><input id="cW" type="range" min="-120" max="120" step="1" value="-70"></div>
-        <span class="hand">slide W negative: the 0.9D case flips sign. That's your hold-down.</span>
-      </div>
-      <div class="col">
         <div class="combos" id="combos" aria-live="polite"></div>
-        <div class="legend"><span><i style="background:var(--pencil)"></i>max effect</span><span><i style="background:var(--storm)"></i>min effect (uplift / overturning)</span><span><i style="background:var(--s1)"></i>other combinations</span></div>
-        <div class="callout trap" id="comboVerdict"></div>
+        <div class="legend"><span><i style="background:var(--pencil)"></i>max effect</span><span><i style="background:var(--storm)"></i>min effect (uplift / overturning)</span><span><i style="background:var(--s1)"></i>other</span></div>
       </div>
+      <div class="col"><h3>Calc sheet</h3><div id="cSheet"></div></div>
     </div>
-    <div class="callout diff"><span class="tag">ASCE 7-22 note</span><p>ASCE 7-22 changed the ground snow maps to strength level and dropped the LRFD snow factor to 1.0. It also moved K<sub>d</sub> out of the velocity-pressure equation and into the pressure equations. ASCE 37-14 still points to <strong>ASCE 7-10</strong>, so the construction checks use 1.6S and q<sub>z</sub> = 0.00256 K<sub>z</sub>K<sub>zt</sub>K<sub>d</sub>V². If they ask which edition you'd use, say so.</p></div>
+    <div class="callout diff"><span class="tag">ASCE 7-22 note</span><p>ASCE 7-22 made ground snow strength-level (LRFD snow factor 1.0) and moved \(K_d\) from \(q_z\) into the pressure equations. ASCE 37-14 still points to <strong>ASCE 7-10</strong>, so construction checks use \(1.6S\) and \(q_z=0.00256K_zK_{zt}K_dV^2\) (7-10 Eq. 29.3-1). If they ask which edition, say so.</p></div>
   </div>
 </section>
 
 <!-- SHEET 3 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>3</b> of 8</div><div>ASCE 37 vocabulary · Ch. 4</div><div>the C-loads</div></div>
+  <div class="padhead"><div>Sheet <b>3</b> of 10</div><div>ASCE 37 vocabulary · Ch. 4 · Ch. 2</div><div>the C-loads</div></div>
   <div class="sheet-body">
     <h2>Gravity split by certainty</h2>
     <p>ASCE 7 lumps everything permanent into D. ASCE 37 splits construction loads by <em>how well you know them</em>, because a load you can weigh deserves a smaller factor than a stockpile that grows when nobody's looking.</p>
     <div class="cdefs">
-      <div class="cdef"><span class="sym">C<sub>D</sub></span><strong>Construction dead load</strong><span class="small">Self-weight of temporary structures once they're assembled, such as erected scaffold or shoring.</span></div>
-      <div class="cdef"><span class="sym">C<sub>FML</sub></span><strong>Fixed material load</strong><span class="small">Materials fixed in magnitude once placed, such as installed formwork.</span></div>
-      <div class="cdef"><span class="sym">C<sub>VML</sub></span><strong>Variable material load</strong><span class="small">Magnitude changes during work: stockpiles, and wet concrete until it cures.</span></div>
-      <div class="cdef"><span class="sym">C<sub>P</sub></span><strong>Personnel &amp; equipment</strong><span class="small">Crew, hand tools, buggies. Uniform or concentrated, whichever is worse.</span></div>
-      <div class="cdef"><span class="sym">C<sub>H</sub></span><strong>Horizontal construction</strong><span class="small">Braking, personnel push, equipment. Minimum 2% of total vertical.</span></div>
-      <div class="cdef"><span class="sym">C<sub>R</sub></span><strong>Equipment reactions</strong><span class="small">Outrigger pads, crane tracks, hoist reactions, concrete pump boom.</span></div>
-      <div class="cdef"><span class="sym">C<sub>C</sub></span><strong>Lateral concrete pressure</strong><span class="small">Fresh concrete on vertical forms. ASCE 37 defers to ACI 347 (see the falsework sheet).</span></div>
-      <div class="cdef"><span class="sym">C<sub>F</sub></span><strong>Erection &amp; fitting forces</strong><span class="small">Jacking, drifting or pulling members into alignment.</span></div>
+      <div class="cdef"><span class="sym">\(C_D\)</span><strong>Construction dead load</strong><span class="small">Self-weight of temporary structures once assembled (erected scaffold, shoring).</span></div>
+      <div class="cdef"><span class="sym">\(C_{FML}\)</span><strong>Fixed material load</strong><span class="small">Materials fixed in magnitude once placed, such as installed formwork.</span></div>
+      <div class="cdef"><span class="sym">\(C_{VML}\)</span><strong>Variable material load</strong><span class="small">Stockpiles, and wet concrete until it cures.</span></div>
+      <div class="cdef"><span class="sym">\(C_P\)</span><strong>Personnel &amp; equipment</strong><span class="small">Uniform or concentrated, whichever is worse.</span></div>
+      <div class="cdef"><span class="sym">\(C_H\)</span><strong>Horizontal construction</strong><span class="small">Braking, personnel push, equipment; ≥ 2% of total vertical.</span></div>
+      <div class="cdef"><span class="sym">\(C_R\)</span><strong>Equipment reactions</strong><span class="small">Outrigger pads, crane tracks, hoists, pump boom.</span></div>
+      <div class="cdef"><span class="sym">\(C_C\)</span><strong>Lateral concrete pressure</strong><span class="small">Fresh concrete on vertical forms, per ACI 347 (falsework page).</span></div>
+      <div class="cdef"><span class="sym">\(C_F\)</span><strong>Erection &amp; fitting forces</strong><span class="small">Jacking, drifting or pulling members into alignment.</span></div>
     </div>
-    <div class="callout diff"><span class="tag">How the factors behave · Table 2-1</span>
-      <p>C<sub>D</sub> and C<sub>FML</sub> behave like dead load. C<sub>VML</sub> gets a <strong>higher</strong> factor than C<sub>FML</sub> because it's uncertain. ASCE 37-02 wrote it as 1.2C<sub>FML</sub> + 1.4C<sub>VML</sub>. C<sub>P</sub> and C<sub>H</sub> behave like live load. Only <strong>personnel and equipment loads</strong> may be reduced for large areas. Material loads never are.</p></div>
-    <div class="callout verify"><span class="tag">Verify before quoting</span><p>Check the exact 37-14 factors and companion (arbitrary-point-in-time) values in Table 2-1 and Sec. 2.2–2.3 of a licensed copy. Explaining the logic matters more in an interview than reciting a decimal.</p></div>
-
+    <div class="eqblock">$$\text{ASCE 37-02 strength example: }\ 1.2D+1.2C_D+1.2C_{FML}+1.4C_{VML}+1.3W+0.5C_P+0.5L$$
+    $$\text{ASD structure (§2.3.1): }\ D+C_D+C_{FML}+C_{VML}\ ;\ \ \ldots+C_P+C_H+L\ ;\ \ \ldots+W+C_P+L\ ;\ \ \ldots+0.7E+C_P+L\ ;\ \ D+C_D+(W\ \text{or}\ 0.7E)$$<span class="fref">Strength factors are in ASCE 37-14 Table 2-1 (verify the current values; the 37-02 form above shows the logic: C<sub>FML</sub> 1.2 vs C<sub>VML</sub> 1.4). The ASD combination structure is as summarized by ASEE (2008).</span></div>
+    <div class="callout diff"><span class="tag">How the factors behave</span>
+      <p>\(C_D\) and \(C_{FML}\) behave like dead load. \(C_{VML}\) gets a <strong>higher</strong> factor because it's uncertain. \(C_P\) and \(C_H\) behave like live load. Only <strong>personnel and equipment loads</strong> may be reduced for large areas. \(C_H\) is <strong>not</strong> combined with W or E.</p></div>
     <h3>Sort the site</h3>
     <p class="small muted">Tap an item, then tap the load category it belongs to.</p>
     <div class="tray" id="tray"></div>
@@ -112,33 +113,27 @@
 
 <!-- SHEET 4 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>4</b> of 8</div><div>Personnel &amp; equipment · Sec. 4.3</div><div>C<sub>P</sub></div></div>
+  <div class="padhead"><div>Sheet <b>4</b> of 10</div><div>Personnel &amp; equipment · ASCE 37 §4.3</div><div>\(C_P\)</div></div>
   <div class="sheet-body">
     <h2>Replace "occupancy live load"</h2>
-    <p>There's no occupancy during construction, so the ASCE 7 Table 4-1 live loads don't fit. ASCE 37 classifies the <em>operation</em> on the deck instead, and pairs each uniform load with concentrated loads you check separately.</p>
+    <div class="eqblock">$$C_P=\max\big(\text{uniform: }20\,/\,25\,/\,50\ \text{psf},\ \ \text{concentrated: }250\ \text{lb/person},\ 500\ \text{lb/wheel (manual)},\ 2000\ \text{lb/wheel (powered)}\big)$$<span class="fref">ASCE 37 personnel and equipment loads (uniform classes as I remember Table 4-1, verify) · use whichever gives the more severe effect</span></div>
     <div class="chips" id="dutyChips" role="group" aria-label="Operation class">
       <button class="chip" data-psf="20" data-k="light" aria-pressed="false">Light · 20 psf<small>sparse crew, hand tools</small></button>
       <button class="chip" data-psf="25" data-k="medium" aria-pressed="true">Medium · 25 psf<small>crew concentrations, hose placement</small></button>
       <button class="chip" data-psf="50" data-k="heavy" aria-pressed="false">Heavy · 50 psf<small>motorized buggies</small></button>
     </div>
     <div class="stage short"><canvas id="duty" role="img" aria-label="Deck with crew density and buggy traffic matching the selected operation class"></canvas>
-      <div class="readout"><span>C<sub>P</sub> = <b id="dPsf">25</b> psf</span><span>on a 20 × 30 ft bay: <b id="dKip">15.0</b> kips</span></div></div>
-    <div class="threecol">
-      <div class="idea"><h3>250 lb</h3><p>Concentrated load per person. Check it on plywood, joists and walkway planks.</p></div>
-      <div class="idea"><h3>500 lb / wheel</h3><p>Manually powered vehicles such as carts and hand buggies.</p></div>
-      <div class="idea"><h3>2,000 lb / wheel</h3><p>Powered equipment. A motorized buggy on a plywood deck is a punching and local-bending check.</p></div>
-    </div>
-    <div class="callout trap"><span class="tag">Interview angle</span><p>"Uniform <em>or</em> concentrated, whichever produces the more severe effect." The concentrated loads govern short-span sheathing and joists; the uniform loads govern stringers, caps and towers. Then compare with the owner spec. Caltrans falsework uses 20 psf live plus 75 plf at the deck edge, with a 100 psf minimum total. ACI 347 formwork uses 50 psf live (75 with motorized carts) and a 100 psf minimum total (125 with carts).</p></div>
-    <div class="callout verify"><span class="tag">Verify</span><p>The light, medium and heavy psf values are as I recall them from Table 4-1 of 37-14. The concentrated values match published study notes. Confirm both against the standard.</p></div>
+      <div class="readout"><span>\(C_P\) = <b id="dPsf">25</b> psf</span><span>on a 20 × 30 ft bay: <b id="dKip">15.0</b> kips</span></div></div>
+    <div class="callout trap"><span class="tag">Interview angle</span><p>Concentrated loads govern short-span sheathing and joists; uniform loads govern stringers, caps and towers. Then compare with the owner spec. Caltrans falsework: 20 psf + 75 plf edge, 100 psf minimum total. ACI 347R-14 §4.2.1 formwork: 50 psf (75 with motorized carts), 100 psf minimum total (125 with carts).</p></div>
   </div>
 </section>
 
 <!-- SHEET 5 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>5</b> of 8</div><div>Horizontal construction load · Sec. 4.4</div><div>C<sub>H</sub></div></div>
+  <div class="padhead"><div>Sheet <b>5</b> of 10</div><div>Horizontal construction load · ASCE 37 §4.4</div><div>\(C_H\)</div></div>
   <div class="sheet-body">
     <h2>The 2% family</h2>
-    <p>Real platforms are never perfectly plumb, and people and machines push things. ASCE 37 lists four sources of horizontal load. You design for the governing one and never go below 2% of the total vertical load. <strong>C<sub>H</sub> isn't combined with wind or earthquake.</strong> Run those as separate cases.</p>
+    <div class="eqblock">$$C_H=\max\Big(\underbrace{0.20W_{veh}\ \text{or}\ 0.10\textstyle\sum W_{veh}}_{\text{vehicles}},\ \underbrace{50\ \text{lb}\times n}_{\text{personnel}},\ \underbrace{C_{H,eq}}_{\text{rated equipment}},\ \underbrace{0.02\textstyle\sum V}_{\text{minimum}}\Big)\qquad C_H\ \text{not combined with}\ W,E$$<span class="fref">ASCE 37 horizontal construction load provisions (as summarized by ASEE 2008)</span></div>
     <div class="twocol">
       <div class="col">
         <div class="ctrl"><label class="label" for="hV">Total vertical load on the system: <span class="val" id="hVo"></span></label><input id="hV" type="range" min="20" max="1500" step="10" value="400"></div>
@@ -147,58 +142,58 @@
           <div class="ctrl"><label class="label" for="hVeh">Buggies operating: <span class="val" id="hVehO"></span></label><input id="hVeh" type="range" min="0" max="4" step="1" value="1"></div>
         </div>
         <div class="ctrl"><label class="label" for="hVw">Loaded buggy weight: <span class="val" id="hVwO"></span></label><input id="hVw" type="range" min="1" max="12" step="0.5" value="4"></div>
-        <div class="ctrl"><label class="label" for="hEq">Equipment-rated horizontal (e.g. pump hose whip): <span class="val" id="hEqO"></span></label><input id="hEq" type="range" min="0" max="10" step="0.5" value="0"></div>
-      </div>
-      <div class="col">
+        <div class="ctrl"><label class="label" for="hEq">Equipment-rated horizontal: <span class="val" id="hEqO"></span></label><input id="hEq" type="range" min="0" max="10" step="0.5" value="0"></div>
         <div class="meters" id="hMeters"></div>
-        <div class="stat"><span class="label">Design C<sub>H</sub></span><span class="big" id="hOut">8.0</span><span class="mono" id="hGov">kips · 2% minimum governs</span></div>
+        <div class="stat"><span class="label">Design C<sub>H</sub></span><span class="big" id="hOut">8.0</span><span class="mono" id="hGov">kips</span></div>
       </div>
+      <div class="col"><h3>Calc sheet</h3><div id="hSheet"></div></div>
     </div>
     <h3>Same idea, other documents</h3>
     <div class="tblwrap"><table class="tbl">
       <thead><tr><th>Document</th><th>Minimum lateral load</th><th>Where / notes</th></tr></thead>
       <tbody>
-        <tr><td class="k">ASCE 37-14</td><td>Greatest of the C<sub>H</sub> sources, at least 2% of total vertical</td><td>Not combined with W or E</td></tr>
-        <tr><td class="k">Caltrans / AASHTO temp-works guide</td><td>Actual horizontal loads, at least <strong>2% of total dead load</strong></td><td>Applied at the top of posts, in any direction, in both the loaded and unloaded states. Wind is a separate check; Caltrans says wind tends to govern above ~30–40 ft.</td></tr>
-        <tr><td class="k">ACI 347R (slab forms)</td><td>Greater of 100 plf of slab edge or 2% of total dead load</td><td>Distributed along the slab edge</td></tr>
-        <tr><td class="k">AISC 360 App. 6</td><td>Nodal column brace: 1% of P<sub>r</sub> (relative: 0.5%)</td><td>Plus a stiffness requirement. See the AISC sheet.</td></tr>
-        <tr><td class="k">AISC 360 Ch. C</td><td>Notional load 0.002Y<sub>i</sub></td><td>Direct analysis method: models out-of-plumb</td></tr>
+        <tr><td class="k">ASCE 37-14</td><td>\(\max(\text{sources},\ 0.02\sum V)\)</td><td>Not combined with W or E</td></tr>
+        <tr><td class="k">Caltrans FW §3-3.02 / AASHTO guide</td><td>\(\max(\text{actual},\ 0.02\sum DL)\)</td><td>Top of posts, any direction, loaded and unloaded</td></tr>
+        <tr><td class="k">ACI 347R-14 §4.2.3.2</td><td>\(\max(100\ \text{plf},\ 0.02\sum DL)\)</td><td>Elevated slab forms, along the edge</td></tr>
+        <tr><td class="k">ACI 347R-14 §4.2.3.3</td><td>\(\ge100\) plf at the top</td><td>Wall and column form bracing</td></tr>
+        <tr><td class="k">AISC 360-16 App. 6</td><td>\(P_{br}=0.01P_r\) (A-6-3)</td><td>Plus stiffness (A-6-4)</td></tr>
+        <tr><td class="k">AISC 360-16 §C2.2b</td><td>\(N_i=0.002\alpha Y_i\) (C2-1)</td><td>Notional load for out-of-plumb</td></tr>
       </tbody></table></div>
-    <span class="hand">they're all the same story: imperfection + accidental push. say "out-of-plumb" in the interview.</span>
+    <span class="hand">all the same story: imperfection + accidental push. say "out-of-plumb" in the interview.</span>
   </div>
 </section>
 
 <!-- SHEET 6 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>6</b> of 8</div><div>Side by side</div><div>7 vs 37</div></div>
+  <div class="padhead"><div>Sheet <b>6</b> of 10</div><div>Side by side</div><div>7 vs 37</div></div>
   <div class="sheet-body">
     <h2>What's different in ASCE 37</h2>
     <div class="tblwrap"><table class="tbl">
       <thead><tr><th>Topic</th><th>ASCE 7 (finished structure)</th><th>ASCE 37-14 (during construction)</th></tr></thead>
       <tbody>
-        <tr><td class="k">Risk category</td><td>I–IV by occupancy</td><td><strong>RC II</strong> for environmental loads unless the AHJ requires more</td></tr>
-        <tr><td class="k">Wind speed</td><td>Mapped V for the risk category</td><td>V × <strong>0.75 / 0.80 / 0.85 / 0.90</strong> for &lt;6 wk / ≤1 yr / 1–2 yr / 2–5 yr. Hurricane-coast 115 mph option. No splitting an operation into phases.</td></tr>
-        <tr><td class="k">Wind procedure</td><td>K<sub>z</sub>, K<sub>zt</sub>, K<sub>d</sub>, G, C<sub>f</sub>, 16 psf minimum (7-10)</td><td>Same procedure with the reduced V. The 16 psf minimum isn't required. Check partially enclosed and partially clad stages.</td></tr>
-        <tr><td class="k">Snow</td><td>p<sub>f</sub> = 0.7C<sub>e</sub>C<sub>t</sub>I<sub>s</sub>p<sub>g</sub></td><td>0.8p<sub>g</sub> for periods ≤ 5 yr, I<sub>s</sub> = 1.0, still check drift and unbalanced. Pair it with a removal plan.</td></tr>
-        <tr><td class="k">Live load</td><td>Occupancy L (Table 4-1)</td><td>C<sub>P</sub> by operation class plus concentrated loads</td></tr>
-        <tr><td class="k">Gravity "dead"</td><td>D</td><td>D + C<sub>D</sub> + C<sub>FML</sub> + C<sub>VML</sub>, factored by certainty</td></tr>
-        <tr><td class="k">Lateral</td><td>Wind and seismic</td><td>Add C<sub>H</sub> (≥ 2% vertical), not combined with W or E</td></tr>
-        <tr><td class="k">Seismic</td><td>By SDC and risk category</td><td>RC II, I<sub>e</sub> = 1.0. Owners often waive it for short-term falsework (Caltrans doesn't consider earthquake on falsework). Ask the owner.</td></tr>
-        <tr><td class="k">Concrete pressure</td><td>n/a</td><td>C<sub>C</sub> per ACI 347</td></tr>
-        <tr><td class="k">Stability</td><td>Completed load path</td><td>Partial structures: temporary bracing, erection stages, C<sub>F</sub> fitting forces</td></tr>
-        <tr><td class="k">Overturning</td><td>0.9D</td><td>Count only the dead load <strong>definitely in place at that stage</strong>. The unloaded condition often governs.</td></tr>
+        <tr><td class="k">Risk category</td><td>I–IV by occupancy</td><td><strong>RC II</strong> for environmental loads unless the AHJ requires more (§6.1)</td></tr>
+        <tr><td class="k">Wind speed</td><td>Mapped V</td><td>\(V_c=fV\), \(f=0.75/0.80/0.85/0.90\) for &lt;6 wk / ≤1 yr / 1–2 yr / 2–5 yr (§6.2.1). 115 mph hurricane-coast option (§6.2.1.1.1). No splitting a continuous operation.</td></tr>
+        <tr><td class="k">Wind procedure</td><td>\(K_z,K_{zt},K_d,G,C_f\); 16 psf minimum (7-10)</td><td>Same procedure with \(V_c\). The 16 psf minimum isn't required.</td></tr>
+        <tr><td class="k">Snow</td><td>\(p_f=0.7C_eC_tI_sp_g\)</td><td>\(p_f=0.7C_eC_t(1.0)(0.8p_g)\) for ≤ 5 yr; still check drift and unbalanced; removal plan</td></tr>
+        <tr><td class="k">Live load</td><td>Occupancy L (Table 4-1)</td><td>\(C_P\) by operation + concentrated loads</td></tr>
+        <tr><td class="k">Gravity</td><td>D</td><td>\(D+C_D+C_{FML}+C_{VML}\), factored by certainty</td></tr>
+        <tr><td class="k">Lateral</td><td>W, E</td><td>Add \(C_H\ge0.02\sum V\), not combined with W or E</td></tr>
+        <tr><td class="k">Seismic</td><td>By SDC and RC</td><td>RC II (\(I_e=1.0\)); often waived for short-term falsework (Caltrans FW §3-1). Ask the owner.</td></tr>
+        <tr><td class="k">Concrete pressure</td><td>n/a</td><td>\(C_C\) per ACI 347</td></tr>
+        <tr><td class="k">Overturning</td><td>\(0.9D\)</td><td>Only the dead load <strong>definitely in place at that stage</strong>; check unloaded</td></tr>
       </tbody></table></div>
   </div>
 </section>
 
 <!-- SHEET 7 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>7</b> of 8</div><div>Worked check · wall form in wind</div><div>q<sub>z</sub> → brace</div></div>
+  <div class="padhead"><div>Sheet <b>7</b> of 10</div><div>Worked check · wall form in wind · ASCE 37 + ASCE 7-10 Ch. 29 + ACI 347R</div><div>\(q_z\) → brace</div></div>
   <div class="sheet-body">
     <h2>Will the gang form stand?</h2>
-    <p>A classic first-week task: a free-standing wall form (or precast panel, or sign falsework) before the pour. Find the ASCE 37 wind, compare overturning with the stabilizing weight using the counteracting-dead-load combination, and size the push-pull braces.</p>
+    <div class="eqblock">$$V_c=fV\ \text{(37 §6.2.1)}\quad K_z=2.01\left(\frac{z}{z_g}\right)^{2/\alpha}\ \text{(7-10 Table 29.3-1)}\quad q_z=0.00256K_zK_{zt}K_dV_c^2\ \text{(Eq. 29.3-1)}\quad F=q_hGC_fA_s\ \text{(Eq. 29.4-1)}$$
+    $$H_{brace}=\frac{1.0M_{OT}-0.9M_R}{h_b}\ \ (\text{7-10 §2.3.2 combo 6})\ \ \ge\ \frac{100\ \text{plf}\cdot h}{h_b}\ \ (\text{ACI 347R §4.2.3.3})\qquad P_{brace}=\frac{H\,s}{\cos\theta}$$<span class="fref">α, z<sub>g</sub>: 7-10 Table 26.9-1 · K<sub>d</sub> = 0.85 (Table 26.6-1) · G = 0.85 (§26.9.1) · C<sub>f</sub>: Fig. 29.4-1 (7-16 Fig. 29.3-1)</span></div>
     <div class="stage"><canvas id="form" role="img" aria-label="Wall form in wind with push-pull brace; it rocks or tips when unbraced overturning exceeds resistance"></canvas>
-      <div class="readout"><span>q<sub>z</sub> = <b id="fQ">—</b> psf</span><span>M<sub>OT</sub>/M<sub>R</sub> = <b id="fR">—</b></span></div>
+      <div class="readout"><span>\(q_z\) = <b id="fQ">—</b> psf</span><span>\(M_{OT}/M_R\) = <b id="fR">—</b></span></div>
       <div class="readout right bottom"><span id="fPill" class="pill">—</span></div></div>
     <div class="twocol">
       <div class="col">
@@ -219,33 +214,75 @@
         </div>
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="fB">Base width (tipping lever): <span class="val" id="fBo"></span></label><input id="fB" type="range" min="0.5" max="5" step="0.25" value="2"></div>
-          <div class="ctrl"><label class="label" for="fCf">C<sub>f</sub> (Fig. 29.3-1): <span class="val" id="fCfo"></span></label><input id="fCf" type="range" min="1" max="2" step="0.05" value="1.3"></div>
+          <div class="ctrl"><label class="label" for="fCf">\(C_f\) (Fig. 29.4-1): <span class="val" id="fCfo"></span></label><input id="fCf" type="range" min="1" max="2" step="0.05" value="1.3"></div>
         </div>
         <div class="ctrl-row">
           <div class="ctrl"><label class="label" for="fHb">Brace attached at: <span class="val" id="fHbo"></span></label><input id="fHb" type="range" min="0.4" max="0.95" step="0.05" value="0.7"></div>
           <div class="ctrl"><label class="label" for="fAng">Brace angle: <span class="val" id="fAngo"></span></label><input id="fAng" type="range" min="30" max="65" step="1" value="50"></div>
         </div>
-        <div class="ctrl"><label class="label" for="fS">Brace spacing along wall: <span class="val" id="fSo"></span></label><input id="fS" type="range" min="4" max="14" step="1" value="8"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="fS">Brace spacing along wall: <span class="val" id="fSo"></span></label><input id="fS" type="range" min="4" max="14" step="1" value="8"></div>
+          <div class="ctrl"><label class="label" for="fPipe">Brace (A53 Gr B pipe)</label><select id="fPipe"><option value="0">Pipe 2 STD</option><option value="1" selected>Pipe 2-1/2 STD</option><option value="2">Pipe 3 STD</option></select></div>
+        </div>
         <label class="check"><input type="checkbox" id="fBrace" checked> Push-pull braces installed</label>
-      </div>
-      <div class="col">
-        <div class="eq" id="fEq1"></div>
-        <div class="eq" id="fEq2"></div>
-        <div class="eq" id="fEq3"></div>
         <div class="stat-row">
           <div class="stat"><span class="label">Brace axial</span><span class="big" id="fAx">—</span><span class="mono">kips / brace, ±</span></div>
           <div class="stat"><span class="label">Anchor uplift</span><span class="big" id="fUp">—</span><span class="mono">kips / brace</span></div>
         </div>
-        <p class="small muted">Wind can come from either side, so the braces work in tension and compression. Size them as columns (push-pull pipe braces), and remember the deadman or anchor sees the vertical component. Kz is evaluated at the form top, which is conservative. G = 0.85, K<sub>d</sub> = 0.85, K<sub>zt</sub> = 1.0.</p>
       </div>
+      <div class="col"><h3>Calc sheet</h3><div id="fSheet"></div></div>
     </div>
-    <span class="hand">and always check the "unloaded & no concrete yet" stage. that's when forms blow over.</span>
+    <h3>Wall-form stability flow</h3>
+    <div id="fFlow"></div>
+    <span class="hand">and always check the "unloaded &amp; no concrete yet" stage. that's when forms blow over.</span>
   </div>
 </section>
 
 <!-- SHEET 8 -->
 <section class="sheet">
-  <div class="padhead"><div>Sheet <b>8</b> of 8</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="padhead"><div>Sheet <b>8</b> of 10</div><div>Procedure · how you'd apply ASCE 37 on a job</div><div>stage by stage</div></div>
+  <div class="sheet-body">
+    <h2>ASCE 37 design procedure</h2>
+    <div id="pFlow"></div>
+  </div>
+</section>
+
+<!-- SHEET 9 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>9</b> of 10</div><div>Common values · loads</div><div>memorize</div></div>
+  <div class="sheet-body">
+    <h2>What's actually used</h2>
+    <div class="cv">
+      <div><h4>Unit weights</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Normal concrete, plain / reinforced</td><td>145 / 150 pcf</td></tr>
+        <tr><td>Caltrans falsework design</td><td>160 pcf (incl. rebar + forms)</td></tr>
+        <tr><td>Steel</td><td>490 pcf</td></tr>
+        <tr><td>Timber (DF-L, SP)</td><td>≈ 35–40 pcf (use wet weight outdoors)</td></tr>
+        <tr><td>Water · seawater</td><td>62.4 · 64 pcf</td></tr>
+        <tr><td>Soil</td><td>110–130 pcf</td></tr>
+        <tr><td>Formwork allowance</td><td>10–15 psf</td></tr>
+      </tbody></table></div></div>
+      <div><h4>ASCE 37 numbers</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Wind factor f</td><td>0.75 · 0.80 · 0.85 · 0.90 → pressure 0.56 · 0.64 · 0.72 · 0.81</td></tr>
+        <tr><td>Hurricane option</td><td>115 mph (120 if RC III/IV required)</td></tr>
+        <tr><td>Snow</td><td>0.8 p<sub>g</sub>, I<sub>s</sub> = 1.0</td></tr>
+        <tr><td>Personnel (uniform)</td><td>20 / 25 / 50 psf (verify)</td></tr>
+        <tr><td>Concentrated</td><td>250 lb/person · 500 lb/wheel manual · 2,000 lb/wheel powered</td></tr>
+        <tr><td>C<sub>H</sub></td><td>20% vehicle · 10% combined · 50 lb/person · ≥ 2% vertical</td></tr>
+      </tbody></table></div></div>
+      <div><h4>ASCE 7-10 wind quick numbers</h4><div class="tblwrap"><table class="tbl">
+        <thead><tr><th>K<sub>z</sub></th><th class="num">B</th><th class="num">C</th><th class="num">D</th></tr></thead><tbody>
+        <tr><td>15 ft</td><td class="num">0.57</td><td class="num">0.85</td><td class="num">1.03</td></tr>
+        <tr><td>30 ft</td><td class="num">0.70</td><td class="num">0.98</td><td class="num">1.16</td></tr>
+        <tr><td>60 ft</td><td class="num">0.85</td><td class="num">1.13</td><td class="num">1.31</td></tr>
+      </tbody></table></div><p class="small muted">K<sub>d</sub> = 0.85 (walls, signs, trussed towers) · G = 0.85 · RC II V ≈ 115 mph across much of the interior US · e.g. V<sub>c</sub> = 0.8 × 115 = 92 mph, C, 15 ft: q ≈ 15.6 psf.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 10 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>10</b> of 10</div><div>Rehearsal</div><div>Tap to flip</div></div>
   <div class="sheet-body">
     <h2>Questions they may ask</h2>
     <div class="cards" id="cards"></div>
@@ -260,7 +297,7 @@
 
 <script>
 (function(){
-const {C, $, fmt, text, arrow, ground, line, clamp, lerp, ease} = P;
+const {C, $, fmt, n, text, arrow, ground, line, clamp, lerp, ease} = P;
 
 /* ---------- SHEET 1: construction stages ---------- */
 const STAGES = [
@@ -361,42 +398,29 @@ P.anim($('hero'), (ctx, w, h, t) => {
 });
 
 /* ---------- SHEET 2: combinations ---------- */
+const T = String.raw;
 let method = 'lrfd';
+const SYM = {D:'D', L:'L', S:T`(L_r\,\text{or}\,S)`, W:'W'};
 const COMBOS = {
-  lrfd: [
-    ['1.4D', (D,L,S,W)=>1.4*D],
-    ['1.2D + 1.6L + 0.5S', (D,L,S,W)=>1.2*D+1.6*L+0.5*S],
-    ['1.2D + 1.6S + L', (D,L,S,W)=>1.2*D+1.6*S+L],
-    ['1.2D + 1.6S + 0.5W', (D,L,S,W)=>1.2*D+1.6*S+0.5*W],
-    ['1.2D + 1.0W + L + 0.5S', (D,L,S,W)=>1.2*D+W+L+0.5*S],
-    ['0.9D + 1.0W', (D,L,S,W)=>0.9*D+W]
-  ],
-  asd: [
-    ['D', (D,L,S,W)=>D],
-    ['D + L', (D,L,S,W)=>D+L],
-    ['D + S', (D,L,S,W)=>D+S],
-    ['D + 0.75L + 0.75S', (D,L,S,W)=>D+0.75*L+0.75*S],
-    ['D + 0.6W', (D,L,S,W)=>D+0.6*W],
-    ['D + 0.75L + 0.75(0.6W) + 0.75S', (D,L,S,W)=>D+0.75*L+0.45*W+0.75*S],
-    ['0.6D + 0.6W', (D,L,S,W)=>0.6*D+0.6*W]
-  ]
+  lrfd: [['(1)', [[1.4,'D']]], ['(2)', [[1.2,'D'],[1.6,'L'],[0.5,'S']]], ['(3)', [[1.2,'D'],[1.6,'S'],[1.0,'L']]], ['(3)', [[1.2,'D'],[1.6,'S'],[0.5,'W']]], ['(4)', [[1.2,'D'],[1.0,'W'],[1.0,'L'],[0.5,'S']]], ['(5)', [[0.9,'D'],[1.0,'W']]]],
+  asd: [['(1)', [[1,'D']]], ['(2)', [[1,'D'],[1,'L']]], ['(3)', [[1,'D'],[1,'S']]], ['(4)', [[1,'D'],[0.75,'L'],[0.75,'S']]], ['(5)', [[1,'D'],[0.6,'W']]], ['(6)', [[1,'D'],[0.75,'L'],[0.45,'W'],[0.75,'S']]], ['(7)', [[0.6,'D'],[0.6,'W']]]]
 };
+function comboTex(terms){ return terms.map(([c,k],i) => (i ? '+' : '') + (k==='W'&&c===0.45 ? T`0.75(0.6W)` : (c===1 ? '' : String(c)) + SYM[k])).join(''); }
 function combos(){
-  const D=+$('cD').value, L=+$('cL').value, S=+$('cS').value, W=+$('cW').value;
-  $('cDo').textContent = D+' k'; $('cLo').textContent = L+' k'; $('cSo').textContent = S+' k'; $('cWo').textContent = (W>0?'+':'')+W+' k';
-  const rows = COMBOS[method].map(([f,fn]) => [f, fn(D,L,S,W)]);
-  const vals = rows.map(r=>r[1]), mx = Math.max(...vals), mn = Math.min(...vals);
-  const lo = Math.min(0, mn), hi = Math.max(0, mx, 1), span = hi - lo;
-  const z = (0 - lo)/span*100;
-  $('combos').innerHTML = rows.map(([f,v]) => {
-    const a = (Math.min(0,v) - lo)/span*100, wd = Math.abs(v)/span*100;
-    const cls = v === mx ? 'max' : (v === mn && mn < mx ? 'min' : '');
-    return `<div class="combo ${cls}"><span class="f">${f}</span><span class="track"><span class="b" style="left:${a.toFixed(2)}%;width:${wd.toFixed(2)}%"></span><span class="zero" style="left:${z.toFixed(2)}%"></span></span><span class="v">${fmt(v,1)}${cls==='max'?' ▲':cls==='min'?' ▼':''}</span></div>`;
+  const V = {D:+$('cD').value, L:+$('cL').value, S:+$('cS').value, W:+$('cW').value};
+  $('cDo').textContent = V.D+' k'; $('cLo').textContent = V.L+' k'; $('cSo').textContent = V.S+' k'; $('cWo').textContent = (V.W>0?'+':'')+V.W+' k';
+  const rows = COMBOS[method].map(([ref, terms]) => ({ref, terms, v: terms.reduce((s,[c,k]) => s + c*V[k], 0)}));
+  const vals = rows.map(r=>r.v), mx = Math.max(...vals), mn = Math.min(...vals), lo = Math.min(0, mn), hi = Math.max(0, mx, 1), span = hi - lo, z = (0 - lo)/span*100;
+  $('combos').innerHTML = rows.map(r => {
+    const a = (Math.min(0,r.v) - lo)/span*100, wd = Math.abs(r.v)/span*100, cls = r.v === mx ? 'max' : (r.v === mn && mn < mx ? 'min' : '');
+    return `<div class="combo ${cls}"><span class="f">${P.K(comboTex(r.terms))}</span><span class="track"><span class="b" style="left:${a.toFixed(2)}%;width:${wd.toFixed(2)}%"></span><span class="zero" style="left:${z.toFixed(2)}%"></span></span><span class="v">${fmt(r.v,1)}${cls==='max'?' ▲':cls==='min'?' ▼':''}</span></div>`;
   }).join('');
-  const minRow = rows.find(r=>r[1]===mn);
-  $('comboVerdict').innerHTML = mn < 0
-    ? `<span class="tag">Net uplift</span><p><strong>${minRow[0]}</strong> leaves ${fmt(-mn,1)} k of net uplift. That needs a hold-down, anchor, ballast or deadman. Max gravity comes from <strong>${rows.find(r=>r[1]===mx)[0]}</strong>.</p>`
-    : `<span class="tag">No net uplift</span><p>Max gravity: <strong>${rows.find(r=>r[1]===mx)[0]}</strong> = ${fmt(mx,1)} k. The minimum (${minRow[0]}) stays positive, so dead load alone holds it down.</p>`;
+  const sub = r => r.terms.map(([c,k],i) => (i ? '+' : '') + `${c}(${V[k]})`).join('');
+  const sheet = [['h', `ASCE 7-16 ${method==='lrfd'?'§2.3.1 LRFD':'§2.4.1 ASD'} · D = ${V.D}, L = ${V.L}, S = ${V.S}, W = ${V.W} k`]];
+  rows.forEach(r => sheet.push(['r', `combo ${r.ref}${r.v===mx?' · max':r.v===mn&&mn<mx?' · min':''}`, `${comboTex(r.terms)}=${sub(r)}=${n(r.v,1)}`]));
+  const minRow = rows.find(r=>r.v===mn), maxRow = rows.find(r=>r.v===mx);
+  sheet.push(['n', mn < 0 ? `<strong>Net uplift ${fmt(-mn,1)} k</strong> in combo ${minRow.ref}: provide a hold-down, anchor, ballast or deadman. Max gravity ${fmt(mx,1)} k in combo ${maxRow.ref}.` : `No net uplift: the minimum, combo ${minRow.ref}, stays positive. Max gravity ${fmt(mx,1)} k in combo ${maxRow.ref}.`]);
+  P.sheet('cSheet', sheet);
 }
 P.chips('methodChips', d => { method = d.m; combos(); });
 P.bind(['cD','cL','cS','cW'], combos);
@@ -471,44 +495,65 @@ P.anim($('duty'), (ctx, w, h, t) => {
 function hload(){
   const V=+$('hV').value, N=+$('hN').value, nv=+$('hVeh').value, vw=+$('hVw').value, eq=+$('hEq').value;
   $('hVo').textContent = V+' kips'; $('hNo').textContent = N; $('hVehO').textContent = nv; $('hVwO').textContent = vw+' kips'; $('hEqO').textContent = eq+' kips';
-  const veh = nv === 0 ? 0 : nv === 1 ? 0.2*vw : Math.max(0.2*vw, 0.1*nv*vw);
-  const per = 0.05*N, min2 = 0.02*V;
-  const src = [['Vehicles',veh, nv<=1?'20% of loaded vehicle':'10% of combined (≥2)'],['Personnel',per,'50 lb × workers'],['Equipment rated',eq,'from manufacturer'],['2% of total vertical',min2,'minimum']];
-  const gov = src.reduce((a,b)=> b[1] > a[1] ? b : a);
-  const ref = Math.max(gov[1], 1e-6);
-  P.meters('hMeters', src.map(s => ({name:`${s[0]} <span class="label">${s[2]}</span>`, ratio: s[1]/ref, gov: s===gov})));
-  // meters show share of governing; replace numbers with kips
+  const veh = nv === 0 ? 0 : nv === 1 ? 0.2*vw : Math.max(0.2*vw, 0.1*nv*vw), per = 0.05*N, min2 = 0.02*V;
+  const src = [['Vehicles',veh],['Personnel',per],['Equipment',eq],['2% of vertical',min2]];
+  const gov = src.reduce((a,b)=> b[1] > a[1] ? b : a), ref = Math.max(gov[1], 1e-6);
+  P.meters('hMeters', src.map(s => ({name:s[0], ratio: s[1]/ref, gov: s===gov})));
   [...$('hMeters').querySelectorAll('.num')].forEach((el,i) => el.textContent = fmt(src[i][1],2)+' k');
-  $('hOut').textContent = fmt(gov[1],1);
-  $('hGov').textContent = 'kips · ' + gov[0].toLowerCase() + ' governs';
+  $('hOut').textContent = fmt(gov[1],1); $('hGov').textContent = 'kips · ' + gov[0].toLowerCase() + ' governs';
+  P.sheet('hSheet', [
+    ['h', `ΣV = ${V} k · ${N} workers · ${nv} buggies @ ${vw} k`],
+    ['r', 'vehicles', nv === 0 ? T`\text{none}` : nv === 1 ? T`0.20W_{veh}=0.20(${n(vw,1)})=${n(veh,2)}\ \text{k}` : T`\max(0.20W,\ 0.10\textstyle\sum W)=\max(${n(0.2*vw,2)},\ ${n(0.1*nv*vw,2)})=${n(veh,2)}\ \text{k}`],
+    ['r', 'personnel', T`0.050\ \text{k}\times${N}=${n(per,2)}\ \text{k}`],
+    ['r', 'rated equipment', T`C_{H,eq}=${n(eq,2)}\ \text{k}`],
+    ['r', 'minimum', T`0.02\textstyle\sum V=0.02(${V})=${n(min2,2)}\ \text{k}`],
+    ['r', 'design', T`C_H=\max(\ldots)=${n(gov[1],2)}\ \text{k}\ \ (${gov[0]==='2% of vertical'?T`\text{2\% minimum}`:T`\text{`+gov[0].toLowerCase()+'}'}\ \text{governs})`],
+    ['n', 'Apply in any direction. Combine with gravity construction loads, but <strong>not</strong> with W or E. Run wind as its own case.']
+  ]);
 }
 P.bind(['hV','hN','hVeh','hVw','hEq'], hload);
 
 /* ---------- SHEET 7: wall form in wind ---------- */
 const EXP = {B:{a:7.0, zg:1200}, C:{a:9.5, zg:900}, D:{a:11.5, zg:700}};
 let F = {ratio:0, braced:true, ax:0, tip:false};
+const pipeP = (od, tn) => { const t = 0.93*tn, A = Math.PI*(od - t)*t, r = Math.sqrt((od*od + (od-2*t)*(od-2*t))/16); return {A, r}; };
+const BRP = [['Pipe 2 STD', pipeP(2.375,0.154)], ['Pipe 2-1/2 STD', pipeP(2.875,0.203)], ['Pipe 3 STD', pipeP(3.5,0.216)]];
+function fcrA(Fy, klr){ const Es = 29000, Fe = Math.PI*Math.PI*Es/(klr*klr); return klr <= 4.71*Math.sqrt(Es/Fy) ? Math.pow(0.658, Fy/Fe)*Fy : 0.877*Fe; }
+const fFlow = P.flow('fFlow', [
+  {s:T`Construction period → \(V_c=fV\), RC II`, ref:'ASCE 37 §6.1, §6.2.1'},
+  {s:T`\(q_z=0.00256K_zK_{zt}K_dV_c^2\) at the form top; \(F=q_hGC_fA_s\)`, ref:'7-10 Eq. 29.3-1, 29.4-1 · Fig. 29.4-1'},
+  {q:T`Stable unbraced? \(0.9M_R\ge1.0M_{OT}\)`, ref:'7-10 §2.3.2 combo 6 (ASD: 0.6D + 0.6W)', test:s=>s.ratio<=1, yes:'Stable for wind, but ACI 347R §4.2.3.3 still requires bracing for 100 plf at the top', no:T`Brace: \(H=(1.0M_{OT}-0.9M_R)/h_b\)`, main:null},
+  {s:T`Design \(H=\max(H_{wind},\ 100h/h_b)\) → \(P_{brace}=Hs/\cos\theta\), push and pull`, ref:'ACI 347R §4.2.3.3'},
+  {q:'Brace strong enough as a column?', ref:'AISC 360-16 E3 (L = h_b/sin θ)', test:s=>s.braceOK, yes:'Brace OK', no:{s:'Bigger pipe, closer spacing or a steeper brace', end:true}, main:'yes'},
+  {s:'Deadman or anchor for the uplift component; connection to the strongback; check unloaded and before stripping', ref:'statics', end:true}
+]);
 function form(){
-  const V=+$('fV').value, f=+$('fF').value, ex=EXP[$('fExp').value], m=$('fM').value;
+  const V=+$('fV').value, f=+$('fF').value, expK=$('fExp').value, ex=EXP[expK], m=$('fM').value;
   const h=+$('fH').value, wpsf=+$('fW').value, b=+$('fB').value, Cf=+$('fCf').value, hbR=+$('fHb').value, ang=+$('fAng').value, s=+$('fS').value;
-  const braced = $('fBrace').checked;
+  const braced = $('fBrace').checked, [pn, pp] = BRP[+$('fPipe').value];
   $('fVo').textContent = V+' mph'; $('fHo').textContent = h+' ft'; $('fWo').textContent = wpsf+' psf'; $('fBo').textContent = b+' ft';
   $('fCfo').textContent = Cf.toFixed(2); $('fHbo').textContent = Math.round(hbR*100)+'% h'; $('fAngo').textContent = ang+'°'; $('fSo').textContent = s+' ft';
-  const z = Math.max(h, 15), Kz = 2.01*Math.pow(z/ex.zg, 2/ex.a);
-  const Vd = V*f, q = 0.00256*Kz*1.0*0.85*Vd*Vd;
-  const Fw = q*0.85*Cf*h;                    // plf of wall
-  const Mo = Fw*h/2, Wt = wpsf*h, Mr = Wt*b/2; // lb-ft per ft
-  const [gD, gW] = m === 'lrfd' ? [0.9, 1.0] : [0.6, 0.6];
-  const hb = hbR*h;
-  const Hreq = Math.max(0, (gW*Mo - gD*Mr)/hb);   // plf at brace level
-  const Haci = 100*h/hb;                           // ACI 347R min 100 plf at top, moved to brace level
-  const H = Math.max(Hreq, Haci);
-  const th = ang*Math.PI/180, ax = H*s/Math.cos(th)/1000, up = ax*Math.sin(th);
-  const ratio = (gW*Mo)/(gD*Mr);
+  const z = Math.max(h, 15), Kz = 2.01*Math.pow(z/ex.zg, 2/ex.a), Vd = V*f, q = 0.00256*Kz*1.0*0.85*Vd*Vd;
+  const Fw = q*0.85*Cf*h, Mo = Fw*h/2, Wt = wpsf*h, Mr = Wt*b/2, lrfd = m === 'lrfd', [gD, gW] = lrfd ? [0.9, 1.0] : [0.6, 0.6];
+  const hb = hbR*h, Hreq = Math.max(0, (gW*Mo - gD*Mr)/hb), Haci = 100*h/hb, H = Math.max(Hreq, Haci);
+  const th = ang*Math.PI/180, ax = H*s/Math.cos(th)/1000, up = ax*Math.sin(th), ratio = (gW*Mo)/(gD*Mr);
+  const Lbr = hb/Math.sin(th), klr = Lbr*12/pp.r, fc = fcrA(35, klr), Pn = fc*pp.A, cap = lrfd ? 0.9*Pn : Pn/1.67, Wdm = up/(lrfd ? 0.9 : 0.6);
   $('fQ').textContent = fmt(q,1); $('fR').textContent = fmt(ratio,2);
-  $('fEq1').innerHTML = `K<sub>z</sub>(${z} ft, Exp ${$('fExp').value}) = ${Kz.toFixed(2)} · V = ${f.toFixed(2)} × ${V} = ${Vd.toFixed(0)} mph<br>q<sub>z</sub> = 0.00256 × ${Kz.toFixed(2)} × 1.0 × 0.85 × ${Vd.toFixed(0)}² = <b>${q.toFixed(1)} psf</b>`;
-  $('fEq2').innerHTML = `F = q G C<sub>f</sub> h = ${q.toFixed(1)} × 0.85 × ${Cf.toFixed(2)} × ${h} = <b>${Fw.toFixed(0)} plf</b><br>M<sub>OT</sub> = F·h/2 = ${(Mo/1000).toFixed(2)} k-ft/ft · M<sub>R</sub> = ${Wt.toFixed(0)} × ${b}/2 = ${(Mr/1000).toFixed(2)} k-ft/ft`;
-  $('fEq3').innerHTML = `${gW.toFixed(1)}M<sub>OT</sub> − ${gD.toFixed(1)}M<sub>R</sub> → H<sub>wind</sub> = <b>${Hreq.toFixed(0)} plf</b> at ${hb.toFixed(1)} ft<br><span class="c">ACI 347R min 100 plf at top → ${Haci.toFixed(0)} plf at brace</span> → use <b>${H.toFixed(0)} plf</b>`;
   $('fAx').textContent = braced ? fmt(ax,2) : '—'; $('fUp').textContent = braced ? fmt(up,2) : '—';
+  P.sheet('fSheet', [
+    ['h', `h = ${h} ft · Exp ${expK} · ${lrfd?'LRFD':'ASD'} · braces @ ${s} ft · ${pn}`],
+    ['r', 'ASCE 37 §6.2.1', T`V_c=${n(f,2)}(${V})=${n(Vd,1)}\ \text{mph}`],
+    ['r', '7-10 Table 26.9-1 / 29.3-1', T`K_z=2.01\left(\tfrac{${z}}{${ex.zg}}\right)^{2/${ex.a}}=${n(Kz,3)}`],
+    ['r', '7-10 Eq. 29.3-1', T`q_z=0.00256(${n(Kz,3)})(1.0)(0.85)(${n(Vd,1)})^2=${n(q,2)}\ \text{psf}`],
+    ['r', '7-10 Eq. 29.4-1', T`F=q_hGC_fA_s=${n(q,2)}(0.85)(${n(Cf,2)})(${h})=${n(Fw,0)}\ \text{plf}`],
+    ['r', 'moments', T`M_{OT}=F\tfrac{h}{2}=${n(Mo,0)},\ \ M_R=w h\tfrac{b}{2}=${n(Wt,0)}\tfrac{${b}}{2}=${n(Mr,0)}\ \text{lb-ft/ft}`],
+    ['c', lrfd ? '7-10 §2.3.2 (6)' : '7-10 §2.4.1 (7)', T`\frac{${gW}M_{OT}}{${gD}M_R}=${n(ratio,2)}\ \ (\text{unbraced tipping ratio})`, ratio, ['stable','marginal','tips']],
+    ['r', 'brace demand', T`H=\max\left(\tfrac{${gW}(${n(Mo,0)})-${gD}(${n(Mr,0)})}{${n(hb,1)}},\ \tfrac{100(${h})}{${n(hb,1)}}\right)=\max(${n(Hreq,0)},\ ${n(Haci,0)})=${n(H,0)}\ \text{plf}`],
+    ['r', 'brace force', T`P=\frac{Hs}{\cos\theta}=\frac{${n(H,0)}(${s})}{\cos${ang}^\circ}=${n(ax,2)}\ \text{k}\ (\pm)`],
+    ['c', 'AISC E3 (K = 1)', T`L=\tfrac{h_b}{\sin\theta}=${n(Lbr,1)}\ \text{ft},\ \tfrac{L}{r}=${n(klr,0)},\ ${lrfd?T`\phi_cP_n`:T`P_n/\Omega_c`}=${n(cap,1)}\ \text{k}\Rightarrow\tfrac{P}{cap}=${n(ax/cap,2)}`, ax/cap],
+    ['r', 'deadman', T`V=P\sin\theta=${n(up,2)}\ \text{k}\Rightarrow W_{dm}\ge\frac{V}{${lrfd?'0.9':'0.6'}}=${n(Wdm,2)}\ \text{k}\ (\approx${n(Wdm/0.145,0)}\ \text{ft}^3\ \text{concrete})`]
+  ]);
+  fFlow.update({ratio, braceOK: ax <= cap});
   const pill = $('fPill');
   if (braced){ pill.className = 'pill ok'; pill.textContent = 'braced · design brace for ' + fmt(ax,1) + ' k'; }
   else if (ratio > 1){ pill.className = 'pill ng'; pill.textContent = 'tips over · brace it'; }
@@ -517,7 +562,15 @@ function form(){
   F = {ratio, braced, ax, hbR, ang, h, q};
   if (P.reduce) P.redraw();
 }
-P.bind(['fV','fF','fExp','fM','fH','fW','fB','fCf','fHb','fAng','fS','fBrace'], form);
+P.bind(['fV','fF','fExp','fM','fH','fW','fB','fCf','fHb','fAng','fS','fBrace','fPipe'], form);
+P.flow('pFlow', [
+  {s:'Define each temporary stage and how long it exists (construction period per independent structural system; no splitting a continuous operation)', ref:'ASCE 37 §1, §6.2.1'},
+  {s:T`Environmental loads at RC II: wind \(V_c=fV\) (hurricane options §6.2.1.1.1), snow \(0.8p_g\), seismic only if required, plus thermal/rain/ice as applicable`, ref:'ASCE 37 Ch. 6 · ASCE 7-10 procedures'},
+  {s:T`Construction loads: \(C_D, C_{FML}, C_{VML}, C_P\) (uniform/concentrated), \(C_H\), \(C_R\), \(C_C\) (ACI 347), \(C_F\)`, ref:'ASCE 37 Ch. 4'},
+  {s:'Lateral earth pressure; staging so backfill isn\'t placed before the wall can take it', ref:'ASCE 37 Ch. 5'},
+  {s:T`Combine (Ch. 2): gravity cases, wind cases without \(C_H\), \(C_H\) cases without W/E; overturning with only the dead load in place`, ref:'ASCE 37 §2.2 / §2.3.1'},
+  {s:'Check every stage loaded and unloaded. Put the limits on the drawings: stop-work wind speed, snow removal, max pour rate, crane positions', ref:'drawings + field controls', end:true}
+]).update({});
 let tipT = 0;
 P.anim($('form'), (ctx, w, h, t, dt) => {
   const g = h - 16, baseX = w*0.5, fh = (0.3 + 0.55*clamp(F.h/30,0,1))*h, fw = 14;
@@ -558,16 +611,16 @@ P.anim($('form'), (ctx, w, h, t, dt) => {
   }
 });
 
-/* ---------- SHEET 8: cards ---------- */
+/* ---------- cards ---------- */
 P.cards('cards', [
-  ['What is the difference between C<sub>FML</sub> and C<sub>VML</sub>, and why does it matter?','Fixed material loads (installed formwork) are known once placed. Variable material loads (stockpiles, wet concrete) change as work proceeds, so they carry a higher load factor. Neither can be reduced the way personnel loads can.'],
-  ['Do you combine C<sub>H</sub> with wind?','No. ASCE 37 keeps horizontal construction loads separate from wind and earthquake. Run both cases. On low falsework the 2% case usually governs; on tall falsework, wind does.'],
-  ['What minimum lateral load goes on a shoring system?','ASCE 37: at least 2% of total vertical. Caltrans and the AASHTO temp-works guide: 2% of total dead load at the top of posts, in any direction, loaded and unloaded. ACI 347 slab forms: the greater of 100 plf of edge or 2% of DL. Add wind as its own case.'],
-  ['For overturning of a temporary tower, which dead load do you count?','Only the dead load certain to be present at that stage: 0.9D (LRFD) or 0.6D (ASD). No stockpiles, crew or unplaced concrete. The bare, unloaded falsework in wind often governs uplift.'],
-  ['The finished structure is Risk Category IV. Which category for the falsework?','RC II for environmental loads during construction, unless the AHJ requires more. Raise it if a failure would hit an essential facility next door.'],
-  ['A loaded 4-kip buggy brakes on a deck with 12 workers and 400 kips of vertical load. C<sub>H</sub>?','Vehicle: 0.2 × 4 = 0.8 k. Personnel: 12 × 50 lb = 0.6 k. Minimum: 2% × 400 = 8 k. The 2% minimum governs at 8 kips.'],
-  ['Can you reduce construction loads for a large tributary area?','Only personnel and equipment loads (C<sub>P</sub>). Material loads, fixed or variable, aren\'t reduced.'],
-  ['Which ASCE 7 edition sits behind ASCE 37-14, and why does it matter?','ASCE 7-10. Wind is strength-level (1.0W), q<sub>z</sub> still contains K<sub>d</sub>, and snow uses 1.6S in LRFD, unlike ASCE 7-22. If the project uses a newer 37 edition or an owner spec, that governs.']
+  [T`\(C_{FML}\) vs \(C_{VML}\): why does it matter?`, T`Fixed material loads (installed forms) are known once placed. Variable material loads (stockpiles, wet concrete) change during the work, so they take a higher factor (37-02: \(1.2C_{FML}\) vs \(1.4C_{VML}\)). Neither is reduced like \(C_P\).`],
+  [T`Do you combine \(C_H\) with wind?`, 'No. ASCE 37 keeps horizontal construction loads separate from W and E. Run both: the 2% case usually governs low falsework, and wind governs tall falsework.'],
+  ['Minimum lateral load on shoring?', T`ASCE 37: \(\ge0.02\sum V\). Caltrans/AASHTO guide: \(0.02\sum DL\) at the top of posts, loaded and unloaded. ACI 347R §4.2.3.2: \(\max(100\ \text{plf},\ 0.02DL)\). Wall forms §4.2.3.3: \(\ge100\) plf at top. Add wind separately.`],
+  ['Overturning of a temporary tower: which dead load?', T`Only what is certain to be there at that stage: \(0.9D+1.0W\) (7-10 combo 6) or \(0.6D+0.6W\) ASD. No stockpiles, crew or unplaced concrete. The unloaded case often governs.`],
+  ['Finished structure is RC IV. Falsework category?', 'RC II for environmental loads during construction (ASCE 37 §6.1) unless the AHJ requires more.'],
+  [T`4 k buggy, 12 workers, 400 k vertical: \(C_H\)?`, T`\(0.2(4)=0.8\) k, \(12(0.05)=0.6\) k, \(0.02(400)=8\) k → the 2% minimum governs, \(C_H=8\) k.`],
+  [T`Wind on a 16 ft wall form, 115 mph, 6 months, Exp C?`, T`\(V_c=0.8(115)=92\) mph; \(K_z(16)\approx0.86\); \(q=0.00256(0.86)(0.85)(92)^2\approx15.9\) psf; \(F=qGC_fh\approx15.9(0.85)(1.3)(16)\approx280\) plf at mid-height. Brace for \(\max(\text{wind},\ 100\ \text{plf at top})\).`],
+  ['Which ASCE 7 edition sits behind ASCE 37-14?', T`ASCE 7-10: strength-level W (1.0W), \(q_z\) contains \(K_d\), and snow uses \(1.6S\) (unlike 7-22).`]
 ]);
 })();
 </script>
