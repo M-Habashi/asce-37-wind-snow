@@ -8,6 +8,7 @@ Interactive study pages for a temporary-structures engineering interview.
   - `prep/loads.html`: ASCE 7 combinations vs. ASCE 37 construction loads, personnel classes, horizontal construction loads, and a wall-form wind check.
   - `prep/steel.html`: AISC column curve, LTB, Appendix 6 bracing, interaction with B1, and bolts and welds.
   - `prep/lifting.html`: sling geometry and CG, spreader vs. lifting beam, BTH-1 padeye, % of chart, crawler track pressure, pick points, and power-line clearance.
+  - `prep/cranes.html`: crane foundations: tower crane gravity blocks checked on the diagonal (FEM load cases and factors), ACI 318-19 block design, 4-pile caps, tied-in and climbing cranes, and crawler mats.
   - `prep/bridges.html`: AASHTO LRFD limit states, construction load factors, HL-93, a crane on a pile-bent trestle, stream flow, and twin-girder system buckling.
   - `prep/falsework.html`: ACI 347 form pressure, Caltrans falsework loads, the load path, an NDS joist check, and reshoring.
   - `prep/ground.html`: OSHA trench rules, Rankine + Boussinesq surcharge, Peck envelopes, a tremie seal, 2:1 spread, and barge stability.

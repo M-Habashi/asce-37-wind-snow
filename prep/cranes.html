@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crane Foundations: Tower, Tied, Climbing, Mobile · Temporary Works Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="assets/prep.css">
+<script src="assets/prep.js"></script>
+</head>
+<body>
+<script>P.nav('cranes.html')</script>
+<div class="wrap">
+
+<!-- SHEET 1 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>1</b> of 11</div><div>Tower crane bases · tied &amp; climbing cranes · mobile crane support</div><div>Chk'd: <b>M.</b></div></div>
+  <div class="sheet-body">
+    <div class="kicker"><span class="label">FEM tower-crane guideline (2014) · EN 14439 · ACI 318-19 · OSHA 1926.1435 / 1926.1402 · ASME B30.3 / B30.5</span><span class="hand">the moment slews, so design the corner →</span></div>
+    <h1>Crane<br>Foundations</h1>
+    <div class="stage tall">
+      <canvas id="hero" role="img" aria-label="Elevation and plan of a tower crane on a concrete block; as the jib slews the soil pressure under the block moves, peaking when the jib is over a corner"></canvas>
+      <div class="readout"><span>slew <b id="hTh">0</b>°</span><span>\(e\) <b id="hE">—</b> ft</span><span>corner \(q_{max}\) <b id="hQ">—</b> ksf</span><span>contact <b id="hC">—</b>%</span></div>
+    </div>
+    <p class="lede">A tower crane foundation is a temporary structure with one unusual load: a large overturning moment whose <strong>direction keeps changing</strong> as the crane slews, plus a storm case when the crane is out of service. "Low" cranes (mobile, crawler, self-erecting) sit on the ground through outriggers, tracks or a ballasted base, so the job is ground bearing and mats. "High" cranes (top-slewing tower cranes) need an engineered base. Above their freestanding height they are tied to, or climb inside, the building, so the building becomes part of the foundation.</p>
+  </div>
+</section>
+
+<!-- SHEET 2 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>2</b> of 11</div><div>Foundation types by crane</div><div>low vs high</div></div>
+  <div class="sheet-body">
+    <h2>Which foundation for which crane?</h2>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Crane</th><th>Usual support / foundation</th><th>What governs</th><th>Loads from</th></tr></thead><tbody>
+      <tr><td><b>Mobile on outriggers</b> (truck, all-terrain, rough-terrain) · low</td><td>Outrigger floats on pads or timber/steel/composite mats; compacted aggregate working surface</td><td>Max outrigger load (boom over that outrigger) vs. ground bearing; mat bending</td><td>Manufacturer outrigger-load software</td></tr>
+      <tr><td><b>Crawler</b> · low (but heavy)</td><td>Hardwood or steel mats under the tracks; working platform; piled mats for very large crawlers and ring cranes</td><td>Track toe pressure (often 7–9 ksf for big crawlers) vs. ground; mat effective length</td><td>Manufacturer track-pressure data</td></tr>
+      <tr><td><b>Self-erecting tower crane</b> · low</td><td>Ballasted base on 4 outriggers → pads, mats or small footings</td><td>Corner (pad) loads, bearing per corner</td><td>Manufacturer corner reactions</td></tr>
+      <tr><td><b>Top-slewing tower crane on a cross-base / undercarriage</b></td><td>Ballast on a cruciform base sitting on 4 pads, pile caps or a slab</td><td>Max corner compression, uplift at the opposite corner</td><td>Corner reactions (FEM Table 2 factors)</td></tr>
+      <tr><td><b>Top-slewing freestanding</b> (hammerhead, flat-top, luffer) · high</td><td><b>Gravity block</b> with cast-in anchors (most common); <b>pile cap</b> on tension piles, drilled shafts or micropiles on weak soil; or cast into the building mat with EOR approval</td><td>Out-of-service storm moment on the <b>diagonal</b>: eccentricity, corner bearing, pile tension, anchor tension</td><td>Foundation reactions V, H, M, M<sub>t</sub> per case</td></tr>
+      <tr><td><b>Tied-in (braced)</b> · above freestanding height</td><td>Base foundation plus tie collars and struts to the structure at set heights</td><td>Tie forces into slab edges, columns and embeds; building drift</td><td>Manufacturer tie reactions</td></tr>
+      <tr><td><b>Internal climbing</b> · tall towers</td><td>Climbing frames and collars in the core or floor openings; the floors carry the crane</td><td>Collar couple \(M/h\) into the floors, vertical load on frame beams, shoring below</td><td>Manufacturer frame reactions + RPE review of the host structure</td></tr>
+    </tbody></table></div>
+    <div class="flowwrap" style="margin-top:18px">
+      <div class="col">
+        <div class="chips" id="selCrane" role="group" aria-label="Crane type">
+          <button class="chip" data-c="mob" aria-pressed="false">Mobile / crawler<small>low</small></button>
+          <button class="chip" data-c="self" aria-pressed="false">Self-erector<small>ballasted</small></button>
+          <button class="chip" data-c="free" aria-pressed="true">Freestanding tower<small>high</small></button>
+          <button class="chip" data-c="tall" aria-pressed="false">Above freestanding<small>tied / climbing</small></button>
+        </div>
+        <div class="chips" id="selSoil" role="group" aria-label="Ground">
+          <button class="chip" data-s="good" aria-pressed="true">Good bearing, room for a block<small>e.g. ≥ 3–4 ksf</small></button>
+          <button class="chip" data-s="poor" aria-pressed="false">Weak soil / tight site<small>soft clay, fill, water</small></button>
+        </div>
+        <div class="callout remember"><span class="tag">Say this in the interview</span><p>The manufacturer owns the crane and gives you <strong>characteristic</strong> reactions for each case. You own the foundation: make sure the reactions match the exact configuration (mast height, jib length, counterweight), pick the governing direction (the diagonal), and check stability, ground and concrete. OSHA 1926.1435(b)(3) requires the foundation to be designed by the manufacturer or a registered professional engineer.</p></div>
+      </div>
+      <div class="col"><h3>Selection flow</h3><div id="selFlow"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 3 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>3</b> of 11</div><div>What the manufacturer gives you · load cases · partial factors</div><div>FEM 2014 · EN 14439</div></div>
+  <div class="sheet-body">
+    <h2>Reactions, cases and factors</h2>
+    <div class="eqblock">$$\text{Design (ULS):}\quad \gamma_{G}\,V_k\ \ (\text{dead-weight force only})\qquad \gamma_{Q}\,M_k,\ \ \gamma_Q H_k,\ \ \gamma_Q M_{t,k}\ \ (\text{the moment is a variable action, even its dead-weight part})$$
+    $$\text{leg (anchor) forces:}\quad F_{c,d}=\frac{\gamma_{G,sup}V_k}{4}+\frac{\gamma_{Q}M_k}{\sqrt2\,D}\qquad F_{t,d}=\frac{\gamma_{G,inf}V_k}{4}-\frac{\gamma_{Q}M_k}{\sqrt2\,D}$$<span class="fref">FEM "Guidelines for considering tower crane loads on supporting structures" (2014) §I-2, §I-3, §II.3.2, Table 3 and Example 2 Eqs. [1]–[2] · D = tower leg spacing · the moment is taken on the diagonal</span></div>
+    <div class="twocol">
+      <div class="col">
+        <h3>The four cases (FEM Example 2 crane)</h3>
+        <div class="tblwrap"><table class="tbl">
+          <thead><tr><th>Case</th><th class="num">V<sub>k</sub></th><th class="num">M<sub>k</sub></th><th class="num">H<sub>k</sub></th><th class="num">M<sub>t,k</sub></th></tr></thead><tbody>
+          <tr><td>In service (max in-service wind)</td><td class="num">885 kN · 199 k</td><td class="num">2,086 kNm · 1,539 k-ft</td><td class="num">57 kN · 12.8 k</td><td class="num">270 kNm</td></tr>
+          <tr><td>Out of service · storm from rear</td><td class="num">765 kN · 172 k</td><td class="num"><b>3,605 kNm · 2,659 k-ft</b></td><td class="num"><b>193 kN · 43.4 k</b></td><td class="num">0</td></tr>
+          <tr><td>Out of service · storm front/side</td><td class="num">765 kN · 172 k</td><td class="num">3,355 kNm · 2,475 k-ft</td><td class="num">128 kN · 28.8 k</td><td class="num">0</td></tr>
+          <tr><td>Erection</td><td class="num">474 kN · 107 k</td><td class="num">2,175 kNm · 1,604 k-ft</td><td class="num">31 kN · 7.0 k</td><td class="num">270 kNm</td></tr>
+        </tbody></table></div>
+        <p class="small muted">Tower system D = 1.84 m (6.04 ft). The storm moment is about 1.7× the in-service moment, so <strong>out of service usually governs the foundation</strong>. Out of service, the slew brake is released and the jib weathervanes, but the storm can still come from any side.</p>
+      </div>
+      <div class="col">
+        <h3>FEM Table 3 · concrete block with cast-in anchors</h3>
+        <div class="tblwrap"><table class="tbl">
+          <thead><tr><th>Case</th><th class="num">γ<sub>G,sup</sub></th><th class="num">γ<sub>G,inf</sub></th><th class="num">γ<sub>Q</sub> (2nd order incl.)</th><th class="num">γ<sub>Q</sub> (not incl., α = 1.10)</th></tr></thead><tbody>
+          <tr><td>In service</td><td class="num">1.35</td><td class="num">1.0</td><td class="num">1.35</td><td class="num">1.50</td></tr>
+          <tr><td>Out of service · rear</td><td class="num">1.22</td><td class="num">1.0</td><td class="num">1.22</td><td class="num">1.35</td></tr>
+          <tr><td>Out of service · front/side</td><td class="num">1.10</td><td class="num">1.0</td><td class="num">1.10</td><td class="num">1.22</td></tr>
+          <tr><td>Erection</td><td class="num">1.22</td><td class="num">1.0</td><td class="num">1.22</td><td class="num">1.35</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+    <div class="threecol" style="margin-top:14px">
+      <div class="callout diff"><span class="tag">Characteristic, not factored</span><p>Manufacturer reactions normally include <strong>no partial factors, no dynamic factor and no second-order effect</strong> (FEM §I-2). For "high cranes" the second-order effect matters, so FEM adds an amplification factor α ≥ 1.10 on the moment when the manufacturer hasn't included it.</p></div>
+      <div class="callout remember"><span class="tag">US layer</span><p>Since the 2012 revision, ASME B30.3 requires <strong>ASCE 7 wind</strong> for foundations and freestanding heights (ENR). Check that the site wind doesn't exceed the manufacturer's out-of-service basis, which is usually EN 14439. If it does, ask for site-specific reactions. OSHA 1926.1435(b)(4)(iii): don't exceed the manufacturer's wind limit.</p></div>
+      <div class="callout trap"><span class="tag">Ask for the right table</span><p>Reactions depend on the mast height, mast type, jib length, counterweight, and the base or anchors. A table for a different height is a different crane. Also ask whether the values are per leg or global, whether they're at the top of the block, and whether they include second-order and dynamic effects.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 4 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>4</b> of 11</div><div>Gravity block · stability · bearing · sliding · legs</div><div>axis vs diagonal</div></div>
+  <div class="sheet-body">
+    <h2>Size a gravity block</h2>
+    <div class="eqblock">$$P=V+\gamma_cB^2t\qquad M_b=M+Ht\qquad e=\frac{M_b}{P}\qquad \text{SLS: } e\le\frac B3\ \Leftrightarrow\ FS_{OT}=\frac{P\,B/2}{M_b}\ge1.5\qquad \text{ULS: } e_d=\frac{\gamma_QM_b}{\gamma_{G,inf}P}\le\frac B2$$
+    $$q_{max}=\frac{P}{B^2}\Big(1+\frac{6e}{B}\Big)\ (e\le B/6)\qquad q_{max}=\frac{2P}{3B\,(B/2-e)}\ (e>B/6)\qquad S_{diag}=\frac{B^3}{6\sqrt2}=0.118B^3\ \ \text{vs}\ \ S_{axis}=\frac{B^3}{6}$$<span class="fref">FEM §II.3.3 (ULS e ≤ B/2) and §II-4 (SLS e ≤ B/3) for temporary installations; permanent: B/3 and B/6 · no-tension linear pressure (statics) · the diagonal pressure here is solved numerically for a no-tension plane</span></div>
+    <div class="stage tall"><canvas id="blk" role="img" aria-label="Block elevation with the pressure diagram along the section, and a plan heat map of soil pressure with lift-off zone, leg forces and jib direction"></canvas>
+      <div class="readout"><span>slew <b id="bTh">—</b>°</span><span>corner \(q\) <b id="bQ">—</b> ksf</span><span>contact <b id="bC">—</b>%</span></div>
+      <div class="readout bottom"><span class="legend"><span><i style="background:var(--good)"></i>q ≪ q<sub>a</sub></span><span><i style="background:var(--warn)"></i>≈ q<sub>a</sub></span><span><i style="background:var(--bad)"></i>&gt; q<sub>a</sub></span></span></div></div>
+    <div class="chips" id="gCase" role="group" aria-label="Load case">
+      <button class="chip" data-k="ins" aria-pressed="false">In service<small>γ<sub>Q</sub> 1.35/1.50</small></button>
+      <button class="chip" data-k="oosr" aria-pressed="true">Storm from rear<small>γ<sub>Q</sub> 1.22/1.35</small></button>
+      <button class="chip" data-k="oosf" aria-pressed="false">Storm front/side<small>γ<sub>Q</sub> 1.10/1.22</small></button>
+      <button class="chip" data-k="ere" aria-pressed="false">Erection<small>γ<sub>Q</sub> 1.22/1.35</small></button>
+    </div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gB">Block B × B: <span class="val" id="gBo"></span></label><input id="gB" type="range" min="14" max="36" step="0.5" value="22"></div>
+          <div class="ctrl"><label class="label" for="gT">Thickness t: <span class="val" id="gTo"></span></label><input id="gT" type="range" min="3" max="8" step="0.25" value="5"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gQa">Allowable bearing \(q_a\): <span class="val" id="gQao"></span></label><input id="gQa" type="range" min="2" max="10" step="0.25" value="4"></div>
+          <div class="ctrl"><label class="label" for="gMu">Base friction \(\mu\): <span class="val" id="gMuo"></span></label><input id="gMu" type="range" min="0.3" max="0.6" step="0.01" value="0.40"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="gD">Tower leg spacing D: <span class="val" id="gDo"></span></label><input id="gD" type="range" min="4" max="8" step="0.02" value="6.04"></div>
+          <div class="ctrl"><label class="label" for="gSc">Scale crane loads ×: <span class="val" id="gSco"></span></label><input id="gSc" type="range" min="0.5" max="2" step="0.05" value="1"></div>
+        </div>
+        <div class="ctrl"><label class="label" for="gTh">Slew angle (jib direction): <span class="val" id="gTho"></span></label><input id="gTh" type="range" min="0" max="360" step="1" value="45"></div>
+        <label class="check"><input type="checkbox" id="gAuto" checked> Auto-slew</label>
+        <label class="check"><input type="checkbox" id="gInc"> Manufacturer reactions include 2nd-order + dynamic effects (else α = 1.10)</label>
+        <label class="check"><input type="checkbox" id="gWt"> Groundwater at or above the top of the block (buoyant concrete 87.6 pcf)</label>
+        <div class="meters" id="gMeters" style="margin-top:10px"></div>
+      </div>
+      <div class="col"><h3>Calc sheet</h3><div id="gSheet"></div></div>
+    </div>
+    <h3>All four cases at once</h3>
+    <div class="tblwrap"><table class="tbl" id="gEnv"></table></div>
+    <div class="flowwrap" style="margin-top:16px">
+      <div class="col"><h3>Block design flow</h3><div id="gFlow"></div></div>
+      <div class="col">
+        <div class="callout trap"><span class="tag">Why the diagonal</span><p>About an axis the edge is B/2 from the center; about the diagonal the corner is B/√2 away, so overturning is <strong>safer on the diagonal</strong> but the corner pressure is <strong>higher</strong>: the kern shrinks from B/6 to 0.118B. For the same e, a square block's corner pressure on the diagonal is roughly 30–40% higher than on the axis. The tower legs see the same thing: the corner leg takes \(M/(\sqrt2D)\) on the diagonal vs. \(M/(2D)\) on the axis.</p></div>
+        <div class="callout remember"><span class="tag">Practical details</span><p>Partial lift-off is normal under the storm case (FEM allows e up to B/3 at SLS, which is about 74% contact on the axis). Groundwater cuts the block's weight by 42%. The torsion from slewing rarely governs a block, but it goes into the anchors as shear. Leave room for backfill, the anchor template, and the mobile crane that erects the tower crane.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 5 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>5</b> of 11</div><div>Concrete design of the block · ACI 318-19</div><div>top + bottom steel</div></div>
+  <div class="sheet-body">
+    <h2>Reinforce the block</h2>
+    <div class="eqblock">$$M_u=\int_{x_f}^{B/2}q_u(x)\,(x-x_f)\,dx-\gamma_G\,w_c\,t\,\frac{L_c^2}{2}\qquad \phi M_n=\phi A_sf_y\Big(d-\frac a2\Big),\ \phi=0.90\qquad A_{s,min}=0.0018A_g$$
+    $$\phi V_c=0.75\cdot 8\lambda_s\lambda\,(\rho_w)^{1/3}\sqrt{f'_c}\,b\,d\qquad \lambda_s=\sqrt{\frac{2}{1+d/10}}\le1\qquad A_{s,anchor}\ge\frac{N_{ua}}{0.75f_y}$$<span class="fref">ACI 318-19 §13.2.7.1 (critical section at face of the support) · Table 21.2.1 (φ) · §8.6.1.1 (min steel) · Table 22.5.5.1(c) and Eq. 22.5.5.1.3 (one-way shear without stirrups, with size effect) · Ch. 17 anchor reinforcement</span></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="chips" id="cFc" role="group" aria-label="Concrete strength">
+          <button class="chip" data-f="4" aria-pressed="false">f'<sub>c</sub> 4,000 psi</button>
+          <button class="chip" data-f="5" aria-pressed="true">f'<sub>c</sub> 5,000 psi</button>
+          <button class="chip" data-f="6" aria-pressed="false">f'<sub>c</sub> 6,000 psi</button>
+        </div>
+        <p class="small muted">Uses the block, case and loads from sheet 4 at ULS (FEM γ factors). The pressure is taken along an axis with the full moment, and the same steel goes both ways. Cover 3 in plus half a bar: d = 12t − 4 in. Grade 60 bars.</p>
+        <div class="stage" style="min-height:0"><canvas id="cv5" role="img" aria-label="Block section with factored soil pressure, critical sections at the mast face and at d, and top and bottom reinforcement"></canvas></div>
+      </div>
+      <div class="col"><h3>Calc sheet</h3><div id="cSheet"></div></div>
+    </div>
+    <div class="callout diff"><span class="tag">ACI 318-19 change that hits crane bases</span><p>Footings without stirrups now use the <strong>size-effect factor λ<sub>s</sub></strong> and the ρ<sub>w</sub><sup>1/3</sup> term in one-way shear (Table 22.5.5.1(c)), and λ<sub>s</sub> in two-way shear (Table 22.6.5.2). On a 5–6 ft crane block that can cut V<sub>c</sub> to less than half of the old \(2\sqrt{f'_c}bd\). Thickness, not steel, usually fixes it.</p></div>
+  </div>
+</section>
+
+<!-- SHEET 6 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>6</b> of 11</div><div>Piled base · 4-pile cap</div><div>diagonal → tension pile</div></div>
+  <div class="sheet-body">
+    <h2>When the soil can't take a block</h2>
+    <div class="eqblock">$$P_i=\frac{P}{n}\pm\frac{M_b\,d_i}{\sum d^2}\qquad \text{4 piles at spacing }s:\ \ \text{axis } \frac P4\pm\frac{M_b}{2s}\qquad \text{diagonal } \frac P4\pm\frac{M_b}{\sqrt2\,s}\qquad H_{pile}\approx\frac H4+\frac{M_t}{4\,(s/\sqrt2)}$$<span class="fref">rigid-cap pile group statics · pile capacities from the geotech are usually allowable (ASD), so use characteristic reactions · check pile tension (uplift) capacity and the anchorage of the pile into the cap</span></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="pS">Pile spacing s: <span class="val" id="pSo"></span></label><input id="pS" type="range" min="8" max="24" step="0.5" value="14"></div>
+          <div class="ctrl"><label class="label" for="pT">Cap thickness: <span class="val" id="pTo"></span></label><input id="pT" type="range" min="3" max="7" step="0.25" value="5"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="pC">Allowable compression / pile: <span class="val" id="pCo"></span></label><input id="pC" type="range" min="100" max="600" step="10" value="300"></div>
+          <div class="ctrl"><label class="label" for="pU">Allowable tension / pile: <span class="val" id="pUo"></span></label><input id="pU" type="range" min="0" max="300" step="5" value="100"></div>
+        </div>
+        <p class="small muted">Cap = s + 4 ft square (2 ft edge to pile centers). Case and crane loads come from sheet 4.</p>
+        <div class="stage" style="min-height:0"><canvas id="pile" role="img" aria-label="Plan of a four-pile cap with the moment direction rotating and pile loads shown as bars"></canvas>
+          <div class="readout"><span>angle <b id="pTh">—</b>°</span><span>max <b id="pMx">—</b> k</span><span>min <b id="pMn">—</b> k</span></div></div>
+      </div>
+      <div class="col"><h3>Calc sheet</h3><div id="pSheet"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 7 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>7</b> of 11</div><div>High cranes · tied-in and climbing</div><div>the building is the foundation</div></div>
+  <div class="sheet-body">
+    <h2>Above freestanding height</h2>
+    <div class="eqblock">$$\text{tied (fixed base, prop at }h_t):\ \ M_{tie}=M_{top}+Ha\qquad R_{tie}=H+\frac{3M_{tie}}{2h_t}\qquad M_{base}=-\frac{M_{tie}}{2}\qquad \text{vs freestanding } M_{base}=M_{top}+H(a+h_t)$$
+    $$\text{climbing (two collars }h\text{ apart)}:\ \ H_{upper}=H+\frac{M_c}{h}\qquad H_{lower}=\frac{M_c}{h}\qquad V\to\text{lower frame beams}$$<span class="fref">beam statics for intuition only: real tie and frame reactions come from the manufacturer (mast and tie stiffness, building drift) · OSHA 1926.1435(b)(7)(ii): an RPE verifies the host structure for climbing · (f)(4): monthly checks of the uppermost tie-in, braces, floor supports and wedges</span></div>
+    <div class="chips" id="hMode" role="group" aria-label="Mode">
+      <button class="chip" data-m="tie" aria-pressed="true">Tied-in (external tower)<small>ties to the slab edge</small></button>
+      <button class="chip" data-m="climb" aria-pressed="false">Internal climbing<small>collars in the core</small></button>
+    </div>
+    <div class="twocol">
+      <div class="col">
+        <div class="stage tall" style="min-height:0"><canvas id="high" role="img" aria-label="Elevation of a tower crane tied to or climbing inside a building, with the bending moment diagram along the mast compared with a freestanding mast"></canvas></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="hM">Moment at mast top \(M_{top}\): <span class="val" id="hMo"></span></label><input id="hM" type="range" min="500" max="4000" step="50" value="1600"></div>
+          <div class="ctrl"><label class="label" for="hH">Horizontal H: <span class="val" id="hHo"></span></label><input id="hH" type="range" min="5" max="60" step="1" value="20"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="hA">Mast above the tie / upper collar a: <span class="val" id="hAo"></span></label><input id="hA" type="range" min="20" max="120" step="5" value="50"></div>
+          <div class="ctrl" id="hTw"><label class="label" for="hT">Tie height \(h_t\): <span class="val" id="hTo"></span></label><input id="hT" type="range" min="60" max="300" step="5" value="160"></div>
+          <div class="ctrl" id="hCw" hidden><label class="label" for="hCs">Collar spacing h: <span class="val" id="hCso"></span></label><input id="hCs" type="range" min="10" max="60" step="1" value="26"></div>
+        </div>
+      </div>
+      <div class="col"><h3>Calc sheet</h3><div id="hSheet"></div><h3 style="margin-top:14px">Above freestanding height</h3><div id="hFlow"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 8 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>8</b> of 11</div><div>Low cranes · crawler on timber mats · outriggers</div><div>soil method + mat-strength method</div></div>
+  <div class="sheet-body">
+    <h2>Mats under a crawler</h2>
+    <div class="eqblock">$$q_{trk}=\frac{P_t}{CL}\Big(1+\frac{6e}{L}\Big)\ (e\le L/6)\qquad P_{mat}=q_{trk}\,C\,B_m\qquad L_{req}=\frac{P_{mat}+W_{mat}}{q_aB_m}\qquad L_c=\frac{L_{req}-C}{2}$$
+    $$f_b=\frac{q B_mL_c^2/2}{S},\ S=\frac{b\,d^2}{6}\qquad f_v=\frac{1.5\,qB_m(L_c-d)}{b\,d}\qquad \text{mat strength: } \frac{P_{mat}L_c^2}{2(C+2L_c)}=F_bS\Rightarrow L_{eff}=C+2L_c\ \ \Rightarrow\ q_t=\frac{P_{mat}+W_{mat}}{B_mL_{eff}}\le q_a$$<span class="fref">soil-bearing method and mat-strength method as worked in the ITI / Buckner Heavylift "Ground Bearing Pressure" webinar (Fb = 1,400 psi, Fv = 200 psi hardwood mats) · track statics as on the Lifting page, sheet 6 · OSHA 1926.1402 ground conditions</span></div>
+    <div class="twocol">
+      <div class="col">
+        <div class="stage" style="min-height:0"><canvas id="mat" role="img" aria-label="Crawler track on timber mats with the track pressure diagram, and a section through one mat showing the effective length and cantilevers"></canvas></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="mP">Load on one track \(P_t\): <span class="val" id="mPo"></span></label><input id="mP" type="range" min="150" max="1600" step="10" value="600"></div>
+          <div class="ctrl"><label class="label" for="mE">Eccentricity along track e: <span class="val" id="mEo"></span></label><input id="mE" type="range" min="0" max="9" step="0.1" value="4"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><label class="label" for="mL">Track bearing length L: <span class="val" id="mLo"></span></label><input id="mL" type="range" min="16" max="40" step="0.5" value="28"></div>
+          <div class="ctrl"><label class="label" for="mC">Track width C: <span class="val" id="mCo"></span></label><input id="mC" type="range" min="3" max="7" step="0.1" value="4.9"></div>
+        </div>
+        <div class="ctrl-row three">
+          <div class="ctrl"><label class="label" for="mD">Mat thickness</label><select id="mD"><option value="8">8 in</option><option value="10">10 in</option><option value="12" selected>12 in</option></select></div>
+          <div class="ctrl"><label class="label" for="mW">Mat length</label><select id="mW"><option>16</option><option selected>20</option><option>24</option><option>30</option><option>40</option></select></div>
+          <div class="ctrl"><label class="label" for="mQa">\(q_a\): <span class="val" id="mQao"></span></label><input id="mQa" type="range" min="1.5" max="8" step="0.25" value="3"></div>
+        </div>
+      </div>
+      <div class="col"><h3>Calc sheet</h3><div id="mSheet"></div></div>
+    </div>
+    <div class="flowwrap" style="margin-top:16px">
+      <div class="col"><h3>Mobile crane ground support flow</h3><div id="mFlow"></div></div>
+      <div class="col">
+        <div class="callout trap"><span class="tag">Interview angle</span><p>A 20 ft timber mat is <strong>not</strong> 20 ft of bearing: only the part stiff enough to spread the load works. Check the soil (required area) <em>and</em> the mat (bending and shear give an effective length). Under outriggers only the timbers directly under the float carry load, so use a transition mat or a steel/composite top mat. Ask whether the track pressures are "hard ground" or "soft ground" numbers.</p></div>
+        <div class="callout remember"><span class="tag">Outriggers</span><p>Use the manufacturer's outrigger-load software for the worst swing angle (boom over one outrigger), including empty-hook backward stability and the crane's own assembly. Then \(A=R/q_a\), check the pad or mat, and spread to any weak layer at 2:1 (Ground page sheet 6). The Lifting page, sheet 6 has the outrigger and track statics. Load charts generally assume the crane is level, typically within 1%.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 9 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>9</b> of 11</div><div>Procedure · design → build → erect → operate → remove</div><div>who signs what</div></div>
+  <div class="sheet-body">
+    <h2>Tower crane foundation, start to finish</h2>
+    <div class="flowwrap">
+      <div class="col"><div id="procFlow"></div></div>
+      <div class="col">
+        <div class="tblwrap"><table class="tbl"><thead><tr><th>Rule</th><th>Cite</th></tr></thead><tbody>
+          <tr><td>Foundations and structural supports designed by the manufacturer or an RPE</td><td>OSHA 1926.1435(b)(3)</td></tr>
+          <tr><td>A/D director confirms the foundation is installed per the design</td><td>1926.1435(b)(4)(i)</td></tr>
+          <tr><td>Wind not above the manufacturer's limit (else a qualified person's)</td><td>1926.1435(b)(4)(iii)</td></tr>
+          <tr><td>RPE verifies the host structure can take climbing forces</td><td>1926.1435(b)(7)(ii)</td></tr>
+          <tr><td>Monthly: bolts above the uppermost brace; uppermost tie-in, braces, floor supports and wedges</td><td>1926.1435(f)(4)(i)–(ii)</td></tr>
+          <tr><td>Ground firm, drained, graded; supporting materials so the manufacturer's support and level requirements are met</td><td>1926.1402(b)</td></tr>
+          <tr><td>Controlling entity provides ground prep and tells the user about voids, tanks, utilities</td><td>1926.1402(c)(1)–(2)</td></tr>
+          <tr><td>Ground inadequate → confer with the controlling entity</td><td>1926.1402(e)</td></tr>
+          <tr><td>California: written statement of compliance before erection or jump; plumb within 1:500 if the manufacturer doesn't specify</td><td>Cal/OSHA T8 §4966</td></tr>
+          <tr><td>ASCE 7 wind for foundations and freestanding height</td><td>ASME B30.3 (2012+)</td></tr>
+        </tbody></table></div>
+        <div class="callout verify"><span class="tag">Project-specific</span><p>Concrete strength before erection is set by the manufacturer or the EOR. Examples seen: "minimum 4,500 psi before erection" (a city-filed spec) and "at least 70% of final strength" (an erection manual). Anchor level tolerance comes from the anchor drawing; survey it before the pour.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 10 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>10</b> of 11</div><div>Common values · crane foundations</div><div>memorize</div></div>
+  <div class="sheet-body">
+    <h2>What's actually used</h2>
+    <div class="cv">
+      <div><h4>Stability criteria (FEM 2014)</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>SLS, temporary</td><td><span class="memo">e ≤ B/3</span> ⇔ FS<sub>OT</sub> ≥ 1.5</td></tr>
+        <tr><td>ULS, temporary (factored)</td><td>e<sub>d</sub> ≤ B/2</td></tr>
+        <tr><td>Permanent install</td><td>ULS B/3 · SLS in-service B/6</td></tr>
+        <tr><td>Full contact</td><td>e ≤ B/6 (axis) · 0.118B (diagonal)</td></tr>
+        <tr><td>Contact length (axis)</td><td>3(B/2 − e) → 75% at e = B/3</td></tr>
+        <tr><td>Sliding (common practice)</td><td>μP/H ≥ 1.5, μ ≈ 0.35–0.55 cast on soil</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Factors &amp; loads</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>γ<sub>Q</sub> in service / storm rear / storm side / erection</td><td>1.35 / 1.22 / 1.10 / 1.22 (+α: 1.50 / 1.35 / 1.22 / 1.35)</td></tr>
+        <tr><td>Second-order amplification if not included</td><td><span class="memo">α ≥ 1.10</span></td></tr>
+        <tr><td>Storm vs in-service moment</td><td>≈ 1.7× (FEM Example 2)</td></tr>
+        <tr><td>Corner leg on the diagonal</td><td>V/4 ± M/(√2 D)</td></tr>
+        <tr><td>Corner pile on the diagonal</td><td>P/4 ± M/(√2 s)</td></tr>
+        <tr><td>Concrete · buoyant</td><td>150 pcf · 87.6 pcf</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Mats &amp; pads</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Hardwood crane mat</td><td>12 in × 4 ft × 16–40 ft (8 and 10 in also common), ≈ 50 pcf → 4,000 lb for 4 × 20 × 1 ft</td></tr>
+        <tr><td>Allowables used (Buckner example)</td><td>F<sub>b</sub> 1,400 psi · F<sub>v</sub> 200 psi</td></tr>
+        <tr><td>Big crawler track pressure</td><td>≈ 8 ksf (LR 11350: 7,993 psf under the tracks)</td></tr>
+        <tr><td>UHMW outrigger pads (supplier table)</td><td>24×24×1 in: 60 k · 36×36×2 in: 98 k · 48×48×2 in: 140 k vertical</td></tr>
+        <tr><td>Load chart level</td><td>typically within 1%</td></tr>
+      </tbody></table></div></div>
+      <div><h4>Blocks, tolerances, rules of thumb</h4><div class="tblwrap"><table class="tbl"><tbody>
+        <tr><td>Freestanding gravity block (typical)</td><td>≈ 20–30 ft square × 4–7 ft thick (verify per crane)</td></tr>
+        <tr><td>Mast plumb (default)</td><td>1:500 ≈ 1 in per 40 ft (Cal/OSHA §4966)</td></tr>
+        <tr><td>Steel</td><td>top and bottom mats both ways; A<sub>s,min</sub> 0.0018A<sub>g</sub></td></tr>
+        <tr><td>Shear</td><td>λ<sub>s</sub> ≈ 0.55 at d = 56 in</td></tr>
+        <tr><td>Tied mast</td><td>tie ≈ H + 1.5M/h<sub>t</sub>; base moment ≈ −M/2</td></tr>
+        <tr><td>Climbing</td><td>collar couple ≈ M/h</td></tr>
+      </tbody></table></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHEET 11 -->
+<section class="sheet">
+  <div class="padhead"><div>Sheet <b>11</b> of 11</div><div>Rehearsal</div><div>Tap to flip</div></div>
+  <div class="sheet-body">
+    <h2>Questions they may ask</h2>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<footer>
+  <p>The load cases, partial factors, eccentricity limits and leg-force formula are from the FEM position paper (2014). The mat method and its allowables are from the ITI/Buckner webinar. OSHA paragraphs were checked against osha.gov. The ASME B30.3 ASCE 7 requirement is as reported by ENR. Typical block sizes are rules of thumb. The ACI 318-19 section numbers are from memory, so verify them. This page is a study aid, not a design tool.</p>
+  <p>Sources: <a href="https://www.fem-eur.com/wp-content/uploads/2016/01/CLE-THC-Loads-on-supporting-structures.pdf" target="_blank" rel="noopener">FEM tower crane loads on supporting structures</a> · <a href="https://www.iti.com/hs-fs/hub/78935/file-619707622-pdf/docs/ground_bearing_pressure_-_practical_applications_for_lifts_of_all_sizes.pdf" target="_blank" rel="noopener">ITI/Buckner ground bearing pressure</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.1435" target="_blank" rel="noopener">OSHA 1926.1435</a> · <a href="https://www.osha.gov/laws-regs/regulations/standardnumber/1926/1926.1402" target="_blank" rel="noopener">OSHA 1926.1402</a> · <a href="https://dir.ca.gov/Title8/4966.html" target="_blank" rel="noopener">Cal/OSHA §4966</a> · <a href="https://enr.com/articles/17334-latest-tower-crane-standard-calls-for-tighter-inspections" target="_blank" rel="noopener">ENR on ASME B30.3</a> · <a href="https://dicausa.com/improving-the-effective-bearing-area" target="_blank" rel="noopener">DICA effective bearing area</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const {C, $, fmt, n, text, arrow, line, clamp, lerp} = P;
+const T = String.raw;
+const KN = 0.224809, KNM = 0.737562, R2 = Math.SQRT2;
+const CASES = {
+  ins: {name:'In service', V:885, M:2086, H:57, Mt:270, gG:1.35, gQi:1.35, gQn:1.50},
+  oosr:{name:'Out of service · storm from rear', V:765, M:3605, H:193, Mt:0, gG:1.22, gQi:1.22, gQn:1.35},
+  oosf:{name:'Out of service · storm front/side', V:765, M:3355, H:128, Mt:0, gG:1.10, gQi:1.10, gQn:1.22},
+  ere: {name:'Erection', V:474, M:2175, H:31, Mt:270, gG:1.22, gQi:1.22, gQn:1.35}
+};
+
+/* ---------- no-tension contact pressure under a square block (Newton on a convex potential) ---------- */
+function solve3(A, b){
+  const det = m => m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1]) - m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0]) + m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);
+  const D = det(A); if (Math.abs(D) < 1e-12) return null;
+  return [0,1,2].map(k => det(A.map((r,i) => r.map((v,j) => j===k ? b[i] : v)))/D);
+}
+function contact(B, P_, ex, ey, N, warm){
+  N = N || 48;
+  if (!(P_ > 0) || Math.abs(ex) >= B/2*0.995 || Math.abs(ey) >= B/2*0.995 || Math.abs(ex)+Math.abs(ey) >= B*0.995) return null;
+  const h = B/N, dA = h*h, xs = []; for (let i=0;i<N;i++) xs.push(-B/2 + (i+0.5)*h);
+  const I = B**4/12;
+  let v = warm ? warm.slice() : [P_/(B*B), P_*ex/I, P_*ey/I];
+  const ev = v => { let S0=0,Sx=0,Sy=0,Sxx=0,Sxy=0,Syy=0,F0=0,Fx=0,Fy=0,ph=0;
+    for (let i=0;i<N;i++){ const x=xs[i]; for (let j=0;j<N;j++){ const y=xs[j], q=v[0]+v[1]*x+v[2]*y; if (q>0){ S0++; Sx+=x; Sy+=y; Sxx+=x*x; Sxy+=x*y; Syy+=y*y; F0+=q; Fx+=q*x; Fy+=q*y; ph+=q*q; } } }
+    return {S0, J:[[S0,Sx,Sy],[Sx,Sxx,Sxy],[Sy,Sxy,Syy]].map(r=>r.map(z=>z*dA)), r:[F0*dA-P_, Fx*dA-P_*ex, Fy*dA-P_*ey], ph:0.5*ph*dA - P_*(v[0]+ex*v[1]+ey*v[2])}; };
+  let E = ev(v);
+  for (let it=0; it<60; it++){
+    if (!E.S0) return null;
+    if (Math.abs(E.r[0]) < 1e-7*P_ && Math.abs(E.r[1]) < 1e-7*P_*B && Math.abs(E.r[2]) < 1e-7*P_*B) break;
+    const d = solve3(E.J, E.r.map(z=>-z)); if (!d) return null;
+    let s = 1, nv = v, NE = E;
+    for (let k=0;k<20;k++){ nv = v.map((z,i)=>z+s*d[i]); NE = ev(nv); if (NE.S0 && NE.ph <= E.ph + 1e-12*Math.abs(E.ph)) break; s *= 0.5; }
+    v = nv; E = NE;
+  }
+  const qc = [[1,1],[1,-1],[-1,1],[-1,-1]].map(([a,b]) => v[0] + v[1]*a*B/2 + v[2]*b*B/2);
+  return {v, qmax:Math.max(...qc), frac:E.S0/(N*N), N};
+}
+// uniaxial pressure along x, resultant toward +x
+function qx(x, P_, e, B){
+  if (e <= B/6) return P_/(B*B) + 12*P_*e*x/B**4;
+  const c = 3*(B/2 - e), qm = 2*P_/(3*B*(B/2-e)), x0 = B/2 - c;
+  return x <= x0 ? 0 : qm*(x - x0)/c;
+}
+function integ(f, a, b, m=240){ if (b <= a) return 0; const h = (b-a)/m; let s = f(a) + f(b); for (let i=1;i<m;i++) s += f(a+i*h)*(i%2?4:2); return s*h/3; }
+
+/* ---------- colors ---------- */
+function rgb(c){ c = c.trim(); if (c[0]==='#'){ if (c.length===4) c = '#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3]; return [1,3,5].map(i=>parseInt(c.slice(i,i+2),16)); } const m = c.match(/\d+/g); return m ? m.slice(0,3).map(Number) : [0,0,0]; }
+function heat(r){ const g = rgb(C.good), w = rgb(C.warn), b = rgb(C.bad); let a, z, t;
+  if (r <= 0.85){ a = g; z = w; t = clamp(r/0.85, 0, 1)**2; } else { a = w; z = b; t = clamp((r-0.85)/0.25, 0, 1); }
+  return `rgb(${a.map((v,i)=>Math.round(lerp(v, z[i], t))).join(',')})`; }
+
+/* ---------- block state ---------- */
+const st = {k:'oosr', fc:5};
+function caseLoads(k){
+  const c = CASES[k], sc = +$('gSc').value;
+  return {c, V:c.V*KN*sc, M:c.M*KNM*sc, H:c.H*KN*sc, Mt:c.Mt*KNM*sc};
+}
+function block(k){
+  const L = caseLoads(k), B = +$('gB').value, t = +$('gT').value, D = +$('gD').value, qa = +$('gQa').value, mu = +$('gMu').value;
+  const gc = $('gWt').checked ? 0.150 - 0.0624 : 0.150, inc = $('gInc').checked;
+  const Wf = gc*B*B*t, P_ = L.V + Wf, Mb = L.M + L.H*t, e = Mb/P_;
+  const gQ = inc ? L.c.gQi : L.c.gQn, gG = L.c.gG;
+  const ed = gQ*Mb/P_, FS = (B/2)/e;
+  const qAx = e < B/2 ? qx(B/2, P_, e, B) : Infinity;
+  const dg = contact(B, P_, e/R2, e/R2, 48);
+  const Fc = gG*L.V/4 + gQ*L.M/(R2*D), Ft = L.V/4 - gQ*L.M/(R2*D);
+  return {...L, k, B, t, D, qa, mu, gc, inc, Wf, P:P_, Mb, e, gQ, gG, ed, FS, qAx, dg, qD: dg ? dg.qmax : Infinity, frac: dg ? dg.frac : 0, FSs: mu*P_/L.H, Fc, Ft};
+}
+
+/* ---------- drawing: elevation + plan ---------- */
+function mast(ctx, x, y0, y1, wpx){
+  ctx.save(); ctx.strokeStyle = C.storm; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(x - wpx/2, y0); ctx.lineTo(x - wpx/2, y1); ctx.moveTo(x + wpx/2, y0); ctx.lineTo(x + wpx/2, y1);
+  const step = Math.max(8, wpx); let s = 0;
+  for (let y = y0; y > y1 + 1; y -= step, s++){ const yn = Math.max(y1, y - step); ctx.moveTo(x + (s%2 ? wpx/2 : -wpx/2), y); ctx.lineTo(x + (s%2 ? -wpx/2 : wpx/2), yn); }
+  ctx.stroke(); ctx.restore();
+}
+function drawBlock(ctx, w, h, R, th, sol){
+  const ew = w*0.56, pw = w - ew;
+  // ----- elevation -----
+  const B = R.B, t = R.t, sc = Math.min((ew - 46)/B, (h*0.17)/t);
+  const cx = ew/2, gY = h*0.62, bw = B*sc, bh = t*sc;
+  line(ctx, [[8, gY],[ew - 8, gY]], {color:C['ink-soft'], width:1.5});
+  ctx.fillStyle = C.soil; ctx.globalAlpha = 0.18; ctx.fillRect(8, gY, ew - 16, h - gY - 4); ctx.globalAlpha = 1;
+  ctx.fillStyle = C.concrete; ctx.fillRect(cx - bw/2, gY - 2, bw, bh); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(cx - bw/2, gY - 2, bw, bh);
+  const by = gY - 2 + bh;
+  // pressure along the section y = 0
+  if (sol){
+    const [a, bx] = sol.v, qmaxS = Math.max(0.01, a + Math.abs(bx)*B/2), qs = Math.min(46, h - by - 18)/Math.max(R.qa, qmaxS, sol.qmax);
+    const pts = []; for (let i=0;i<=60;i++){ const x = -B/2 + B*i/60; pts.push([cx + x*sc, by + Math.max(0, a + bx*x)*qs]); }
+    line(ctx, [[cx - bw/2, by], ...pts, [cx + bw/2, by]], {color:C.pencil, width:1.5, fill:C.pencil, alpha:0.22, close:true});
+    line(ctx, [[cx - bw/2, by + R.qa*qs],[cx + bw/2, by + R.qa*qs]], {color:C.bad, width:1, dash:[4,3]});
+    text(ctx, 'qa', cx + bw/2 + 4, by + R.qa*qs + 3, {size:9, color:C.bad});
+    const exs = R.e*Math.cos(th);
+    arrow(ctx, cx + exs*sc, h - 4, cx + exs*sc, by + 4, {color:C.ink, width:1.5, head:6});
+  }
+  // mast + jib (foreshortened by slewing)
+  const mw = Math.max(6, R.D*sc*0.5), top = h*0.21;
+  mast(ctx, cx, gY - 2, top, mw);
+  const cj = Math.cos(th), jl = ew*0.44, cl = ew*0.2;
+  line(ctx, [[cx, top],[cx + jl*cj, top]], {color:C.storm, width:3});
+  line(ctx, [[cx, top],[cx - cl*cj, top]], {color:C.storm, width:3});
+  ctx.fillStyle = C.steel; ctx.fillRect(cx - cl*cj - 9, top - 2, 18, 13);
+  line(ctx, [[cx, top - 16],[cx, top]], {color:C.storm, width:2});
+  const hx = cx + jl*cj*0.7; line(ctx, [[hx, top],[hx, top + 34]], {color:C.ink, width:1}); ctx.fillStyle = C.s1; ctx.fillRect(hx - 6, top + 34, 12, 9);
+  text(ctx, 'elevation · pressure on the section through the center', 10, h - 6, {size:9, color:C['ink-soft']});
+  // ----- plan -----
+  const ps = Math.min(pw - 26, h - 44), px = ew + (pw - ps)/2, py = (h - ps)/2 + 6, pcx = px + ps/2, pcy = py + ps/2, k = ps/B;
+  if (sol){
+    const N = 26, cs = ps/N, [a, bx, byy] = sol.v;
+    for (let i=0;i<N;i++) for (let j=0;j<N;j++){
+      const x = -B/2 + (i+0.5)*B/N, y = B/2 - (j+0.5)*B/N, q = a + bx*x + byy*y;
+      if (q <= 0) continue;
+      ctx.fillStyle = heat(q/R.qa); ctx.fillRect(px + i*cs, py + j*cs, cs + 0.6, cs + 0.6);
+    }
+    // neutral axis
+    const pts = [];
+    [[-1,0],[1,0],[0,-1],[0,1]].forEach(([sx, sy]) => {
+      if (sx){ const x = sx*B/2; if (Math.abs(byy) > 1e-9){ const y = -(a + bx*x)/byy; if (Math.abs(y) <= B/2) pts.push([x,y]); } }
+      else { const y = sy*B/2; if (Math.abs(bx) > 1e-9){ const x = -(a + byy*y)/bx; if (Math.abs(x) <= B/2) pts.push([x,y]); } }
+    });
+    if (pts.length >= 2) line(ctx, pts.slice(0,2).map(([x,y]) => [pcx + x*k, pcy - y*k]), {color:C.ink, width:1.5, dash:[5,4]});
+    if (sol.frac < 0.995) text(ctx, 'lift-off', pcx - Math.cos(th)*ps*0.36, pcy + Math.sin(th)*ps*0.36 + 3, {size:10, align:'center', color:C['ink-soft'], halo:C.paper});
+  }
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(px, py, ps, ps);
+  const dk = R.D*k; ctx.strokeStyle = C.storm; ctx.strokeRect(pcx - dk/2, pcy - dk/2, dk, dk);
+  const u = [Math.cos(th), Math.sin(th)];
+  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([sx, sy]) => {
+    const F = R.V/4 + R.M*(sx*R.D/2*u[0] + sy*R.D/2*u[1])/(R.D*R.D);
+    const X = pcx + sx*dk/2, Y = pcy - sy*dk/2;
+    ctx.beginPath(); ctx.arc(X, Y, 4.5, 0, 7); ctx.fillStyle = F < 0 ? C.bad : C.s1; ctx.fill();
+    text(ctx, (F < 0 ? 'T ' : 'C ') + Math.round(Math.abs(F)), X + sx*7, Y - sy*9 + 3, {size:9, align: sx > 0 ? 'left' : 'right', color: F < 0 ? C.bad : C.ink, halo:C.paper});
+  });
+  arrow(ctx, pcx, pcy, pcx + u[0]*ps*0.42, pcy - u[1]*ps*0.42, {color:C.storm, width:2.2});
+  text(ctx, 'jib', pcx + u[0]*ps*0.46, pcy - u[1]*ps*0.46 + 3, {size:10, align:'center', color:C.storm, halo:C.paper});
+  text(ctx, 'plan · legs (char., k)', px, py - 6, {size:9, color:C['ink-soft']});
+}
+
+/* ---------- SHEET 1: hero ---------- */
+const HERO = (() => { const B = 22, t = 5, V = 765*KN, M = 3605*KNM, H = 193*KN, P_ = V + 0.15*B*B*t, Mb = M + H*t; return {B, t, D:6.04, V, M, P:P_, e:Mb/P_, qa:4}; })();
+let hWarm = null;
+P.anim($('hero'), (ctx, w, h, t) => {
+  const th = (P.reduce ? 0.785 : t*0.35) % (2*Math.PI);
+  const sol = contact(HERO.B, HERO.P, HERO.e*Math.cos(th), HERO.e*Math.sin(th), 28, hWarm); if (sol) hWarm = sol.v;
+  drawBlock(ctx, w, h, HERO, th, sol);
+  $('hTh').textContent = Math.round(th*180/Math.PI); $('hE').textContent = fmt(HERO.e, 2);
+  if (sol){ $('hQ').textContent = fmt(sol.qmax, 2); $('hC').textContent = Math.round(sol.frac*100); }
+});
+
+/* ---------- SHEET 2: selection flow ---------- */
+const sel = {c:'free', s:'good'};
+const selFlow = P.flow('selFlow', [
+  {q:'Mobile crane (outriggers or crawler)?', test:s=>s.c==='mob', yes:{s:'Ground support: pads or mats sized for outrigger or track pressure; working platform if needed (sheet 8)', ref:'OSHA 1926.1402', end:true}, no:'Tower crane', main:'no'},
+  {q:'Self-erecting or ballasted on an undercarriage / cross-base?', test:s=>s.c==='self', yes:{s:'Corner (pad) reactions → pads, mats, small footings or pile caps; all corner loads treated as variable (γ<sub>Q</sub>)', ref:'FEM §II.3.1 · Table 2', end:true}, no:'Top-slewing on cast-in anchors', main:'no'},
+  {q:'Height within the max freestanding height for this mast and base?', test:s=>s.c!=='tall', yes:'Freestanding: the foundation takes all of V, H, M, M<sub>t</sub>', no:'Tied-in or climbing: the structure takes H; an RPE checks the host structure (sheet 7)', ref:'1926.1435(b)(7)(ii)', main:null},
+  {q:'Good bearing near the surface and room for the block?', test:s=>s.s==='good', yes:'Gravity block with cast-in anchors (or into the building mat with EOR approval)', no:'Pile cap on tension piles, drilled shafts or micropiles, or a steel grillage on piles (sheet 6)', main:null},
+  {s:'Design on the diagonal for every case (in service, storm rear, storm front/side, erection)', ref:'FEM §I-3', end:true}
+]);
+P.chips('selCrane', d => { sel.c = d.c; selFlow.update(sel); });
+P.chips('selSoil', d => { sel.s = d.s; selFlow.update(sel); });
+
+/* ---------- SHEET 4: gravity block ---------- */
+const gFlow = P.flow('gFlow', [
+  {s:'Manufacturer reactions for this exact configuration: V, H, M, M<sub>t</sub> per case', ref:'FEM §I-2'},
+  {q:'Second-order and dynamic effects included by the manufacturer?', test:s=>s.inc, yes:T`Use \(\gamma_Q\) as listed`, no:T`Amplify: \(\alpha\ge1.10\) (\(\gamma_Q\) 1.50 / 1.35 / 1.22 / 1.35)`, ref:'FEM §II.3.2', main:null},
+  {s:T`Trial block: \(W_f=\gamma_cB^2t\), \(P=V+W_f\), \(M_b=M+Ht\)`, ref:'statics'},
+  {q:T`SLS: \(e\le B/3\) in every case?`, ref:'FEM §II-4', test:s=>s.sls, yes:'Stability OK', no:{s:'Make B larger or the block heavier, then repeat', end:true}, main:'yes'},
+  {q:T`ULS: \(e_d\le B/2\)?`, ref:'FEM §II.3.3', test:s=>s.uls, yes:'OK', no:{s:'Larger block', end:true}, main:'yes'},
+  {q:T`Corner (diagonal) \(q_{max}\le q_a\)?`, ref:'geotech', test:s=>s.brg, yes:'Bearing OK', no:{s:'Wider block, improve the ground, or go to piles', end:true}, main:'yes'},
+  {q:T`Sliding \(\mu P\ge1.5H\)?`, test:s=>s.sld, yes:'OK', no:{s:'Shear key, deeper embedment, or more weight', end:true}, main:'yes'},
+  {s:'Concrete: flexure top and bottom, one-way shear with λ<sub>s</sub>, anchor reinforcement for the leg tension (sheet 5)', ref:'ACI 318-19', end:true}
+]);
+let G = null;
+function upd(){
+  $('gBo').textContent = fmt(+$('gB').value,1) + ' ft'; $('gTo').textContent = fmt(+$('gT').value,2) + ' ft';
+  $('gQao').textContent = fmt(+$('gQa').value,2) + ' ksf'; $('gMuo').textContent = fmt(+$('gMu').value,2);
+  $('gDo').textContent = fmt(+$('gD').value,2) + ' ft'; $('gSco').textContent = fmt(+$('gSc').value,2) + '×';
+  $('gTho').textContent = $('gTh').value + '°';
+  const all = Object.keys(CASES).map(block), r = all.find(x => x.k === st.k);
+  G = r;
+  const ax = r.e <= r.B/6;
+  P.sheet('gSheet', [
+    ['h', `${r.c.name} · scale ${fmt(+$('gSc').value,2)}×`],
+    ['r', 'FEM §I-2 (char.)', T`V=${n(r.V,1)}\ \text{k}\quad M=${n(r.M,0)}\ \text{k-ft}\quad H=${n(r.H,1)}\ \text{k}\quad M_t=${n(r.Mt,0)}\ \text{k-ft}`],
+    ['r', 'self-weight', T`W_f=${n(r.gc*1000,1)}(${n(r.B,1)}^2)(${n(r.t,2)})/1000=${n(r.Wf,0)}\ \text{k}`],
+    ['r', 'statics', T`P=${n(r.V,0)}+${n(r.Wf,0)}=${n(r.P,0)}\ \text{k}\qquad M_b=${n(r.M,0)}+${n(r.H,1)}(${n(r.t,2)})=${n(r.Mb,0)}\ \text{k-ft}`],
+    ['c', 'FEM §II-4 (SLS)', T`e=\frac{${n(r.Mb,0)}}{${n(r.P,0)}}=${n(r.e,2)}\le\frac B3=${n(r.B/3,2)}\ \text{ft}\quad(FS_{OT}=${n(r.FS,2)})`, r.e/(r.B/3)],
+    ['c', 'FEM §II.3.3 (ULS)', T`e_d=\frac{${n(r.gQ,2)}(${n(r.Mb,0)})}{1.0(${n(r.P,0)})}=${n(r.ed,2)}\le\frac B2=${n(r.B/2,2)}`, r.ed/(r.B/2)],
+    ['r', 'axis pressure', ax ? T`e\le B/6:\ q_{max}=\frac{${n(r.P,0)}}{${n(r.B,1)}^2}\Big(1+\frac{6(${n(r.e,2)})}{${n(r.B,1)}}\Big)=${n(r.qAx,2)}\ \text{ksf}` : T`e>B/6:\ q_{max}=\frac{2(${n(r.P,0)})}{3(${n(r.B,1)})(${n(r.B/2,2)}-${n(r.e,2)})}=${n(r.qAx,2)}\ \text{ksf},\ \ c=${n(3*(r.B/2-r.e),1)}\ \text{ft}`],
+    ['c', 'diagonal (no-tension solve)', T`q_{max,diag}=${n(r.qD,2)}\le q_a=${n(r.qa,2)}\ \text{ksf}\quad(\text{contact }${n(r.frac*100,0)}\%)`, r.qD/r.qa],
+    ['c', 'sliding', T`FS=\frac{\mu P}{H}=\frac{${n(r.mu,2)}(${n(r.P,0)})}{${n(r.H,1)}}=${n(r.FSs,2)}\ge1.5`, 1.5/r.FSs],
+    ['r', 'FEM Eq. [1] (ULS)', T`F_{c,d}=\frac{${n(r.gG,2)}(${n(r.V,0)})}{4}+\frac{${n(r.gQ,2)}(${n(r.M,0)})}{\sqrt2(${n(r.D,2)})}=${n(r.Fc,0)}\ \text{k compression}`],
+    ['r', 'FEM Eq. [2] (ULS)', T`F_{t,d}=\frac{${n(r.V,0)}}{4}-\frac{${n(r.gQ,2)}(${n(r.M,0)})}{\sqrt2(${n(r.D,2)})}=${n(r.Ft,0)}\ \text{k}${r.Ft < 0 ? T`\ \text{(tension)}` : ''}`],
+    ['r', 'ACI 318-19 Ch. 17', r.Ft < 0 ? T`A_{s,anchor}\ge\frac{${n(-r.Ft,0)}}{0.75(60)}=${n(-r.Ft/45,1)}\ \text{in}^2\ \text{per leg, developed both sides of the breakout}` : T`\text{no leg tension}`]
+  ]);
+  P.meters('gMeters', [
+    {name:'e / (B/3)', ratio:r.e/(r.B/3)}, {name:'e_d / (B/2)', ratio:r.ed/(r.B/2)},
+    {name:'corner q / q_a', ratio:r.qD/r.qa}, {name:'1.5H / μP', ratio:1.5/r.FSs}
+  ].map(m => ({...m, name:m.name.replace(/_([a-z]+)/g,'<sub>$1</sub>')})));
+  const worst = all.reduce((a, b) => (b.qD/b.qa > a.qD/a.qa ? b : a));
+  $('gEnv').innerHTML = `<thead><tr><th>Case</th><th class="num">γ<sub>Q</sub></th><th class="num">P (k)</th><th class="num">M<sub>b</sub> (k-ft)</th><th class="num">e/B</th><th class="num">FS<sub>OT</sub></th><th class="num">q<sub>axis</sub></th><th class="num">q<sub>diag</sub> (ksf)</th><th class="num">leg F<sub>t,d</sub> (k)</th></tr></thead><tbody>` +
+    all.map(x => `<tr${x === worst ? ' style="font-weight:700"' : ''}><td>${x.c.name}${x === worst ? ' · governs bearing' : ''}</td><td class="num">${fmt(x.gQ,2)}</td><td class="num">${fmt(x.P,0)}</td><td class="num">${fmt(x.Mb,0)}</td><td class="num">${fmt(x.e/x.B,3)}</td><td class="num">${fmt(x.FS,2)}</td><td class="num">${fmt(x.qAx,2)}</td><td class="num">${fmt(x.qD,2)}</td><td class="num">${x.Ft < 0 ? fmt(-x.Ft,0)+' T' : fmt(x.Ft,0)+' C'}</td></tr>`).join('') + '</tbody>';
+  gFlow.update({inc:r.inc, sls:all.every(x => x.e <= x.B/3), uls:all.every(x => x.ed <= x.B/2), brg:all.every(x => x.qD <= x.qa), sld:all.every(x => x.FSs >= 1.5)});
+  gWarm = null; concrete(); piles();
+  if (P.reduce) P.redraw();
+}
+let gWarm = null, gTh = 45*Math.PI/180;
+P.anim($('blk'), (ctx, w, h, t, dt) => {
+  if (!G) return;
+  if ($('gAuto').checked && !P.reduce){ gTh = (gTh + dt*0.4) % (2*Math.PI); $('gTh').value = Math.round(gTh*180/Math.PI); $('gTho').textContent = $('gTh').value + '°'; }
+  else gTh = +$('gTh').value*Math.PI/180;
+  const sol = contact(G.B, G.P, G.e*Math.cos(gTh), G.e*Math.sin(gTh), 28, gWarm); gWarm = sol ? sol.v : null;
+  drawBlock(ctx, w, h, G, gTh, sol);
+  $('bTh').textContent = Math.round(gTh*180/Math.PI);
+  $('bQ').textContent = sol ? fmt(sol.qmax, 2) : 'overturns'; $('bC').textContent = sol ? Math.round(sol.frac*100) : '—';
+});
+$('gTh').addEventListener('input', () => { $('gAuto').checked = false; });
+
+/* ---------- SHEET 5: concrete ---------- */
+let CR = null;
+P.chips('cFc', d => { st.fc = +d.f; if (G) concrete(); });
+function concrete(){
+  const r = G, fc = st.fc, fy = 60, B = r.B, t = r.t, xf = r.D/2, Lc = (B - r.D)/2, d = 12*t - 4, dft = d/12;
+  const Pu = r.gG*(r.V + r.Wf), Mu = r.gQ*r.Mb, eu = Mu/Pu;
+  const wsw = r.gG*r.gc*t;
+  if (eu >= B/2){ P.sheet('cSheet', [['h','ULS'], ['c','FEM ULS', T`e_u=${n(eu,2)}\ \text{ft}\ \ge B/2:\ \text{block overturns at ULS}`, 2]]); CR = null; cv5.render(); return; }
+  const q = x => qx(x, Pu, eu, B);
+  const Mb_ = integ(x => q(x)*(x - xf), xf, B/2) - wsw*Lc*Lc/2;
+  const Mt_ = wsw*Lc*Lc/2 - integ(x => q(x)*(-xf - x), -B/2, -xf);
+  const asReq = M => { if (M <= 0) return 0; const Rn = M*12/(0.9*12*d*d), k = 1 - 2*Rn/(0.85*fc); return k <= 0 ? Infinity : 0.85*fc/fy*(1 - Math.sqrt(k))*12*d; };
+  const AsB = asReq(Mb_), AsT = asReq(Mt_), Amin = 0.0018*12*12*t, AbP = Math.max(AsB, Amin), AtP = Math.max(AsT, Amin);
+  const bar = As => { for (const [nm, ab] of [['#8',0.79],['#9',1.00],['#10',1.27],['#11',1.56]]){ const s = Math.floor(ab/As*12); if (s >= 6) return `${nm} @ ${Math.min(s, 12)} in`; } return '#11 @ < 6 in (thicken)'; };
+  const xv = xf + dft, Vu = xv < B/2 ? integ(q, xv, B/2) - wsw*(B/2 - xv) : 0;
+  const rho = AbP/(12*d), ls = Math.min(1, Math.sqrt(2/(1 + d/10))), sq = Math.sqrt(fc*1000);
+  const vc = Math.min(8*ls*Math.cbrt(rho)*sq, 5*sq), phiVc = 0.75*vc*12*d/1000, phiVold = 0.75*2*sq*12*d/1000;
+  CR = {B, t, D:r.D, eu, Pu, q, d, xv};
+  P.sheet('cSheet', [
+    ['h', `${r.c.name} · f'c = ${fc},000 psi · ULS γG ${fmt(r.gG,2)}, γQ ${fmt(r.gQ,2)}`],
+    ['r', 'FEM Table 3', T`P_u=${n(r.gG,2)}(${n(r.V,0)}+${n(r.Wf,0)})=${n(Pu,0)}\ \text{k}\quad M_u=${n(r.gQ,2)}(${n(r.Mb,0)})=${n(Mu,0)}\ \text{k-ft}\quad e_u=${n(eu,2)}\ \text{ft}`],
+    ['r', '§13.2.7.1', T`x_f=D/2=${n(xf,2)}\ \text{ft},\quad L_c=\frac{${n(B,1)}-${n(r.D,2)}}{2}=${n(Lc,2)}\ \text{ft},\quad d=12(${n(t,2)})-4=${n(d,0)}\ \text{in}`],
+    ['r', 'bottom (toe)', T`M_u=\int q_u(x-x_f)\,dx-${n(wsw,3)}\frac{${n(Lc,2)}^2}{2}=${n(Mb_,0)}\ \text{k-ft/ft}`],
+    ['r', 'Table 21.2.1 · φ 0.90', T`A_{s,req}=${n(AsB,2)}\ \text{in}^2\text{/ft}\quad A_{s,min}=0.0018(12)(${n(12*t,0)})=${n(Amin,2)}\Rightarrow\text{bottom } ${bar(AbP).replace('#','\\#')}`],
+    ['r', 'top (heel, lift-off side)', T`M_u^-=${n(wsw,3)}\frac{${n(Lc,2)}^2}{2}-\int q_u\,(\ldots)=${n(Math.max(0,Mt_),0)}\ \text{k-ft/ft}\Rightarrow A_s=${n(AtP,2)}\ \text{in}^2\text{/ft: top } ${bar(AtP).replace('#','\\#')}`],
+    ['r', 'Eq. 22.5.5.1.3', T`\lambda_s=\sqrt{\frac{2}{1+${n(d,0)}/10}}=${n(ls,3)}\qquad \rho_w=\frac{${n(AbP,2)}}{12(${n(d,0)})}=${n(rho,4)}`],
+    ['c', 'Table 22.5.5.1(c)', T`V_u=${n(Vu,1)}\le\phi V_c=0.75\cdot8(${n(ls,3)})(${n(rho,4)})^{1/3}\sqrt{${fc}000}(12)(${n(d,0)})=${n(phiVc,1)}\ \text{k/ft}`, Vu/phiVc],
+    ['r', 'compare (pre-2019)', T`0.75\cdot2\sqrt{f'_c}\,bd=${n(phiVold,1)}\ \text{k/ft}\ \ (\text{size effect cuts it to }${n(phiVc/phiVold*100,0)}\%)`],
+    ['n', 'Also check: two-way shear around the tower footprint with moment transfer (Table 22.6.5.2, λ<sub>s</sub>), anchor reinforcement around each leg (Ch. 17), bearing under the anchor plates, and temperature/shrinkage for mass pours. Detail top and bottom mats both ways: the moment reverses as the crane slews.']
+  ]);
+  cv5.render();
+}
+const cv5 = P.still($('cv5'), (ctx, w, h) => {
+  if (!CR) return;
+  const {B, t, D, eu, Pu, q, xv} = CR, sc = (w - 40)/B, bh = Math.min(t*sc, h*0.32), cx = w/2, y0 = h*0.2;
+  ctx.fillStyle = C.concrete; ctx.fillRect(cx - B*sc/2, y0, B*sc, bh); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(cx - B*sc/2, y0, B*sc, bh);
+  ctx.fillStyle = C.storm; ctx.fillRect(cx - D*sc/2, y0 - 26, D*sc, 26);
+  line(ctx, [[cx - B*sc/2 + 6, y0 + bh - 7],[cx + B*sc/2 - 6, y0 + bh - 7]], {color:C.pencil, width:2.5});
+  line(ctx, [[cx - B*sc/2 + 6, y0 + 7],[cx + B*sc/2 - 6, y0 + 7]], {color:C.pencil, width:2.5, dash:[8,4]});
+  const qm = q(B/2), qs = (h - y0 - bh - 22)/Math.max(qm, 0.01), pts = [];
+  for (let i=0;i<=80;i++){ const x = -B/2 + B*i/80; pts.push([cx + x*sc, y0 + bh + q(x)*qs]); }
+  line(ctx, [[cx - B*sc/2, y0 + bh], ...pts, [cx + B*sc/2, y0 + bh]], {color:C.pencil, width:1.5, fill:C.pencil, alpha:0.2, close:true});
+  [[D/2, 'face'], [xv, 'd']].forEach(([x, l]) => { if (x < B/2){ line(ctx, [[cx + x*sc, y0 - 30],[cx + x*sc, h - 4]], {color:C.storm, width:1, dash:[3,3]}); text(ctx, l, cx + x*sc + 3, y0 - 32, {size:10, color:C.storm}); } });
+  text(ctx, `q_u,max ${fmt(qm,2)} ksf · e_u ${fmt(eu,2)} ft`, cx + B*sc/2, h - 6, {size:10, align:'right', color:C.pencil, halo:C.paper});
+  text(ctx, 'top steel (heel)', cx - B*sc/2 + 8, y0 + 20, {size:9, color:C.pencil, halo:C.concrete});
+  text(ctx, 'bottom steel (toe)', cx + B*sc/2 - 8, y0 + bh - 12, {size:9, align:'right', color:C.pencil, halo:C.concrete});
+});
+
+/* ---------- SHEET 6: piles ---------- */
+let PL = null;
+function piles(){
+  const r = G, s = +$('pS').value, tc = +$('pT').value, Ca = +$('pC').value, Ua = +$('pU').value;
+  $('pSo').textContent = fmt(s,1) + ' ft'; $('pTo').textContent = fmt(tc,2) + ' ft'; $('pCo').textContent = Ca + ' k'; $('pUo').textContent = Ua + ' k';
+  const Bc = s + 4, Wc = r.gc*Bc*Bc*tc, P_ = r.V + Wc, Mb = r.M + r.H*tc;
+  const aMx = P_/4 + Mb/(2*s), aMn = P_/4 - Mb/(2*s), dMx = P_/4 + Mb/(R2*s), dMn = P_/4 - Mb/(R2*s);
+  const Hp = r.H/4 + r.Mt/(4*s/R2);
+  PL = {s, Bc, P:P_, Mb, Ca, Ua, dMx, dMn};
+  P.sheet('pSheet', [
+    ['h', `${r.c.name} · 4 piles @ ${fmt(s,1)} ft · cap ${fmt(Bc,1)} ft × ${fmt(tc,2)} ft`],
+    ['r', 'statics', T`P=${n(r.V,0)}+${n(Wc,0)}=${n(P_,0)}\ \text{k}\qquad M_b=${n(r.M,0)}+${n(r.H,1)}(${n(tc,2)})=${n(Mb,0)}\ \text{k-ft}`],
+    ['r', 'axis', T`\frac{${n(P_,0)}}{4}\pm\frac{${n(Mb,0)}}{2(${n(s,1)})}=${n(aMx,0)}\ /\ ${n(aMn,0)}\ \text{k}`],
+    ['r', 'diagonal', T`\frac{${n(P_,0)}}{4}\pm\frac{${n(Mb,0)}}{\sqrt2(${n(s,1)})}=${n(dMx,0)}\ /\ ${n(dMn,0)}\ \text{k}`],
+    ['c', 'compression', T`P_{max}=${n(dMx,0)}\le${Ca}\ \text{k}`, dMx/Ca],
+    dMn < 0 ? ['c', 'tension (uplift)', T`T_{max}=${n(-dMn,0)}\le${Ua}\ \text{k}`, Ua > 0 ? -dMn/Ua : 9] : ['r', 'tension', T`P_{min}=${n(dMn,0)}\ \text{k}\ \ge0:\ \text{no pile tension}`],
+    ['r', 'lateral + torsion', T`H_{pile}\approx\frac{${n(r.H,1)}}{4}+\frac{${n(r.Mt,0)}}{4(${n(s,1)}/\sqrt2)}=${n(Hp,1)}\ \text{k per pile}`],
+    ['n', `The diagonal raises the corner pile ${fmt((dMx - P_/4)/(aMx - P_/4), 2)}× over the axis value (√2). Tension piles need uplift capacity from skin friction only, plus rebar or a steel section developed into the cap.`]
+  ]);
+}
+let pTh = 0;
+P.anim($('pile'), (ctx, w, h, t, dt) => {
+  if (!PL) return;
+  pTh = P.reduce ? Math.PI/4 : (pTh + dt*0.45) % (2*Math.PI);
+  const {s, Bc, P:P_, Mb, Ca, Ua} = PL, ps = Math.min(h - 30, w*0.5), k = ps/Bc, cx = w*0.32, cy = h/2 + 8, u = [Math.cos(pTh), Math.sin(pTh)];
+  ctx.fillStyle = C.concrete; ctx.globalAlpha = 0.5; ctx.fillRect(cx - ps/2, cy - ps/2, ps, ps); ctx.globalAlpha = 1; ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.strokeRect(cx - ps/2, cy - ps/2, ps, ps);
+  arrow(ctx, cx, cy, cx + u[0]*ps*0.45, cy - u[1]*ps*0.45, {color:C.storm, width:2.2});
+  let mx = -1e9, mn = 1e9; const L = [];
+  [[1,1],[-1,1],[-1,-1],[1,-1]].forEach(([sx, sy], i) => {
+    const F = P_/4 + Mb*(sx*s/2*u[0] + sy*s/2*u[1])/(s*s); mx = Math.max(mx, F); mn = Math.min(mn, F); L.push(F);
+    const X = cx + sx*s/2*k, Y = cy - sy*s/2*k;
+    ctx.beginPath(); ctx.arc(X, Y, 8, 0, 7); ctx.fillStyle = F < 0 ? C.bad : C.s1; ctx.fill();
+    text(ctx, 'P' + (i+1), X, Y + 3.5, {size:9, align:'center', color:'#fff'});
+  });
+  const bx = w*0.64, bw = w*0.32, zero = bx + bw*0.25, scl = (bw*0.72)/Math.max(Ca, ...L.map(Math.abs));
+  line(ctx, [[zero, 24],[zero, h - 14]], {color:C['ink-soft'], width:1});
+  line(ctx, [[zero + Ca*scl, 24],[zero + Ca*scl, h - 14]], {color:C.bad, width:1, dash:[3,3]});
+  if (Ua > 0) line(ctx, [[zero - Ua*scl, 24],[zero - Ua*scl, h - 14]], {color:C.bad, width:1, dash:[3,3]});
+  L.forEach((F, i) => { const y = 34 + i*((h - 50)/4); ctx.fillStyle = F < 0 ? C.bad : C.s1; ctx.fillRect(Math.min(zero, zero + F*scl), y, Math.abs(F*scl), 14); text(ctx, `P${i+1} ${Math.round(F)}`, zero + (F < 0 ? F*scl - 4 : F*scl + 4), y + 11, {size:10, align: F < 0 ? 'right' : 'left', halo:C.paper}); });
+  text(ctx, 'allowable C / T', zero + Ca*scl, 18, {size:9, align:'right', color:C.bad});
+  $('pTh').textContent = Math.round(pTh*180/Math.PI); $('pMx').textContent = Math.round(mx); $('pMn').textContent = Math.round(mn);
+});
+P.bind(['gB','gT','gQa','gMu','gD','gSc','gInc','gWt'], upd);
+P.bind(['pS','pT','pC','pU'], () => { if (G) piles(); });
+
+/* ---------- SHEET 7: tied / climbing ---------- */
+let hm = 'tie', HR = null;
+const hFlow = P.flow('hFlow', [
+  {s:'Max freestanding height from the manufacturer for this mast and base is exceeded', ref:'tower configuration table'},
+  {q:'Tower outside the building?', test:s=>s.m==='tie', yes:'Tied-in: collars and struts to slab edges or columns at the manufacturer\'s heights; base foundation still designed', no:'Internal climbing: frames and collars in the core or floor openings; the crane jumps as the building rises', main:null},
+  {s:'Get tie or frame reactions per case (they depend on tie stiffness and building stiffness)', ref:'manufacturer'},
+  {s:'RPE checks the host structure: embeds and anchors (ACI 318 Ch. 17), slab edge or beam capacity, diaphragm, drift, concrete strength at the time of loading', ref:'1926.1435(b)(7)(ii)'},
+  {s:'Shore or reshore floors under the climbing frames; wedges and supports installed per drawings', ref:'1926.1435(f)(4)(ii)'},
+  {s:'Monthly inspection of the uppermost tie-in, braces, floor supports and wedges, and the bolts above the uppermost brace', ref:'1926.1435(f)(4)', end:true}
+]);
+function high(){
+  const M = +$('hM').value, H = +$('hH').value, a = +$('hA').value, ht = +$('hT').value, hc = +$('hCs').value;
+  $('hMo').textContent = fmt(M,0) + ' k-ft'; $('hHo').textContent = H + ' k'; $('hAo').textContent = a + ' ft'; $('hTo').textContent = ht + ' ft'; $('hCso').textContent = hc + ' ft';
+  const Mx = M + H*a;
+  if (hm === 'tie'){
+    const R = H + 1.5*Mx/ht, Mbase = -0.5*Mx, Mfree = M + H*(a + ht);
+    HR = {m:'tie', M, H, a, h:ht, Mx, R, Mbase, Mfree};
+    P.sheet('hSheet', [
+      ['h', 'Tied-in · propped cantilever (fixed base, tie = prop)'],
+      ['r', 'moment at the tie', T`M_{tie}=${n(M,0)}+${n(H,0)}(${a})=${n(Mx,0)}\ \text{k-ft}`],
+      ['r', 'tie reaction', T`R_{tie}=${n(H,0)}+\frac{3(${n(Mx,0)})}{2(${ht})}=${n(R,1)}\ \text{k}`],
+      ['r', 'base moment', T`M_{base}=-\tfrac12(${n(Mx,0)})=${n(Mbase,0)}\ \text{k-ft}\ \ (\text{reversed})`],
+      ['r', 'freestanding equivalent', T`M_{base,free}=${n(M,0)}+${n(H,0)}(${a}+${ht})=${n(Mfree,0)}\ \text{k-ft}\Rightarrow\text{tie cuts the base moment to }${n(Math.abs(Mbase)/Mfree*100,0)}\%`],
+      ['n', 'The tie force goes into the building as a horizontal load at one floor: check the slab edge, the embed plates and the struts, and the building\'s drift and diaphragm. Wind on the mast between supports is ignored here.']
+    ]);
+  } else {
+    const Hu = H + Mx/hc, Hl = Mx/hc;
+    HR = {m:'climb', M, H, a, h:hc, Mx, Hu, Hl};
+    P.sheet('hSheet', [
+      ['h', 'Internal climbing · two collars (pins)'],
+      ['r', 'moment at the upper collar', T`M_c=${n(M,0)}+${n(H,0)}(${a})=${n(Mx,0)}\ \text{k-ft}`],
+      ['r', 'upper collar', T`H_{upper}=${n(H,0)}+\frac{${n(Mx,0)}}{${hc}}=${n(Hu,1)}\ \text{k}`],
+      ['r', 'lower collar', T`H_{lower}=\frac{${n(Mx,0)}}{${hc}}=${n(Hl,1)}\ \text{k}\ \ (\text{opposite direction})`],
+      ['n', `Halving the collar spacing doubles the couple. These forces, plus the crane's vertical load on the lower frame beams, go into floors that may be only days old: check concrete strength at loading and the shoring below.`]
+    ]);
+  }
+  hFlow.update({m:hm});
+  hSt.render();
+}
+const hSt = P.still($('high'), (ctx, w, h) => {
+  if (!HR) return;
+  const R = HR, tie = R.m === 'tie', totH = tie ? R.h + R.a : R.h + R.a + 40, gy = h - 18, sc = (h - 50)/totH, mx = tie ? w*0.36 : w*0.42;
+  P.ground(ctx, 10, w - 10, gy);
+  // building
+  const bx0 = tie ? mx + 26 : mx - 60, bx1 = tie ? w*0.70 : mx + 60, floors = Math.floor((tie ? R.h + 10 : R.h + 30)/13);
+  for (let i=1;i<=floors;i++){ const y = gy - i*13*sc; line(ctx, [[bx0, y],[bx1, y]], {color:C.concrete, width:2}); }
+  line(ctx, [[bx0, gy],[bx0, gy - floors*13*sc]], {color:C.concrete, width:2}); line(ctx, [[bx1, gy],[bx1, gy - floors*13*sc]], {color:C.concrete, width:2});
+  const base = tie ? gy : gy - 40*sc, top = base - (R.h + R.a)*sc;
+  mast(ctx, mx, tie ? gy : base + 14, top, 10);
+  line(ctx, [[mx - 40, top],[mx + 90, top]], {color:C.storm, width:3});
+  if (tie){
+    ctx.fillStyle = C.concrete; ctx.fillRect(mx - 22, gy, 44, 10);
+    const yt = base - R.h*sc; line(ctx, [[mx + 5, yt],[bx0, yt - 6]], {color:C.pencil, width:2.5}); line(ctx, [[mx + 5, yt],[bx0, yt + 6]], {color:C.pencil, width:2.5});
+    text(ctx, `tie ${fmt(R.R,0)} k`, bx0 + 6, yt - 8, {size:10, color:C.pencil, halo:C.paper});
+  } else {
+    [base, base - R.h*sc].forEach((y, i) => { line(ctx, [[mx - 18, y],[mx + 18, y]], {color:C.pencil, width:4}); text(ctx, i ? `H ${fmt(R.Hu,0)} k` : `H ${fmt(R.Hl,0)} k`, mx + 22, y + 3, {size:10, color:C.pencil, halo:C.paper}); });
+  }
+  // moment diagrams along the mast (right side panel)
+  const dx = w*0.80, Mmax = tie ? Math.max(R.Mfree, R.Mx) : R.Mx, ms = (w*0.17)/Mmax;
+  line(ctx, [[dx, base],[dx, top]], {color:C['ink-soft'], width:1});
+  const z2y = z => base - z*sc;
+  if (tie){
+    line(ctx, [[dx, top],[dx + R.M*ms, top],[dx + R.Mfree*ms, base],[dx, base]], {color:C['ink-soft'], width:1, dash:[4,3]});
+    line(ctx, [[dx, top],[dx + R.M*ms, z2y(R.h + R.a)],[dx + R.Mx*ms, z2y(R.h)],[dx + R.Mbase*ms, base],[dx, base]], {color:C.pencil, width:2, fill:C.pencil, alpha:0.15, close:true});
+    text(ctx, 'freestanding', dx + R.Mfree*ms, base + 12, {size:9, align:'right', color:C['ink-soft']});
+  } else {
+    line(ctx, [[dx, top],[dx + R.M*ms, z2y(R.h + R.a)],[dx + R.Mx*ms, z2y(R.h)],[dx, base]], {color:C.pencil, width:2, fill:C.pencil, alpha:0.15, close:true});
+  }
+  text(ctx, 'M along mast', dx, top - 8, {size:9, align:'center', color:C['ink-soft']});
+});
+P.bind(['hM','hH','hA','hT','hCs'], high);
+
+/* ---------- SHEET 8: crawler mats ---------- */
+let MR = null;
+const mFlow = P.flow('mFlow', [
+  {s:'Worst track or outrigger loads over all swing angles, radii, empty-hook backward and assembly', ref:'manufacturer GBP software'},
+  {s:'Controlling entity: ground prep, plus known voids, tanks and utilities under the setup', ref:'1926.1402(c)(1)–(2)'},
+  {q:T`Track pressure \(\le q_a\) without mats?`, test:s=>s.noMat, yes:{s:'No mats needed for bearing; the ground must still be firm, drained and graded', ref:'1926.1402(b)', end:true}, no:'Mats: size by soil bearing AND mat strength', main:'no'},
+  {q:T`Mat fits: \(L_{req}\le\) mat length and \(f_b\le F_b\)?`, test:s=>s.fits, yes:'Mat OK', no:'Longer or thicker mats, double layer, steel or composite mats, or improve the ground', main:null},
+  {q:'Weak layer below (2:1 spread)?', test:()=>false, yes:'Working platform, ground improvement or piled mat', no:'OK', ref:'Ground page sheet 6', main:null},
+  {s:'Level per the load chart, inspect daily; if the ground is inadequate, confer with the controlling entity', ref:'1926.1402(e)', end:true}
+]);
+function mats(){
+  const Pt = +$('mP').value, e = +$('mE').value, L = +$('mL').value, Cw = +$('mC').value, dIn = +$('mD').value, W = +$('mW').value, qa = +$('mQa').value, Bm = 4;
+  $('mPo').textContent = Pt + ' k'; $('mEo').textContent = fmt(e,1) + ' ft'; $('mLo').textContent = fmt(L,1) + ' ft'; $('mCo').textContent = fmt(Cw,1) + ' ft'; $('mQao').textContent = fmt(qa,2) + ' ksf';
+  const tri = e > L/6, q = tri ? (e < L/2 ? 2*Pt/(3*Cw*(L/2 - e)) : Infinity) : Pt/(Cw*L)*(1 + 6*e/L);
+  const Pm = q*Cw*Bm, Wm = 0.050*Bm*(dIn/12)*W, Lreq = (Pm + Wm)/(qa*Bm), Lc = Math.max(0, (Lreq - Cw)/2);
+  const S = 12*Bm*dIn*dIn/6, qm = Pm/(Bm*Lreq), Mm = qm*Bm*Lc*Lc/2, fb = Mm*12000/S, Vv = Math.max(0, qm*Bm*(Lc - dIn/12)), fv = 1.5*Vv*1000/(12*Bm*dIn);
+  const Ma = 1400*S/12000, Lcm = (4*Ma + Math.sqrt(16*Ma*Ma + 8*Pm*Ma*Cw))/(2*Pm), Leff = Math.min(W, Cw + 2*Lcm), qt = (Pm + Wm)/(Bm*Leff);
+  MR = {Pt, e, L, Cw, q, tri, W, Lreq, Leff, qa, dIn};
+  P.sheet('mSheet', [
+    ['h', `Track ${fmt(L,1)} × ${fmt(Cw,1)} ft · mat 4 ft × ${dIn} in × ${W} ft hardwood`],
+    ['r', tri ? 'track statics · triangle' : 'track statics · trapezoid', tri ? T`q_{trk}=\frac{2(${n(Pt,0)})}{3(${n(Cw,1)})(${n(L/2,2)}-${n(e,1)})}=${n(q,2)}\ \text{ksf}` : T`q_{trk}=\frac{${n(Pt,0)}}{${n(Cw,1)}(${n(L,1)})}\Big(1+\frac{6(${n(e,1)})}{${n(L,1)}}\Big)=${n(q,2)}\ \text{ksf}`],
+    ['r', 'load on one mat', T`P_{mat}=${n(q,2)}(${n(Cw,1)})(4)=${n(Pm,1)}\ \text{k}\qquad W_{mat}=0.050(4)(${n(dIn/12,2)})(${W})=${n(Wm,1)}\ \text{k}`],
+    ['h', 'Soil-bearing method'],
+    ['c', 'required length', T`L_{req}=\frac{${n(Pm,1)}+${n(Wm,1)}}{${n(qa,2)}(4)}=${n(Lreq,2)}\le${W}\ \text{ft}`, Lreq/W],
+    ['r', 'cantilever', T`L_c=\frac{${n(Lreq,2)}-${n(Cw,1)}}{2}=${n(Lc,2)}\ \text{ft}\qquad q=\frac{${n(Pm,1)}}{4(${n(Lreq,2)})}=${n(qm,2)}\ \text{ksf}`],
+    ['c', 'mat bending', T`f_b=\frac{${n(Mm,1)}(12{,}000)}{${n(S,0)}}=${n(fb,0)}\le F_b=1{,}400\ \text{psi}`, fb/1400],
+    ['c', 'mat shear at d', T`f_v=\frac{1.5(${n(Vv*1000,0)})}{${12*Bm}(${dIn})}=${n(fv,0)}\le F_v=200\ \text{psi}`, fv/200],
+    ['h', 'Mat-strength method'],
+    ['r', 'effective length', T`L_c=\frac{4M_a+\sqrt{16M_a^2+8P_{mat}M_aC}}{2P_{mat}}=${n(Lcm,2)}\ \text{ft}\ (M_a=${n(Ma,1)}\ \text{k-ft})\Rightarrow L_{eff}=${n(Leff,2)}\ \text{ft}`],
+    ['c', 'ground pressure', T`q_t=\frac{${n(Pm,1)}+${n(Wm,1)}}{4(${n(Leff,2)})}=${n(qt,2)}\le q_a=${n(qa,2)}\ \text{ksf}`, qt/qa]
+  ]);
+  mFlow.update({noMat: q <= qa, fits: Lreq <= W && fb <= 1400});
+  mSt.render();
+}
+const mSt = P.still($('mat'), (ctx, w, h) => {
+  if (!MR) return;
+  const R = MR, lw = w*0.56, sc = (lw - 30)/(R.L + 4), gy = h*0.42, x0 = 15 + 2*sc;
+  // side view: mats (ends) under the track, pressure below
+  for (let x = 0; x < R.L + 2; x += 4){ ctx.fillStyle = C.timber; ctx.fillRect(x0 - sc + x*sc, gy, 4*sc - 2, Math.max(4, R.dIn/12*sc*1.5)); }
+  ctx.fillStyle = C.steel; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x0, gy - 28, R.L*sc, 26, 13) : ctx.rect(x0, gy - 28, R.L*sc, 26); ctx.fill();
+  const qs = (h - gy - 30)/Math.max(R.q, R.qa*1.2), pts = [];
+  for (let i=0;i<=50;i++){ const x = i/50*R.L, xc = x - R.L/2; const q = R.tri ? Math.max(0, R.q*(1 - (R.L/2 - xc)/(3*(R.L/2 - R.e)))) : R.Pt/(R.Cw*R.L)*(1 + 12*R.e*xc/(R.L*R.L)); pts.push([x0 + x*sc, gy + 14 + Math.max(0, q)*qs]); }
+  line(ctx, [[x0, gy + 14], ...pts, [x0 + R.L*sc, gy + 14]], {color:C.pencil, width:1.5, fill:C.pencil, alpha:0.2, close:true});
+  text(ctx, `track toe ${fmt(R.q,2)} ksf`, x0 + R.L*sc, gy + 14 + R.q*qs + 12, {size:10, align:'right', color:C.pencil, halo:C.paper});
+  text(ctx, 'side: track on 4 ft mats', 10, 14, {size:9, color:C['ink-soft']});
+  // section through one mat
+  const sx0 = lw + 10, sw = w - sx0 - 10, ms = sw/(R.W + 2), mcx = sx0 + sw/2, my = gy;
+  ctx.fillStyle = C.timber; ctx.fillRect(mcx - R.W/2*ms, my, R.W*ms, Math.max(6, R.dIn/12*ms*1.4));
+  ctx.fillStyle = C.steel; ctx.fillRect(mcx - R.Cw/2*ms, my - 22, R.Cw*ms, 20);
+  const Le = Math.min(R.Leff, R.W);
+  line(ctx, [[mcx - Le/2*ms, my + 26],[mcx + Le/2*ms, my + 26]], {color:C.s1, width:3});
+  text(ctx, `L_eff ${fmt(Le,1)} ft`, mcx, my + 42, {size:10, align:'center', color:C.s1});
+  line(ctx, [[mcx - R.Lreq/2*ms, my + 54],[mcx + R.Lreq/2*ms, my + 54]], {color:R.Lreq > R.W ? C.bad : C.storm, width:3});
+  text(ctx, `L_req ${fmt(R.Lreq,1)} ft`, mcx, my + 70, {size:10, align:'center', color:R.Lreq > R.W ? C.bad : C.storm});
+  text(ctx, 'section: one mat', sx0, 14, {size:9, color:C['ink-soft']});
+});
+P.bind(['mP','mE','mL','mC','mD','mW','mQa'], mats);
+
+/* ---------- SHEET 9: procedure ---------- */
+P.flow('procFlow', [
+  {s:'Pick the crane and location: radius and capacity at the critical picks, hook height, clearance to the building and power lines, removal path, adjacent excavation', ref:'lift plan'},
+  {s:'Manufacturer foundation reactions and anchor drawings for the exact configuration; ask what is included (2nd order, dynamic, wind basis)', ref:'FEM §I-2 · ASME B30.3'},
+  {s:'Geotech: allowable bearing, settlement, groundwater, pile capacities (compression AND tension)', ref:'geotech report'},
+  {q:'Near shoring, an excavation, utilities or voids?', yes:'Add the crane as a surcharge on the shoring (or make the base part of it); stay off utilities and voids', no:'Proceed', ref:'1926.1402(c)(2) · Ground page sheet 3', main:null},
+  {s:'Design by an RPE (or the manufacturer): stability, bearing, piles, ACI 318 concrete, anchors; EOR review if on or in the permanent structure', ref:'1926.1435(b)(3)'},
+  {s:'Build: excavate, verify the subgrade, set rebar and the anchor template on survey, level within tolerance, pre-pour inspection', ref:'anchor drawing'},
+  {q:'Concrete at the required strength (cylinders)?', yes:'Proceed', no:{s:'Wait: do not erect', end:true}, ref:'manufacturer / EOR', main:'yes'},
+  {s:'A/D director confirms the foundation is per the design (California: written statement of compliance)', ref:'1926.1435(b)(4)(i) · T8 §4966'},
+  {s:'Erect with a mobile crane (check its own outriggers and mats); plumb the mast (1:500 default)', ref:'sheet 8'},
+  {s:'Operate: wind limits, monthly bolt and tie-in checks, watch settlement and plumb; RPE checks before each climb or new tie', ref:'1926.1435(b)(4)(iii), (f)(4), (b)(7)(ii)'},
+  {s:'Dismantle; remove the block or cut the anchors below grade per the contract', end:true}
+]).update(null);
+
+/* ---------- SHEET 11: cards ---------- */
+P.cards('cards', [
+  ['What does the tower crane manufacturer give you, and is it factored?', T`Characteristic \(V, H, M, M_t\) for in service, out of service (storm rear and front/side) and erection, usually with no partial factors, no dynamic factor and no second-order effect (FEM §I-2). You apply \(\gamma_G\) to V only and \(\gamma_Q\) to the moment, plus \(\alpha\ge1.10\) if second order isn't included.`],
+  ['Why is the whole moment, even the dead-weight part, a variable action?', 'Because its direction changes as the crane slews (FEM §I-3). Only the vertical dead-weight force is permanent.'],
+  ['Which case usually governs the foundation?', 'Out of service (storm). In the FEM example the storm moment is 3,605 vs 2,086 kNm in service, about 1.7×. Erection and in-service can govern anchors or torsion.'],
+  ['Why design on the diagonal?', T`The corner pressure and the corner leg/pile force peak with the moment on the diagonal: the kern shrinks to 0.118B and the corner leg takes \(M/(\sqrt2D)\) instead of \(M/(2D)\). Overturning about an edge is still worst on the axis.`],
+  [T`What does \(e\le B/3\) mean?`, T`\(FS_{OT}=(B/2)/e\ge1.5\), with about 75% of the base in contact on the axis. FEM uses it at SLS for temporary installs; ULS (factored) allows \(e_d\le B/2\).`],
+  ['Why does a crane block need top steel?', 'On the lift-off side the cantilever hangs from the block with no soil under it, so its self-weight puts the top in tension. As the crane slews, every side becomes the heel. Detail top and bottom mats both ways.'],
+  ['ACI 318-19 change that matters for thick crane blocks?', T`The size-effect factor \(\lambda_s=\sqrt{2/(1+d/10)}\) and the \(\rho_w^{1/3}\) term in one-way and two-way shear without stirrups. At d = 56 in, \(\lambda_s\approx0.55\).`],
+  ['Soft clay and a big crane: what do you do?', 'A pile cap. With 4 piles the diagonal puts P/4 + M/(√2 s) on the corner pile and can put the opposite pile in tension, so you need uplift capacity and the pile developed into the cap. Or improve the ground, or use a steel grillage on piles.'],
+  ['What changes above the freestanding height?', T`Tie it in or climb it. A tie near the top takes about \(H+1.5M/h_t\) and the base moment drops to about \(-M/2\). Climbing collars take a couple of about \(M/h\). An RPE must verify the host structure (1926.1435(b)(7)(ii)), and the uppermost tie-in is inspected monthly ((f)(4)).`],
+  ['Who is responsible for ground conditions under a mobile crane?', 'The controlling entity provides the ground preparation and must tell the crane user and operator about known voids, tanks and utilities (1926.1402(c)). If the A/D director or operator finds the ground inadequate, they confer (1926.1402(e)).'],
+  ['Why not count the full 20 ft of a timber mat?', 'Only the part stiff enough to spread the load works. Size by soil bearing (required area) and by mat strength (bending gives an effective length). In the Buckner example, a 20 ft mat was effective over 15.2 ft.'],
+  ['The site has a high water table. What changes?', 'The block loses 62.4 pcf of weight (150 → 87.6 pcf), so P drops, e grows and the corner pressure rises. Check stability with buoyancy, and possibly dewater during construction.']
+]);
+
+P.chips('gCase', d => { st.k = d.k; upd(); });
+P.chips('hMode', d => { hm = d.m; $('hTw').hidden = hm !== 'tie'; $('hCw').hidden = hm === 'tie'; high(); });
+mats();
+})();
+</script>
+</body>
+</html>

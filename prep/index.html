@@ -48,7 +48,7 @@
       <div class="readout"><span>now showing: <b id="hMod">—</b></span></div>
       <div class="readout right bottom"><a class="pill" id="hGo" href="#" style="color:var(--pencil)">open module</a></div>
     </div>
-    <p class="lede">Six interactive modules built around what Kiewit's temporary-structures postings list: heavy lift plans, custom rigging and lifting devices, crane pads and working surfaces, falsework and staging, erection sequencing, and evaluating existing structures for construction loads. Each module starts from what you already know from ASCE 7 and AISC and then marks what changes for temporary works.</p>
+    <p class="lede">Seven interactive modules built around what Kiewit's temporary-structures postings list: heavy lift plans, custom rigging and lifting devices, crane pads and working surfaces, falsework and staging, erection sequencing, and evaluating existing structures for construction loads. Each module starts from what you already know from ASCE 7 and AISC and then marks what changes for temporary works.</p>
     <div class="prog"><span>Progress</span><span class="bar"><span class="fill" id="progFill" style="width:0%"></span></span><span id="progTxt">0 / 0</span></div>
   </div>
 </section>
@@ -199,6 +199,7 @@ const MODS = [
   ['loads.html','Loads 7 → 37','ASCE 7 combos, ASCE 37 C-loads, personnel classes, the 2% family, wall form in wind',['C_FML vs C_VML','C_H not with W','RC II, V × 0.75–0.90']],
   ['steel.html','AISC for temp works','Column curve, K, LTB and C<sub>b</sub>, App. 6 bracing stiffness, B<sub>1</sub>, bolts and welds, Subpart R',['flagpole K = 2.1','brace: strength + stiffness','1:500 plumb']],
   ['lifting.html','Lifting & rigging','Sling CG equilibrium, spreader vs beam, BTH-1 padeye, % of chart, track pressure, 0.207L, power lines',['T = W/(n sin θ)','N_d 2 / 3','critical lift > 75%']],
+  ['cranes.html','Crane foundations','Tower crane blocks on the diagonal, FEM load cases and factors, ACI 318-19 block design, pile caps, tied and climbing cranes, crawler mats',['e ≤ B/3 ⇔ FS 1.5','corner: M/(√2 D)','λ_s size effect']],
   ['bridges.html','AASHTO & temp bridges','Limit states, Art. 3.4.2, HL-93, crane on a trestle, stream flow, twin-girder system buckling',['γ ≥ 1.5 on construction loads (3.4.2.1)','HL-93 1,525 k-ft @100 ft','ΣM_u ≤ 0.5 M_gs (6.10.3.4.2)']],
   ['falsework.html','Falsework & formwork','ACI 347 pressure, Caltrans loads, load path, NDS joist, reshoring, OSHA 1926.703',['150 + 9000R/T','160 pcf · 20 psf · 100 psf','L/240']],
   ['ground.html','Ground & water','OSHA trench rules, Rankine + Boussinesq, Peck envelopes, tremie seal, 2:1 spread, barge GM',['5 ft / 20 ft','seal ≈ 0.75h','load at boom tip']],
@@ -275,6 +276,8 @@ const DRILL = [
   ['ground', 'Max slope in Type C soil?', T`1½H:1V (34°), App. B Table B-1.`],
   ['ground', 'Where does a suspended load act for barge stability?', T`At the boom tip: it raises \(KG\), so \(GM=KB+BM-KG\) drops.`],
   ['ground', '2:1 pressure under a pad?', T`\(q_z=\frac{P}{(B+z)(L+z)}\).`],
+  ['crane', 'Tower crane foundation: what governs and why?', T`Out-of-service storm moment on the diagonal: corner bearing \(q_{max}\), corner leg \(V/4\pm M/(\sqrt2D)\), and stability \(e\le B/3\) (FEM 2014). Reactions are characteristic, so apply \(\gamma_Q\) and \(lpha\ge1.10\) if second order isn't included.`],
+  ['crane', 'Mats under a crawler: how do you size them?', 'Soil method (required area, so required length) AND mat-strength method (bending gives an effective length). Then check the 2:1 spread to any weak layer. The controlling entity owns ground prep and known hazards (1926.1402(c)).'],
   ['soft', '"Tell me about a time you made a mistake in a design."', 'STAR: the situation, how you or a checker found it, what you did right away (told people, stopped work if needed), the fix, and the process change. Own it, keep it short, end on the improvement.'],
   ['soft', '"Why temporary structures?"', 'Engineering that gets built next week: stability, judgment, field contact, variety (lifts, falsework, marine, erection). Connect it to your ASCE 7, AISC and construction-manual coursework and this preparation.'],
   ['soft', '"A superintendent wants to skip a brace."', "Understand why (access? schedule?), explain the load path and risk in field terms, offer an alternative that works for both, never sign off on what you don't believe in, and escalate if needed."]
@@ -286,7 +289,7 @@ function next(){
   if (!deck.length) build();
   const i = Math.floor(Math.random()*deck.length); cur = deck.splice(i, 1)[0];
   $('dCard').classList.remove('flip');
-  const names = {loads:'Loads', steel:'AISC', lift:'Lifting', bridge:'Bridges', fw:'Falsework', ground:'Ground', soft:'Behavioral'};
+  const names = {loads:'Loads', steel:'AISC', lift:'Lifting', bridge:'Bridges', fw:'Falsework', ground:'Ground', crane:'Cranes', soft:'Behavioral'};
   setTimeout(() => { $('dTag').textContent = names[cur[0]]; $('dQ').innerHTML = cur[1]; $('dA').innerHTML = cur[2]; P.tex($('dCard')); }, 200);
   $('dStats').textContent = `${stats.got} got · ${stats.again} again · ${deck.length} left in this round`;
 }

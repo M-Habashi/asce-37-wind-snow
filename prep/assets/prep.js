@@ -262,7 +262,7 @@ window.P = (function(){
   }
 
   const PAGES = [
-    ['index.html','Hub'], ['loads.html','Loads 7 → 37'], ['steel.html','AISC'], ['lifting.html','Lifting'],
+    ['index.html','Hub'], ['loads.html','Loads 7 → 37'], ['steel.html','AISC'], ['lifting.html','Lifting'], ['cranes.html','Cranes'],
     ['bridges.html','Bridges'], ['falsework.html','Falsework'], ['ground.html','Ground'], ['../index.html','Wind & snow']
   ];
   function nav(active){
